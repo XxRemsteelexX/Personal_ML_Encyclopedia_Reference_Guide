@@ -47,14 +47,14 @@ print("Degree Matrix:\n", D)
 
 **GCN Layer:** Aggregate neighbor information using graph structure
 
-**Formula:** H^(l+1) = σ(D̃^(-1/2) Ã D̃^(-1/2) H^(l) W^(l))
+**Formula:** H^(l+1) = sigma(D_tilde^(-1/2) A_tilde D_tilde^(-1/2) H^(l) W^(l))
 
 Where:
-- Ã = A + I (adjacency + self-loops)
-- D̃ = degree matrix of Ã
+- A_tilde = A + I (adjacency + self-loops)
+- D_tilde = degree matrix of A_tilde
 - H^(l) = node features at layer l
 - W^(l) = learnable weights
-- σ = activation function
+- sigma = activation function
 
 ### Implementation
 
@@ -140,7 +140,7 @@ output = model(X_tensor, A_norm)
 
 **Key Idea:** Learn importance of neighbors (not all neighbors equally important)
 
-**Attention Coefficient:** α_ij = attention from node i to j
+**Attention Coefficient:** alpha_ij = attention from node i to j
 
 ```python
 class GATLayer(nn.Module):
@@ -563,9 +563,9 @@ class GraphTransformerLayer(nn.Module):
 
 4. **Node vs Graph tasks:**
    - Node classification: Output per node
-   - Graph classification: Pool node features → single output
+   - Graph classification: Pool node features --> single output
 
-5. **Oversmoothing** - Too many GNN layers → all nodes same embedding (use residual connections)
+5. **Oversmoothing** - Too many GNN layers --> all nodes same embedding (use residual connections)
 
 ---
 

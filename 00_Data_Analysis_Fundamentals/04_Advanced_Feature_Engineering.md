@@ -16,13 +16,13 @@ This guide covers encoding strategies, transformations, and when to use each tec
 
 | Encoding | Tree Models | Linear Models | When to Use | Pros | Cons |
 |----------|-------------|---------------|-------------|------|------|
-| **Label** | ✅ Excellent | ❌ Avoid | Trees only, low-med cardinality | Fast, no dimensions added | Creates false ordering for linear |
-| **One-Hot** | ❌ Avoid | ✅ Required | Linear models, low cardinality (<10) | No false ordering | Explodes dimensions, slow for trees |
-| **Target** | ✅ Excellent | ✅ Good | High cardinality (50+) | Captures target signal | Leakage risk, needs CV |
-| **Frequency** | ✅ Good | ✅ Good | Any cardinality | Simple, no leakage | Less informative |
-| **Binary** | ✅ Good | ✅ Good | 2 categories | Simple, efficient | Only for binary |
-| **Ordinal** | ✅ Good | ✅ Good | Natural ordering exists | Preserves order | Assumes equal spacing |
-| **Hash** | ✅ Good | ⚠️ Okay | Very high cardinality (1000+) | Fixed dimensions | Collisions, not reversible |
+| **Label** |  Excellent |  Avoid | Trees only, low-med cardinality | Fast, no dimensions added | Creates false ordering for linear |
+| **One-Hot** |  Avoid |  Required | Linear models, low cardinality (<10) | No false ordering | Explodes dimensions, slow for trees |
+| **Target** |  Excellent |  Good | High cardinality (50+) | Captures target signal | Leakage risk, needs CV |
+| **Frequency** |  Good |  Good | Any cardinality | Simple, no leakage | Less informative |
+| **Binary** |  Good |  Good | 2 categories | Simple, efficient | Only for binary |
+| **Ordinal** |  Good |  Good | Natural ordering exists | Preserves order | Assumes equal spacing |
+| **Hash** |  Good | [WARNING] Okay | Very high cardinality (1000+) | Fixed dimensions | Collisions, not reversible |
 
 ---
 
@@ -38,12 +38,12 @@ le = LabelEncoder()
 df['pet_encoded'] = le.fit_transform(df['pet'])
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Tree-based models (Random Forest, XGBoost)
 - Low to medium cardinality (<50 categories)
 - Want minimal memory usage
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Linear models (creates false ordinal relationship)
 - Categories have no natural ordering
 - Need interpretability with linear models
@@ -68,15 +68,15 @@ encoder = OneHotEncoder(drop='first', sparse=False)
 encoded = encoder.fit_transform(df[['pet']])
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - **Linear models (REQUIRED)**
 - **Neural networks**
 - Low cardinality (<10 categories)
 - No natural ordering
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Tree-based models (hurts performance)
-- High cardinality (50+ categories) → dimension explosion
+- High cardinality (50+ categories) --> dimension explosion
 - Memory constrained
 
 **drop_first=True:** Avoids multicollinearity (dummy variable trap)
@@ -99,23 +99,23 @@ X_train_encoded = encoder.fit_transform(X_train, y_train)
 X_test_encoded = encoder.transform(X_test)  # No fit!
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - High cardinality (50+ categories)
 - Categories have different target rates
 - Tree models or linear models
 - Examples: ZIP codes, user IDs, product IDs
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Small dataset (overfits rare categories)
 - Can't do proper cross-validation
 - Need simple, explainable model
 
 **CRITICAL: Prevent Leakage**
 ```python
-# ❌ WRONG - causes leakage!
+#  WRONG - causes leakage!
 df['city_encoded'] = df.groupby('city')['target'].transform('mean')
 
-# ✅ CORRECT - use CV
+#  CORRECT - use CV
 from category_encoders import TargetEncoder
 encoder = TargetEncoder(smoothing=1.0, min_samples_leaf=20)
 ```
@@ -139,15 +139,15 @@ count_map = df['category'].value_counts().to_dict()
 df['category_count'] = df['category'].map(count_map)
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Quick and safe (no leakage)
 - Frequency correlates with target
 - High cardinality
 - Examples: Rare products might be niche/expensive
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Frequency unrelated to target
-- Need to capture category → target relationship (use target encoding)
+- Need to capture category --> target relationship (use target encoding)
 
 ---
 
@@ -166,12 +166,12 @@ encoder = OrdinalEncoder(categories=[education_order])
 df['education_encoded'] = encoder.fit_transform(df[['education']])
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Natural ordering exists (Low/Medium/High, Small/Large)
 - Order matters for target
 - Both tree and linear models
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - No natural order (colors, cities)
 - Order not equal spacing (Small=1, Medium=2, Large=10?)
 
@@ -189,12 +189,12 @@ encoder = HashingEncoder(cols=['high_card_feature'], n_components=10)
 df_encoded = encoder.fit_transform(df)
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Very high cardinality (1000+ categories)
 - Memory constrained
 - Production with new categories appearing
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Low cardinality (overkill)
 - Collisions are problematic
 - Need to reverse encoding
@@ -213,12 +213,12 @@ encoder = BinaryEncoder(cols=['category'])
 df_encoded = encoder.fit_transform(df)
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Medium cardinality (10-100 categories)
 - Balance between one-hot (too many dims) and label (false ordering)
 
 **Example:**
-- 100 categories → 7 binary columns (2^7 = 128)
+- 100 categories --> 7 binary columns (2^7 = 128)
 - vs. 100 one-hot columns
 
 ---
@@ -240,13 +240,13 @@ df['feature_log'] = np.log(df['feature'])
 df['feature_log1p'] = np.log1p(df['feature'])  # log(1 + x)
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Right-skewed distributions (long tail)
 - Wide range (e.g., income: $10K to $10M)
 - Multiplicative relationships
 - **Linear models benefit most**
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Negative values (undefined)
 - Already normally distributed
 - Tree models (handle skewness naturally)
@@ -281,7 +281,7 @@ pt = PowerTransformer(method='yeo-johnson')
 df['feature_transformed'] = pt.fit_transform(df[['feature']])
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Moderate skewness (sqrt)
 - Want optimal transformation (Box-Cox)
 - Have negative values (Yeo-Johnson)
@@ -337,7 +337,7 @@ df['week_of_year'] = df['datetime'].dt.isocalendar().week
 df['quarter'] = df['datetime'].dt.quarter
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Seasonality patterns (sales by month)
 - Time-of-day effects (traffic by hour)
 - Weekday vs weekend patterns
@@ -363,9 +363,9 @@ us_holidays = holidays.US()
 df['is_holiday'] = df['datetime'].dt.date.isin(us_holidays).astype(int)
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Clear binary patterns (weekend sales drop)
-- Simpler than full categorical (7 days → 1 binary)
+- Simpler than full categorical (7 days --> 1 binary)
 
 ---
 
@@ -390,12 +390,12 @@ df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12)
 df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12)
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Cyclical patterns (hour, day, month)
 - **Linear models and neural nets** (trees handle it either way)
-- Need smooth transitions (23 → 0)
+- Need smooth transitions (23 --> 0)
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Tree models (can handle raw values)
 - No cyclical pattern (year is not cyclical)
 
@@ -419,7 +419,7 @@ df['days_since_last_purchase'] = (
 df['days_to_holiday'] = (df['next_holiday_date'] - df['datetime']).dt.days
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Recency matters (e.g., days since last login predicts churn)
 - Aggregated behavior (purchases/month)
 
@@ -429,13 +429,13 @@ df['days_to_holiday'] = (df['next_holiday_date'] - df['datetime']).dt.days
 
 ### 3.4.1 Polynomial Features
 
-**What:** Create x², x³, etc. to capture non-linear relationships
+**What:** Create x^2, x^3, etc. to capture non-linear relationships
 
 **Code:**
 ```python
 from sklearn.preprocessing import PolynomialFeatures
 
-# Degree 2: x, y, x², xy, y²
+# Degree 2: x, y, x^2, xy, y^2
 poly = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly.fit_transform(X)
 
@@ -444,20 +444,20 @@ poly.get_feature_names_out(['x', 'y'])
 # Output: ['x', 'y', 'x^2', 'x y', 'y^2']
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - **Linear models** show underfitting
 - Curved relationship suspected
 - Small number of features (2-10)
 - Degree 2 or 3 (rarely higher)
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Tree models (find interactions automatically)
 - High-dimensional data (exponential growth)
 - Degree > 3 (overfitting risk)
 
 **Dimension explosion:**
-- 10 features, degree 2 → 55 features
-- 10 features, degree 3 → 220 features
+- 10 features, degree 2 --> 55 features
+- 10 features, degree 3 --> 220 features
 
 ---
 
@@ -472,17 +472,17 @@ df['sqft_per_bedroom'] = df['sqft'] / df['bedrooms']
 df['price_per_sqft'] = df['price'] / df['sqft']
 df['income_to_loan_ratio'] = df['income'] / df['loan_amount']
 
-# Categorical × numerical
+# Categorical x numerical
 df['premium_customer_spending'] = df['is_premium'] * df['total_spent']
 ```
 
-**✅ When to Use:**
+** When to Use:**
 - Domain knowledge suggests interaction
 - Example: House value depends on sqft AND location
 - Linear models
 - Small number of specific interactions
 
-**❌ When NOT to Use:**
+** When NOT to Use:**
 - Tree models (less benefit)
 - No domain knowledge (creates noise)
 - High-dimensional already
@@ -528,7 +528,7 @@ df['feature_binned'] = discretizer.fit_transform(df[['feature']])
 
 ---
 
-### ✅ When to Use Binning
+###  When to Use Binning
 
 1. **Handle outliers without removal**
    - Extreme values grouped into bins
@@ -552,7 +552,7 @@ df['feature_binned'] = discretizer.fit_transform(df[['feature']])
 
 ---
 
-### ❌ When NOT to Use Binning
+###  When NOT to Use Binning
 
 1. **Loss of information**
    - Age 25 and 35 both become "young"
@@ -563,7 +563,7 @@ df['feature_binned'] = discretizer.fit_transform(df[['feature']])
    - Binning prevents finer splits
 
 3. **Small datasets**
-   - Bins with few samples → overfitting
+   - Bins with few samples --> overfitting
 
 4. **Arbitrary bins**
    - Without domain knowledge, bins might be meaningless
@@ -648,38 +648,38 @@ df['is_on_sale'] = (df['discount_percentage'] > 0).astype(int)
 ```
 What type of feature?
 
-├─ CATEGORICAL
-│  ├─ For tree models?
-│  │  ├─ Low cardinality (<50) → Label Encoding
-│  │  └─ High cardinality (50+) → Target Encoding (with CV)
-│  │
-│  └─ For linear models?
-│     ├─ Low cardinality (<10) → One-Hot Encoding
-│     ├─ Medium (10-50) → Binary Encoding or Target
-│     └─ High (50+) → Target Encoding or Hash
-│
-├─ NUMERICAL
-│  ├─ Skewed distribution?
-│  │  └─ For linear models → Log/Box-Cox transform
-│  │
-│  ├─ Different scales?
-│  │  └─ For linear models → StandardScaler
-│  │
-│  ├─ Non-linear relationship (linear model)?
-│  │  └─ Polynomial features (degree 2-3)
-│  │
-│  └─ Tree models → Use raw values
-│
-├─ DATETIME
-│  ├─ Extract: year, month, day, hour, dow
-│  ├─ Create: is_weekend, is_holiday, is_business_hours
-│  ├─ Cyclical: hour_sin/cos, month_sin/cos (for linear models)
-│  └─ Aggregations: days_since_last_event, events_last_30d
-│
-└─ TEXT (simple features)
-   ├─ Length: char_count, word_count
-   ├─ Counts: uppercase_count, digit_count
-   └─ Binary: contains_url, contains_email
++--- CATEGORICAL
+|  +--- For tree models?
+|  |  +--- Low cardinality (<50) --> Label Encoding
+|  |  +--- High cardinality (50+) --> Target Encoding (with CV)
+|  |
+|  +--- For linear models?
+|     +--- Low cardinality (<10) --> One-Hot Encoding
+|     +--- Medium (10-50) --> Binary Encoding or Target
+|     +--- High (50+) --> Target Encoding or Hash
+|
++--- NUMERICAL
+|  +--- Skewed distribution?
+|  |  +--- For linear models --> Log/Box-Cox transform
+|  |
+|  +--- Different scales?
+|  |  +--- For linear models --> StandardScaler
+|  |
+|  +--- Non-linear relationship (linear model)?
+|  |  +--- Polynomial features (degree 2-3)
+|  |
+|  +--- Tree models --> Use raw values
+|
++--- DATETIME
+|  +--- Extract: year, month, day, hour, dow
+|  +--- Create: is_weekend, is_holiday, is_business_hours
+|  +--- Cyclical: hour_sin/cos, month_sin/cos (for linear models)
+|  +--- Aggregations: days_since_last_event, events_last_30d
+|
++--- TEXT (simple features)
+   +--- Length: char_count, word_count
+   +--- Counts: uppercase_count, digit_count
+   +--- Binary: contains_url, contains_email
 ```
 
 ---
@@ -688,14 +688,14 @@ What type of feature?
 
 ### Pitfall 1: Data Leakage in Target Encoding
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Leakage: using full dataset
 df['city_encoded'] = df.groupby('city')['target'].transform('mean')
 X_train, X_test = train_test_split(df)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Split first, then encode
 X_train, X_test, y_train, y_test = train_test_split(X, y)
@@ -709,12 +709,12 @@ X_test_encoded = encoder.transform(X_test)
 
 ### Pitfall 2: Fitting Scaler on Full Data
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 scaler.fit(pd.concat([X_train, X_test]))  # Leakage!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 scaler.fit(X_train)  # Only training data
 X_train_scaled = scaler.transform(X_train)
@@ -725,14 +725,14 @@ X_test_scaled = scaler.transform(X_test)
 
 ### Pitfall 3: Creating Too Many Polynomial Features
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
-# 100 features, degree 3 → 176,851 features!
+# 100 features, degree 3 --> 176,851 features!
 poly = PolynomialFeatures(degree=3)
 X_poly = poly.fit_transform(X_100_features)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Select few features, use degree 2
 poly = PolynomialFeatures(degree=2)
@@ -743,13 +743,13 @@ X_poly = poly.fit_transform(X[['feature1', 'feature2', 'feature3']])
 
 ### Pitfall 4: Arbitrary Binning
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # No reasoning
 df['age_binned'] = pd.cut(df['age'], bins=5)  # Why 5?
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Use domain knowledge or data-driven
 bins = [0, 18, 35, 50, 65, 100]  # Meaningful age groups
@@ -765,10 +765,10 @@ df['age_binned'] = pd.qcut(df['age'], q=4)
 
 **Don't create features just because you can!**
 
-- ✅ Start simple
-- ✅ Add features based on domain knowledge
-- ✅ Validate each feature improves model
-- ❌ Don't blindly create hundreds of features
+-  Start simple
+-  Add features based on domain knowledge
+-  Validate each feature improves model
+-  Don't blindly create hundreds of features
 
 ---
 

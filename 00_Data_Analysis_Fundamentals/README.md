@@ -4,11 +4,11 @@
 
 This folder contains **comprehensive data analyst and data scientist fundamentals** - everything you need to go from raw data to model-ready datasets.
 
-**Coverage:** EDA → Cleaning → Feature Engineering → Scaling → Encoding
+**Coverage:** EDA --> Cleaning --> Feature Engineering --> Scaling --> Encoding
 
 ---
 
-## 📁 Files in This Folder
+## [folder] Files in This Folder
 
 ### 1. **01_Exploratory_Data_Analysis.md**
 
@@ -70,7 +70,7 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 
 **Validation:**
 - Logical relationships (age < 150, start < end date)
-- Business rules (revenue = price × quantity)
+- Business rules (revenue = price x quantity)
 - Referential integrity
 
 **Automation:**
@@ -125,7 +125,7 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 
 4. **Target Encoding**
    - Mean target per category
-   - ⚠️ Use cross-validation!
+   - [WARNING] Use cross-validation!
 
 5. **Binary Encoding**
    - Medium cardinality (10-100)
@@ -159,7 +159,7 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 
 ---
 
-## 🎯 Quick Start Guide
+##  Quick Start Guide
 
 ### For Data Analysts:
 
@@ -190,9 +190,9 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 
 **Use all three files in sequence:**
 
-1. **EDA** → Understand data, identify issues
-2. **Cleaning** → Fix issues, validate
-3. **Scaling/Encoding** → Prepare for modeling
+1. **EDA** --> Understand data, identify issues
+2. **Cleaning** --> Fix issues, validate
+3. **Scaling/Encoding** --> Prepare for modeling
 
 **Then move to:**
 - `01_Statistical_Foundations/` for A/B testing, hypothesis testing
@@ -202,36 +202,36 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 
 ---
 
-## 📊 What's Covered
+##  What's Covered
 
 ### Data Quality Issues:
-✅ Missing values (all types and solutions)
-✅ Duplicates (exact and fuzzy)
-✅ Outliers (detection and handling)
-✅ Data type errors
-✅ Inconsistent formats
+ Missing values (all types and solutions)
+ Duplicates (exact and fuzzy)
+ Outliers (detection and handling)
+ Data type errors
+ Inconsistent formats
 
 ### Feature Engineering:
-✅ Scaling (6 methods with comparisons)
-✅ Encoding (7 methods with decision tree)
-✅ DateTime features
-✅ Cyclical features
+ Scaling (6 methods with comparisons)
+ Encoding (7 methods with decision tree)
+ DateTime features
+ Cyclical features
 
 ### Validation:
-✅ Logical relationship checks
-✅ Business rule validation
-✅ Distribution verification
-✅ Data leakage prevention
+ Logical relationship checks
+ Business rule validation
+ Distribution verification
+ Data leakage prevention
 
 ### Automation:
-✅ Reusable pipelines
-✅ Great Expectations
-✅ PyCaret
-✅ Production-ready code
+ Reusable pipelines
+ Great Expectations
+ PyCaret
+ Production-ready code
 
 ---
 
-## 🔍 Key Concepts
+## [search] Key Concepts
 
 ### EDA (01_Exploratory_Data_Analysis.md):
 - **8-step process** for thorough data understanding
@@ -240,7 +240,7 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 - **Visualization** best practices
 
 ### Cleaning (02_Data_Cleaning.md):
-- **EDA → Clean → Validate loop**
+- **EDA --> Clean --> Validate loop**
 - **ALWAYS backup original data**
 - **Document every decision**
 - **Reusable pipeline approach**
@@ -253,7 +253,7 @@ This folder contains **comprehensive data analyst and data scientist fundamental
 
 ---
 
-## 💡 Best Practices Across All Files
+##  Best Practices Across All Files
 
 ### 1. Always Work on a Copy
 ```python
@@ -263,13 +263,13 @@ df = df_original.copy()  # Work on this
 
 ### 2. Split Before Scaling
 ```python
-# ✅ Correct
+#  Correct
 X_train, X_test = train_test_split(X, y)
 scaler.fit(X_train)  # Fit on train only!
 X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# ❌ Wrong (data leakage!)
+#  Wrong (data leakage!)
 X_scaled = scaler.fit_transform(X)  # Test info leaks!
 X_train, X_test = train_test_split(X_scaled)
 ```
@@ -310,7 +310,7 @@ predictions = pipeline.predict(new_data)
 
 ---
 
-## 🎓 Learning Path
+## [graduation] Learning Path
 
 ### Beginner:
 1. Read 01_EDA (focus on sections 1.1-1.7)
@@ -335,7 +335,7 @@ predictions = pipeline.predict(new_data)
 
 ---
 
-## 📚 Related Files
+##  Related Files
 
 **After mastering this folder, move to:**
 
@@ -346,7 +346,7 @@ predictions = pipeline.predict(new_data)
 
 ---
 
-## ✅ Checklists
+##  Checklists
 
 ### EDA Checklist (from file 01):
 - [ ] Load and inspect data
@@ -374,49 +374,49 @@ predictions = pipeline.predict(new_data)
 
 ---
 
-## 🏆 What Makes This Unique
+## [trophy] What Makes This Unique
 
 ### Comprehensive Coverage:
-✅ **Everything** from raw data to model-ready
-✅ **2025 best practices** (Great Expectations, PyCaret)
-✅ **Production-ready** code examples
-✅ **Decision frameworks** (when to use what)
+ **Everything** from raw data to model-ready
+ **2025 best practices** (Great Expectations, PyCaret)
+ **Production-ready** code examples
+ **Decision frameworks** (when to use what)
 
 ### Practical Focus:
-✅ Working code you can copy-paste
-✅ Common pitfalls highlighted
-✅ Reusable classes and functions
-✅ Real-world examples
+ Working code you can copy-paste
+ Common pitfalls highlighted
+ Reusable classes and functions
+ Real-world examples
 
 ### Data Analyst + Data Scientist:
-✅ EDA for analysts
-✅ Statistical validation
-✅ Feature engineering for modeling
-✅ Production deployment patterns
+ EDA for analysts
+ Statistical validation
+ Feature engineering for modeling
+ Production deployment patterns
 
 ---
 
-## 🚀 Quick Reference
+##  Quick Reference
 
 **Need to...**
 
-**Understand your data?** → 01_EDA.md (8-step process)
+**Understand your data?** --> 01_EDA.md (8-step process)
 
-**Handle missing values?** → 02_Cleaning.md (section 2.2, 9 methods)
+**Handle missing values?** --> 02_Cleaning.md (section 2.2, 9 methods)
 
-**Remove outliers?** → 01_EDA.md (section 1.7) + 02_Cleaning.md (section 2.5)
+**Remove outliers?** --> 01_EDA.md (section 1.7) + 02_Cleaning.md (section 2.5)
 
-**Scale features?** → 03_Scaling_Encoding.md (section 3.1, 6 methods + comparison)
+**Scale features?** --> 03_Scaling_Encoding.md (section 3.1, 6 methods + comparison)
 
-**Encode categories?** → 03_Scaling_Encoding.md (section 3.2, 7 methods + decision tree)
+**Encode categories?** --> 03_Scaling_Encoding.md (section 3.2, 7 methods + decision tree)
 
-**Build pipeline?** → 03_Scaling_Encoding.md (section 3.4, complete example)
+**Build pipeline?** --> 03_Scaling_Encoding.md (section 3.4, complete example)
 
-**Validate data quality?** → 02_Cleaning.md (section 2.7 + Great Expectations)
+**Validate data quality?** --> 02_Cleaning.md (section 2.7 + Great Expectations)
 
 ---
 
-**You now have COMPLETE data analysis and preprocessing coverage for 2025! 🎉**
+**You now have COMPLETE data analysis and preprocessing coverage for 2025! **
 
 **Total Content:** 3 comprehensive files covering every aspect of data preparation
 **Quality:** Production-ready, best practices, 2025 state-of-the-art

@@ -14,7 +14,7 @@ The techniques developed for ARC generalize to many AI reasoning and problem-sol
 
 **Applications Beyond ARC:**
 - **Medical diagnosis:** Learn from few case studies
-- **Code generation:** Few examples → general patterns
+- **Code generation:** Few examples --> general patterns
 - **Robotics:** Quick adaptation to new environments
 - **Customer support:** Handle novel inquiries
 
@@ -126,10 +126,10 @@ class MultiMethodEnsemble:
 **Principle:** Generate solutions, verify correctness, and iterate
 
 **Applications:**
-- **Code generation:** Generate code → test → fix errors → repeat
-- **Theorem proving:** Propose proof → verify → refine
-- **Design optimization:** Generate design → simulate → improve
-- **Content generation:** Generate text → fact-check → revise
+- **Code generation:** Generate code --> test --> fix errors --> repeat
+- **Theorem proving:** Propose proof --> verify --> refine
+- **Design optimization:** Generate design --> simulate --> improve
+- **Content generation:** Generate text --> fact-check --> revise
 
 **Self-Correction Loop:**
 
@@ -385,8 +385,8 @@ diagnosis = reasoner.synthesize(reasoner.analyze(patient_data))
 **Principle:** Allocate computation based on task difficulty
 
 **Applications:**
-- **Search engines:** Simple queries → quick lookup, complex → deep reasoning
-- **Game playing:** Easy positions → fast heuristics, critical → deep search
+- **Search engines:** Simple queries --> quick lookup, complex --> deep reasoning
+- **Game playing:** Easy positions --> fast heuristics, critical --> deep search
 - **Resource allocation:** Prioritize computation for high-impact decisions
 
 **Adaptive Solver:**
@@ -493,7 +493,7 @@ class NeuroSymbolicSolver:
 
 # Example: Visual reasoning
 class VisualPerception:
-    """Neural component: Raw pixels → Objects"""
+    """Neural component: Raw pixels --> Objects"""
 
     def encode(self, image):
         # Detect objects
@@ -726,7 +726,7 @@ def generate_large_codebase(spec):
 
 1. **Few-shot learning** - Adapt quickly from minimal examples (test-time training, meta-learning)
 2. **Ensemble methods** - Combine diverse approaches for robustness
-3. **Verification loops** - Generate → verify → refine iteratively
+3. **Verification loops** - Generate --> verify --> refine iteratively
 4. **Multi-perspective** - Analyze from multiple viewpoints
 5. **Adaptive computation** - Allocate resources based on difficulty
 6. **Neuro-symbolic** - Combine neural perception with symbolic reasoning

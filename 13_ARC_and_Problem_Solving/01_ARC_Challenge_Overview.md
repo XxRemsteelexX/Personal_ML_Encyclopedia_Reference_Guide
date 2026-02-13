@@ -4,7 +4,7 @@
 
 **ARC** (Abstraction and Reasoning Corpus) is a general artificial intelligence benchmark designed to test **fluid intelligence** and abstract reasoning capabilities - the ability to solve novel problems without prior training.
 
-**Created by:** François Chollet (Google, creator of Keras)
+**Created by:** Francois Chollet (Google, creator of Keras)
 **Prize:** $500,000 grand prize + $25,000 progress prizes
 **Target:** 85% accuracy on private evaluation set
 **Current SOTA (2024):** 55.5% (up from 33% pre-competition)
@@ -36,7 +36,7 @@ ARC is fundamentally different from traditional ML benchmarks:
 **Format:**
 - 2D grids of integers (0-9 representing colors)
 - Grid sizes: 1x1 to 30x30
-- Input → Output transformation
+- Input --> Output transformation
 
 **Example Task:**
 ```
@@ -144,12 +144,12 @@ Test Input:  [0,1,0]    Your Output: ?
 
 ### 2024 - Major Breakthrough ($1M Prize Pool)
 - **1,430 teams**, 17,789 submissions
-- SOTA improved from 33% → 55.5%
+- SOTA improved from 33% --> 55.5%
 - Key innovation: Hybrid transduction + induction
 
 **Top Teams (2024):**
 1. **Ryan Greenblatt et al.** (1st place)
-2. **Akyürek et al.** - "The Surprising Effectiveness of Test-Time Training"
+2. **Akyurek et al.** - "The Surprising Effectiveness of Test-Time Training"
 3. **Omni-ARC (Barbadillo)** - 40% score, single model approach
 4. **ARChitects (Franzen et al.)** - "The LLM ARChitect"
 5. **MindsAI**
@@ -175,7 +175,7 @@ Test Input:  [0,1,0]    Your Output: ?
 **Method:** Use LLMs to propose transformation rules, verify with execution
 
 ### 4. Scale Limitations
-**Finding:** Smaller grids (≤8x8) are much easier than large grids (30x30)
+**Finding:** Smaller grids (<=8x8) are much easier than large grids (30x30)
 **Challenge:** Current methods struggle with computational complexity
 
 ---
@@ -183,7 +183,7 @@ Test Input:  [0,1,0]    Your Output: ?
 ## Two Core Paradigms
 
 ### Transduction (Direct Mapping)
-**Approach:** Learn input → output mapping directly
+**Approach:** Learn input --> output mapping directly
 
 **Method:**
 ```python
@@ -402,7 +402,7 @@ final_output = votes.most_common(1)[0][0]
 
 **Why this works:**
 - Model has uncertainty
-- Different random seeds → different outputs
+- Different random seeds --> different outputs
 - Correct answer often appears most frequently
 
 ---
@@ -410,7 +410,7 @@ final_output = votes.most_common(1)[0][0]
 ## Key Limitations (Why we're not at 85% yet)
 
 ### 1. Large Grid Complexity
-- Solutions work well for grids ≤8x8
+- Solutions work well for grids <=8x8
 - Performance degrades for 20x30 grids
 - Computational cost explodes with size
 
@@ -473,7 +473,7 @@ for iteration in range(max_iterations):
 
 ### What ARC Teaches Us
 
-1. **Intelligence ≠ Pattern Matching**
+1. **Intelligence != Pattern Matching**
    - GPT-4 can pass the bar exam but fails ARC
    - True intelligence requires abstraction and generalization
 
@@ -501,7 +501,7 @@ for iteration in range(max_iterations):
 
 **Key Papers:**
 - Chollet (2019): "On the Measure of Intelligence"
-- Akyürek et al. (2024): "The Surprising Effectiveness of Test-Time Training"
+- Akyurek et al. (2024): "The Surprising Effectiveness of Test-Time Training"
 - Franzen et al. (2024): "The LLM ARChitect"
 
 **Solutions:**
@@ -527,4 +527,4 @@ for iteration in range(max_iterations):
 
 ---
 
-**ARC represents the frontier of AGI research - cracking this challenge will require fundamental breakthroughs in machine reasoning! 🧠**
+**ARC represents the frontier of AGI research - cracking this challenge will require fundamental breakthroughs in machine reasoning! [brain]**

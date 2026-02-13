@@ -195,8 +195,8 @@ SMOTE creates synthetic minority samples by:
 
 **Formula:**
 ```
-X_new = X_i + λ * (X_neighbor - X_i)
-where λ ~ Uniform(0, 1)
+X_new = X_i + lambda * (X_neighbor - X_i)
+where lambda ~ Uniform(0, 1)
 ```
 
 ### Basic SMOTE Implementation
@@ -1066,12 +1066,12 @@ metrics = evaluate_imbalanced_classifier(y_test, y_pred, y_proba)
 
 **Formula:**
 ```
-FL(p_t) = -α_t * (1 - p_t)^γ * log(p_t)
+FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t)
 
 where:
 - p_t = model's estimated probability for true class
-- α_t = weighting factor for class balance
-- γ = focusing parameter (γ=2 is standard)
+- alpha_t = weighting factor for class balance
+- gamma = focusing parameter (gamma=2 is standard)
 ```
 
 **Best for deep learning on imbalanced data** (from RESEARCH_SUMMARY_2025.md)

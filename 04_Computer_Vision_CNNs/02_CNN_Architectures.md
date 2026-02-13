@@ -32,7 +32,7 @@
 
 CNN architectures have evolved dramatically since 1998, driven by:
 - **Increased compute**: GPUs, TPUs, distributed training
-- **Larger datasets**: ImageNet (14M images) → JFT-300M (300M images)
+- **Larger datasets**: ImageNet (14M images) --> JFT-300M (300M images)
 - **Architectural innovations**: Skip connections, attention, normalization
 - **AutoML**: Neural Architecture Search (NAS)
 
@@ -46,7 +46,7 @@ CNN architectures have evolved dramatically since 1998, driven by:
 2017: DenseNet-264 (34M params, ImageNet top-5: 96.5%)
 2017: MobileNetV1 (4.2M params, efficient)
 2019: EfficientNet-B7 (66M params, ImageNet top-5: 97.1%)
-2020: ViT-Huge (632M params, ImageNet top-5: 88.5% → 90.7% pretrained)
+2020: ViT-Huge (632M params, ImageNet top-5: 88.5% --> 90.7% pretrained)
 2021: Swin-L (197M params, ImageNet top-5: 97.5%)
 2022: ConvNeXt-XL (350M params, ImageNet top-5: 97.5%)
 ```
@@ -59,13 +59,13 @@ CNN architectures have evolved dramatically since 1998, driven by:
 
 ### Key Architectural Patterns
 
-1. **Depth**: Shallow (LeNet: 5 layers) → Deep (ResNet: 152+ layers)
-2. **Width**: Narrow (64 channels) → Wide (2048+ channels)
-3. **Skip Connections**: None → Residual → Dense
-4. **Normalization**: None → BatchNorm → LayerNorm
-5. **Activation**: Sigmoid/Tanh → ReLU → GELU/Swish
-6. **Efficiency**: Standard Conv → Depthwise Separable → Inverted Residual
-7. **Attention**: None → Squeeze-and-Excitation → Self-Attention
+1. **Depth**: Shallow (LeNet: 5 layers) --> Deep (ResNet: 152+ layers)
+2. **Width**: Narrow (64 channels) --> Wide (2048+ channels)
+3. **Skip Connections**: None --> Residual --> Dense
+4. **Normalization**: None --> BatchNorm --> LayerNorm
+5. **Activation**: Sigmoid/Tanh --> ReLU --> GELU/Swish
+6. **Efficiency**: Standard Conv --> Depthwise Separable --> Inverted Residual
+7. **Attention**: None --> Squeeze-and-Excitation --> Self-Attention
 
 ---
 
@@ -83,12 +83,12 @@ CNN architectures have evolved dramatically since 1998, driven by:
 ### Architecture
 
 ```
-Input (32×32 grayscale)
-→ Conv1 (6 filters, 5×5) → Tanh → AvgPool (2×2)
-→ Conv2 (16 filters, 5×5) → Tanh → AvgPool (2×2)
-→ Conv3 (120 filters, 5×5) → Tanh
-→ FC (84) → Tanh
-→ FC (10) → Softmax
+Input (32x32 grayscale)
+--> Conv1 (6 filters, 5x5) --> Tanh --> AvgPool (2x2)
+--> Conv2 (16 filters, 5x5) --> Tanh --> AvgPool (2x2)
+--> Conv3 (120 filters, 5x5) --> Tanh
+--> FC (84) --> Tanh
+--> FC (10) --> Softmax
 ```
 
 **Parameters:** ~60,000
@@ -166,7 +166,7 @@ print(f"Total parameters: {total_params:,}")
 
 **Legacy:**
 - Proved CNNs work for visual tasks
-- Established conv → pool pattern
+- Established conv --> pool pattern
 - Used in bank check reading systems
 
 ---
@@ -187,15 +187,15 @@ print(f"Total parameters: {total_params:,}")
 ### Architecture
 
 ```
-Input (227×227×3)
-→ Conv1 (96 filters, 11×11, stride=4) → ReLU → MaxPool → LRN
-→ Conv2 (256 filters, 5×5) → ReLU → MaxPool → LRN
-→ Conv3 (384 filters, 3×3) → ReLU
-→ Conv4 (384 filters, 3×3) → ReLU
-→ Conv5 (256 filters, 3×3) → ReLU → MaxPool
-→ FC (4096) → ReLU → Dropout(0.5)
-→ FC (4096) → ReLU → Dropout(0.5)
-→ FC (1000) → Softmax
+Input (227x227x3)
+--> Conv1 (96 filters, 11x11, stride=4) --> ReLU --> MaxPool --> LRN
+--> Conv2 (256 filters, 5x5) --> ReLU --> MaxPool --> LRN
+--> Conv3 (384 filters, 3x3) --> ReLU
+--> Conv4 (384 filters, 3x3) --> ReLU
+--> Conv5 (256 filters, 3x3) --> ReLU --> MaxPool
+--> FC (4096) --> ReLU --> Dropout(0.5)
+--> FC (4096) --> ReLU --> Dropout(0.5)
+--> FC (1000) --> Softmax
 ```
 
 **Parameters:** ~60 million
@@ -283,27 +283,27 @@ print(f"Output shape: {output.shape}")
 **Paper:** "Very Deep Convolutional Networks for Large-Scale Image Recognition" (Simonyan & Zisserman)
 
 **Key Innovations:**
-- **Uniform architecture**: Only 3×3 convolutions and 2×2 max pooling
+- **Uniform architecture**: Only 3x3 convolutions and 2x2 max pooling
 - **Depth**: 16-19 layers (VGG-16, VGG-19)
 - **Simplicity**: Easy to understand and modify
 
-**Insight:** Two 3×3 convolutions have same receptive field as one 5×5 but fewer parameters:
-- 5×5 conv: C × C × 5 × 5 = 25C² parameters
-- Two 3×3 convs: 2 × C × C × 3 × 3 = 18C² parameters
+**Insight:** Two 3x3 convolutions have same receptive field as one 5x5 but fewer parameters:
+- 5x5 conv: C x C x 5 x 5 = 25C^2 parameters
+- Two 3x3 convs: 2 x C x C x 3 x 3 = 18C^2 parameters
 - Reduction: 28% fewer parameters, more non-linearity
 
 ### Architecture (VGG-16)
 
 ```
-Input (224×224×3)
-→ Conv3-64 × 2 → MaxPool
-→ Conv3-128 × 2 → MaxPool
-→ Conv3-256 × 3 → MaxPool
-→ Conv3-512 × 3 → MaxPool
-→ Conv3-512 × 3 → MaxPool
-→ FC-4096 → Dropout
-→ FC-4096 → Dropout
-→ FC-1000 → Softmax
+Input (224x224x3)
+--> Conv3-64 x 2 --> MaxPool
+--> Conv3-128 x 2 --> MaxPool
+--> Conv3-256 x 3 --> MaxPool
+--> Conv3-512 x 3 --> MaxPool
+--> Conv3-512 x 3 --> MaxPool
+--> FC-4096 --> Dropout
+--> FC-4096 --> Dropout
+--> FC-1000 --> Softmax
 ```
 
 ### PyTorch Implementation
@@ -390,7 +390,7 @@ print(f"VGG-16 parameters: {sum(p.numel() for p in vgg16.parameters()):,}")
 
 **Key Innovations:**
 - **Inception module**: Parallel multi-scale feature extraction
-- **1×1 convolutions**: Dimensionality reduction
+- **1x1 convolutions**: Dimensionality reduction
 - **Global average pooling**: Replace FC layers
 - **Auxiliary classifiers**: Gradient injection for deep networks
 
@@ -404,24 +404,24 @@ class InceptionModule(nn.Module):
     Inception module with dimensionality reduction.
 
     Parallel branches:
-    1. 1×1 conv (dimensionality reduction)
-    2. 1×1 conv → 3×3 conv
-    3. 1×1 conv → 5×5 conv
-    4. 3×3 max pool → 1×1 conv
+    1. 1x1 conv (dimensionality reduction)
+    2. 1x1 conv --> 3x3 conv
+    3. 1x1 conv --> 5x5 conv
+    4. 3x3 max pool --> 1x1 conv
 
     Concatenate outputs along channel dimension.
     """
     def __init__(self, in_channels, ch1x1, ch3x3_reduce, ch3x3, ch5x5_reduce, ch5x5, pool_proj):
         super().__init__()
 
-        # Branch 1: 1×1 convolution
+        # Branch 1: 1x1 convolution
         self.branch1 = nn.Sequential(
             nn.Conv2d(in_channels, ch1x1, kernel_size=1),
             nn.BatchNorm2d(ch1x1),
             nn.ReLU(inplace=True)
         )
 
-        # Branch 2: 1×1 → 3×3
+        # Branch 2: 1x1 --> 3x3
         self.branch2 = nn.Sequential(
             nn.Conv2d(in_channels, ch3x3_reduce, kernel_size=1),
             nn.BatchNorm2d(ch3x3_reduce),
@@ -431,7 +431,7 @@ class InceptionModule(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        # Branch 3: 1×1 → 5×5
+        # Branch 3: 1x1 --> 5x5
         self.branch3 = nn.Sequential(
             nn.Conv2d(in_channels, ch5x5_reduce, kernel_size=1),
             nn.BatchNorm2d(ch5x5_reduce),
@@ -441,7 +441,7 @@ class InceptionModule(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        # Branch 4: 3×3 pool → 1×1 conv
+        # Branch 4: 3x3 pool --> 1x1 conv
         self.branch4 = nn.Sequential(
             nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
             nn.Conv2d(in_channels, pool_proj, kernel_size=1),
@@ -573,7 +573,7 @@ print(f"Parameters: {sum(p.numel() for p in model.parameters()):,}")
 
 **Evolution:**
 - **Inception v2**: Batch normalization, factorized convolutions
-- **Inception v3**: 7×7 factorized to 1×7 and 7×1
+- **Inception v3**: 7x7 factorized to 1x7 and 7x1
 - **Inception v4**: Combined with ResNet (Inception-ResNet)
 
 ---
@@ -610,8 +610,8 @@ class BasicBlock(nn.Module):
     Basic ResNet block (used in ResNet-18, ResNet-34).
 
     Structure:
-    x → Conv3×3 → BN → ReLU → Conv3×3 → BN → (+) → ReLU
-    └────────────────────────────────────────┘
+    x --> Conv3x3 --> BN --> ReLU --> Conv3x3 --> BN --> (+) --> ReLU
+    +--------------------------------------------+
     """
     expansion = 1
 
@@ -655,26 +655,26 @@ class Bottleneck(nn.Module):
     Bottleneck block (used in ResNet-50, ResNet-101, ResNet-152).
 
     Structure:
-    x → Conv1×1 → BN → ReLU → Conv3×3 → BN → ReLU → Conv1×1 → BN → (+) → ReLU
-    └──────────────────────────────────────────────────────────────┘
+    x --> Conv1x1 --> BN --> ReLU --> Conv3x3 --> BN --> ReLU --> Conv1x1 --> BN --> (+) --> ReLU
+    +------------------------------------------------------------------+
 
-    Reduces parameters: 3×3×256×256 = 589K → 1×1×256×64 + 3×3×64×64 + 1×1×64×256 = 70K
+    Reduces parameters: 3x3x256x256 = 589K --> 1x1x256x64 + 3x3x64x64 + 1x1x64x256 = 70K
     """
     expansion = 4
 
     def __init__(self, in_channels, out_channels, stride=1, downsample=None):
         super().__init__()
 
-        # 1×1 conv to reduce dimensions
+        # 1x1 conv to reduce dimensions
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(out_channels)
 
-        # 3×3 conv with stride for downsampling
+        # 3x3 conv with stride for downsampling
         self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3,
                               stride=stride, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(out_channels)
 
-        # 1×1 conv to expand dimensions
+        # 1x1 conv to expand dimensions
         self.conv3 = nn.Conv2d(out_channels, out_channels * self.expansion,
                               kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(out_channels * self.expansion)
@@ -855,9 +855,9 @@ class DenseBlock(nn.Module):
 
     def _make_layer(self, in_channels, growth_rate):
         """
-        Bottleneck layer: BN-ReLU-Conv1×1-BN-ReLU-Conv3×3
+        Bottleneck layer: BN-ReLU-Conv1x1-BN-ReLU-Conv3x3
 
-        Reduces parameters: 1×1 conv reduces channels before 3×3 conv
+        Reduces parameters: 1x1 conv reduces channels before 3x3 conv
         """
         return nn.Sequential(
             nn.BatchNorm2d(in_channels),
@@ -884,7 +884,7 @@ class TransitionLayer(nn.Module):
     """
     Transition layer between dense blocks.
 
-    Reduces spatial dimensions (2×) and channels (compression).
+    Reduces spatial dimensions (2x) and channels (compression).
     """
     def __init__(self, in_channels, out_channels):
         super().__init__()
@@ -981,10 +981,10 @@ print(f"DenseNet-121 parameters: {sum(p.numel() for p in model.parameters()):,}"
 
 **Motivation:** Reduce parameters and computation for mobile/embedded devices
 
-**Standard Conv Parameters:** `C_in × C_out × k × k`
-**Depthwise Separable:** `C_in × k × k + C_in × C_out`
+**Standard Conv Parameters:** `C_in x C_out x k x k`
+**Depthwise Separable:** `C_in x k x k + C_in x C_out`
 
-**Reduction factor:** ~8-9x for 3×3 kernels
+**Reduction factor:** ~8-9x for 3x3 kernels
 
 ### PyTorch Implementation
 
@@ -994,7 +994,7 @@ class DepthwiseSeparableConv(nn.Module):
     Depthwise separable convolution: Depthwise + Pointwise
 
     Depthwise: Apply one filter per input channel
-    Pointwise: 1×1 conv to mix channels
+    Pointwise: 1x1 conv to mix channels
     """
     def __init__(self, in_channels, out_channels, stride=1):
         super().__init__()
@@ -1053,7 +1053,7 @@ class MobileNetV1(nn.Module):
             conv_dw(channels(128), channels(256), 2),  # 56 -> 28
             conv_dw(channels(256), channels(256), 1),
             conv_dw(channels(256), channels(512), 2),  # 28 -> 14
-            # 5 × depthwise separable conv
+            # 5 x depthwise separable conv
             conv_dw(channels(512), channels(512), 1),
             conv_dw(channels(512), channels(512), 1),
             conv_dw(channels(512), channels(512), 1),
@@ -1078,8 +1078,8 @@ class InvertedResidual(nn.Module):
     """
     MobileNetV2 inverted residual block.
 
-    Structure: 1×1 expand → 3×3 depthwise → 1×1 project
-    Linear bottleneck: No ReLU after last 1×1
+    Structure: 1x1 expand --> 3x3 depthwise --> 1x1 project
+    Linear bottleneck: No ReLU after last 1x1
 
     Expansion factor: Typically 6
     """
@@ -1199,20 +1199,20 @@ print(f"MobileNetV2 params: {sum(p.numel() for p in model_v2.parameters()):,}")
 **Key Innovation:** **Compound Scaling** - simultaneously scale depth, width, and resolution
 
 **Observation:** Previous methods scale only one dimension:
-- ResNet: Increase depth (ResNet-50 → ResNet-101)
+- ResNet: Increase depth (ResNet-50 --> ResNet-101)
 - WideResNet: Increase width (channels)
-- Higher resolution: 224×224 → 299×299
+- Higher resolution: 224x224 --> 299x299
 
 **Compound Scaling Formula:**
 ```
-depth: d = α^φ
-width: w = β^φ
-resolution: r = γ^φ
+depth: d = alpha^phi
+width: w = beta^phi
+resolution: r = gamma^phi
 
-Constraint: α · β² · γ² ≈ 2
+Constraint: alpha * beta^2 * gamma^2 ~= 2
 ```
 
-Where φ is the compound coefficient controlling resources.
+Where phi is the compound coefficient controlling resources.
 
 ### PyTorch Implementation (Simplified)
 
@@ -1300,8 +1300,8 @@ class MBConvBlock(nn.Module):
 ```
 
 **EfficientNet Family:**
-- **B0**: Baseline (φ=1), 5.3M params
-- **B1-B7**: Scaled versions (φ=1.1 to 2.0)
+- **B0**: Baseline (phi=1), 5.3M params
+- **B1-B7**: Scaled versions (phi=1.1 to 2.0)
 - **B7**: 66M params, 97.1% ImageNet top-5 accuracy
 
 **2025 Status:** Still competitive; widely used for transfer learning.
@@ -1310,7 +1310,7 @@ class MBConvBlock(nn.Module):
 
 ## Vision Transformers (2020)
 
-**Paper:** "An Image is Worth 16×16 Words: Transformers for Image Recognition at Scale" (Dosovitskiy et al.)
+**Paper:** "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale" (Dosovitskiy et al.)
 
 **Key Innovation:** Apply Transformer architecture (from NLP) directly to image patches
 
@@ -1322,12 +1322,12 @@ class MBConvBlock(nn.Module):
 ### Architecture Overview
 
 ```
-Image (224×224×3)
-→ Patch Embedding (16×16 patches) → 196 patches × 768 dims
-→ Add Position Embeddings
-→ [CLS] Token + Patches
-→ Transformer Encoder × 12 layers
-→ [CLS] Output → MLP Head → Classification
+Image (224x224x3)
+--> Patch Embedding (16x16 patches) --> 196 patches x 768 dims
+--> Add Position Embeddings
+--> [CLS] Token + Patches
+--> Transformer Encoder x 12 layers
+--> [CLS] Output --> MLP Head --> Classification
 ```
 
 ### PyTorch Implementation
@@ -1483,7 +1483,7 @@ class WindowAttention(nn.Module):
     """
     Window-based multi-head self attention.
 
-    Compute attention within local windows (7×7 or 8×8).
+    Compute attention within local windows (7x7 or 8x8).
     """
     def __init__(self, dim, window_size, num_heads):
         super().__init__()
@@ -1546,7 +1546,7 @@ class ConvNeXtBlock(nn.Module):
     ConvNeXt block: Modernized ResNet block.
 
     Changes from ResNet:
-    1. Larger kernels (7×7 instead of 3×3)
+    1. Larger kernels (7x7 instead of 3x3)
     2. Depthwise convolutions
     3. Inverted bottleneck (expand then compress)
     4. LayerNorm instead of BatchNorm
@@ -1694,35 +1694,35 @@ print(f"ConvNeXt-Tiny params: {sum(p.numel() for p in model.parameters()):,}")
 ### When to Use Each Architecture
 
 **ResNet (2015)**
-- ✓ Well-understood, reliable
-- ✓ Good transfer learning
-- ✓ Fast inference
-- ✗ Not SOTA anymore
+- [x] Well-understood, reliable
+- [x] Good transfer learning
+- [x] Fast inference
+- [ ] Not SOTA anymore
 
 **EfficientNet (2019)**
-- ✓ Best accuracy/efficiency trade-off
-- ✓ Mobile/edge deployment
-- ✓ Multiple size variants
-- ✗ Slower than ResNet
+- [x] Best accuracy/efficiency trade-off
+- [x] Mobile/edge deployment
+- [x] Multiple size variants
+- [ ] Slower than ResNet
 
 **Vision Transformer (2020)**
-- ✓ SOTA with large pretraining
-- ✓ Global receptive field
-- ✓ Scalable to huge models
-- ✗ Requires massive data
-- ✗ Memory intensive
+- [x] SOTA with large pretraining
+- [x] Global receptive field
+- [x] Scalable to huge models
+- [ ] Requires massive data
+- [ ] Memory intensive
 
 **Swin Transformer (2021)**
-- ✓ Hierarchical features
-- ✓ Efficient (linear complexity)
-- ✓ Great for detection/segmentation
-- ✗ Complex implementation
+- [x] Hierarchical features
+- [x] Efficient (linear complexity)
+- [x] Great for detection/segmentation
+- [ ] Complex implementation
 
 **ConvNeXt (2022)**
-- ✓ Matches Transformers with simpler architecture
-- ✓ Hierarchical features
-- ✓ Efficient
-- ✓ **2025 recommendation for most tasks**
+- [x] Matches Transformers with simpler architecture
+- [x] Hierarchical features
+- [x] Efficient
+- [x] **2025 recommendation for most tasks**
 
 ---
 
@@ -1777,24 +1777,24 @@ optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters(
 
 ```
 Is data large (>100M images)?
-├─ Yes: Consider ViT or Swin Transformer
-└─ No: Use CNNs or hybrid
++--- Yes: Consider ViT or Swin Transformer
++--- No: Use CNNs or hybrid
 
 Is deployment on mobile/edge?
-├─ Yes: Use MobileNet or EfficientNet
-└─ No: Continue
++--- Yes: Use MobileNet or EfficientNet
++--- No: Continue
 
 Need multi-scale features (detection, segmentation)?
-├─ Yes: Use Swin Transformer or ConvNeXt
-└─ No: Continue
++--- Yes: Use Swin Transformer or ConvNeXt
++--- No: Continue
 
 Need fastest inference?
-├─ Yes: Use ResNet-50 or EfficientNet-B0
-└─ No: Continue
++--- Yes: Use ResNet-50 or EfficientNet-B0
++--- No: Continue
 
 Want best accuracy regardless of cost?
-├─ Yes: Use ConvNeXt-Large or Swin-Large
-└─ No: Use ConvNeXt-Tiny or Swin-Tiny
++--- Yes: Use ConvNeXt-Large or Swin-Large
++--- No: Use ConvNeXt-Tiny or Swin-Tiny
 ```
 
 ### 2025 General Recommendation
@@ -1825,7 +1825,7 @@ This guide covered the evolution of CNN architectures from LeNet-5 (1998) to Con
 11. **ConvNeXt**: Modernized CNNs match Transformers
 
 **Key Trends:**
-- Increasing depth (5 layers → 152+ layers)
+- Increasing depth (5 layers --> 152+ layers)
 - Efficiency improvements (depthwise separable, inverted residuals)
 - Skip connections (residual, dense)
 - Attention mechanisms (SE, self-attention)

@@ -46,7 +46,7 @@ Training deep neural networks is an engineering challenge that requires:
 
 **Linear warm-up:**
 ```
-α_t = α_target * min(1, t / T_warmup)
+alpha_t = alpha_target * min(1, t / T_warmup)
 
 where:
   t: current step
@@ -56,12 +56,12 @@ where:
 **Example:**
 ```
 T_warmup = 1000 steps
-α_target = 1e-3
+alpha_target = 1e-3
 
-Step 0:    α = 0
-Step 250:  α = 2.5e-4
-Step 500:  α = 5.0e-4
-Step 1000: α = 1e-3
+Step 0:    alpha = 0
+Step 250:  alpha = 2.5e-4
+Step 500:  alpha = 5.0e-4
+Step 1000: alpha = 1e-3
 ```
 
 **Why warm-up works:**
@@ -126,7 +126,7 @@ for step in range(10000):
 
 **Triangular policy:**
 ```
-# Cycle through: min_lr → max_lr → min_lr
+# Cycle through: min_lr --> max_lr --> min_lr
 
 step_size = 2000  # Half cycle length
 cycle = floor(1 + step / (2 * step_size))
@@ -159,14 +159,14 @@ scheduler = torch.optim.lr_scheduler.CyclicLR(
 
 **Phase 1 (30% of training):** Warm-up
 ```
-LR: min_lr → max_lr (increase)
-Momentum: max_momentum → min_momentum (decrease)
+LR: min_lr --> max_lr (increase)
+Momentum: max_momentum --> min_momentum (decrease)
 ```
 
 **Phase 2 (70% of training):** Annealing
 ```
-LR: max_lr → min_lr (decrease)
-Momentum: min_momentum → max_momentum (increase)
+LR: max_lr --> min_lr (decrease)
+Momentum: min_momentum --> max_momentum (increase)
 ```
 
 **Hyperparameters:**
@@ -282,26 +282,26 @@ Precision: ~2 decimal digits
 
 | Format | Memory | Speed | Range | Precision | Hardware Support |
 |--------|--------|-------|-------|-----------|------------------|
-| FP32 | 4 bytes | 1× (baseline) | Wide | High | All GPUs |
-| FP16 | 2 bytes | 2-3× | Narrow | Medium | Volta+ (2017+) |
-| BF16 | 2 bytes | 2-3× | Wide | Medium | Ampere+ (2020+) |
+| FP32 | 4 bytes | 1x (baseline) | Wide | High | All GPUs |
+| FP16 | 2 bytes | 2-3x | Narrow | Medium | Volta+ (2017+) |
+| BF16 | 2 bytes | 2-3x | Wide | Medium | Ampere+ (2020+) |
 
 **2025 Recommendation:** Use BF16 if available (RTX 3000+, A100+), otherwise FP16.
 
 ### Challenges with FP16
 
-**1. Underflow:** Small gradients → 0
+**1. Underflow:** Small gradients --> 0
 ```
 Gradient = 1e-8 in FP32
-→ Underflow to 0 in FP16
-→ No weight update
+--> Underflow to 0 in FP16
+--> No weight update
 ```
 
-**2. Overflow:** Large activations/gradients → Inf
+**2. Overflow:** Large activations/gradients --> Inf
 ```
 Activation = 70000 in FP32
-→ Overflow to Inf in FP16
-→ NaN in subsequent operations
+--> Overflow to Inf in FP16
+--> NaN in subsequent operations
 ```
 
 **3. Imprecise weight updates:**
@@ -345,8 +345,8 @@ optimizer.step()
 ```
 
 **Why scaling works:**
-- Small gradients scaled up → avoid underflow
-- After backward, unscale before optimizer → correct magnitudes
+- Small gradients scaled up --> avoid underflow
+- After backward, unscale before optimizer --> correct magnitudes
 
 ### PyTorch Automatic Mixed Precision (AMP)
 
@@ -392,7 +392,7 @@ for data, target in train_loader:
 - Batch normalization (usually)
 
 **Benefits:**
-- 2-3× faster training
+- 2-3x faster training
 - 50% memory reduction
 - Larger batch sizes possible
 - Minimal code changes
@@ -435,7 +435,7 @@ for data, target in train_loader:
 | FP32 | 100 MB | ~8 GB | 200 MB | ~8.3 GB |
 | FP16/BF16 | 50 MB | ~4 GB | 200 MB | ~4.25 GB |
 
-**Effective batch size increase:** 2× (from 32 to 64) with same GPU memory.
+**Effective batch size increase:** 2x (from 32 to 64) with same GPU memory.
 
 ---
 
@@ -460,7 +460,7 @@ for data, target in train_loader:
 4. Optimizer step (update weights)
 ```
 
-**Gradient accumulation (effective batch size B × K):**
+**Gradient accumulation (effective batch size B x K):**
 ```
 1. For k = 1 to K:
    a. Load mini-batch of size B
@@ -578,7 +578,7 @@ for batch_idx, (data, target) in enumerate(train_loader):
 
 **Train on easy examples first, gradually introduce harder examples.**
 
-**Inspiration:** How humans learn (elementary → advanced).
+**Inspiration:** How humans learn (elementary --> advanced).
 
 **Benefits:**
 1. Faster convergence
@@ -1654,13 +1654,13 @@ def get_warmup_cosine_scheduler(optimizer, warmup_steps, total_steps, min_lr_rat
 | Fine-tuning | BERT-Base | GLUE | 32 | ~2 hours |
 
 **With 8x A100 (80GB):**
-- 5-10× faster (depending on communication overhead)
+- 5-10x faster (depending on communication overhead)
 
 ### Common Training Issues and Solutions
 
 | Issue | Symptoms | Solution |
 |-------|----------|----------|
-| **Exploding gradients** | Loss → NaN, weights → Inf | Gradient clipping, lower LR |
+| **Exploding gradients** | Loss --> NaN, weights --> Inf | Gradient clipping, lower LR |
 | **Vanishing gradients** | No learning, loss plateaus | Better initialization, residual connections |
 | **Slow convergence** | Loss decreases very slowly | Higher LR, better optimizer (AdamW) |
 | **Overfitting** | Train loss << Val loss | Regularization, data augmentation |

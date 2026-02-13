@@ -16,10 +16,10 @@
 
 ## Introduction
 
-Optimization is the process of finding parameters θ* that minimize a loss function:
+Optimization is the process of finding parameters theta* that minimize a loss function:
 
 ```
-θ* = argmin_θ L(θ)
+theta* = argmin_theta L(theta)
 ```
 
 In deep learning, this is challenging because:
@@ -38,13 +38,13 @@ In deep learning, this is challenging because:
 
 **Gradient descent update rule:**
 ```
-θ_{t+1} = θ_t - α ∇L(θ_t)
+theta_{t+1} = theta_t - alpha gradL(theta_t)
 ```
 
 Where:
-- **θ_t:** Parameters at iteration t
-- **α:** Learning rate (step size)
-- **∇L(θ_t):** Gradient of loss with respect to parameters
+- **theta_t:** Parameters at iteration t
+- **alpha:** Learning rate (step size)
+- **gradL(theta_t):** Gradient of loss with respect to parameters
 
 **Intuition:** Move in the direction opposite to the gradient (steepest descent).
 
@@ -52,26 +52,26 @@ Where:
 
 **First-order Taylor expansion:**
 ```
-L(θ + Δθ) ≈ L(θ) + ∇L(θ)^T Δθ
+L(theta + Deltatheta) ~= L(theta) + gradL(theta)^T Deltatheta
 ```
 
-To minimize L(θ + Δθ), choose:
+To minimize L(theta + Deltatheta), choose:
 ```
-Δθ = -α ∇L(θ)
+Deltatheta = -alpha gradL(theta)
 ```
 
 This gives:
 ```
-L(θ - α∇L(θ)) ≈ L(θ) - α ||∇L(θ)||^2
+L(theta - alphagradL(theta)) ~= L(theta) - alpha ||gradL(theta)||^2
 ```
 
-For small α, this guarantees loss decrease.
+For small alpha, this guarantees loss decrease.
 
 ### Batch Gradient Descent
 
 **Full batch update:**
 ```
-θ_{t+1} = θ_t - α (1/N) Σ_{i=1}^N ∇L_i(θ_t)
+theta_{t+1} = theta_t - alpha (1/N) sum_{i=1}^N gradL_i(theta_t)
 ```
 
 Where:
@@ -95,13 +95,13 @@ Where:
 
 **Single example update:**
 ```
-θ_{t+1} = θ_t - α ∇L_i(θ_t)
+theta_{t+1} = theta_t - alpha gradL_i(theta_t)
 ```
 
 Where i is randomly sampled from {1, ..., N}.
 
 **Properties:**
-- **Unbiased:** E[∇L_i(θ)] = ∇L(θ)
+- **Unbiased:** E[gradL_i(theta)] = gradL(theta)
 - **High variance:** Individual gradients are noisy
 - **Exploration:** Noise helps escape local minima
 
@@ -120,7 +120,7 @@ Where i is randomly sampled from {1, ..., N}.
 
 **Mini-batch update (modern standard):**
 ```
-θ_{t+1} = θ_t - α (1/B) Σ_{i∈B_t} ∇L_i(θ_t)
+theta_{t+1} = theta_t - alpha (1/B) sum_{iinB_t} gradL_i(theta_t)
 ```
 
 Where:
@@ -140,13 +140,13 @@ Where:
 **Batch Size Selection:**
 
 **Small batches (32-64):**
-- More noise → better exploration
+- More noise --> better exploration
 - Better generalization (implicit regularization)
 - More frequent updates
 - Lower memory usage
 
 **Large batches (256-1024):**
-- Less noise → faster convergence
+- Less noise --> faster convergence
 - Better hardware utilization (GPUs)
 - Fewer updates per epoch
 - May generalize worse (sharp minima)
@@ -163,13 +163,13 @@ Where:
 
 **Update equations:**
 ```
-v_t = β v_{t-1} + ∇L(θ_t)
-θ_{t+1} = θ_t - α v_t
+v_t = beta v_{t-1} + gradL(theta_t)
+theta_{t+1} = theta_t - alpha v_t
 ```
 
 Where:
 - **v_t:** Velocity (exponentially weighted average of gradients)
-- **β:** Momentum coefficient (typically 0.9)
+- **beta:** Momentum coefficient (typically 0.9)
 
 **Physical analogy:** A ball rolling down a hill accumulates momentum.
 
@@ -177,17 +177,17 @@ Where:
 
 Expanding the recursion:
 ```
-v_t = ∇L(θ_t) + β∇L(θ_{t-1}) + β^2∇L(θ_{t-2}) + ...
-    = Σ_{i=0}^t β^i ∇L(θ_{t-i})
+v_t = gradL(theta_t) + betagradL(theta_{t-1}) + beta^2gradL(theta_{t-2}) + ...
+    = sum_{i=0}^t beta^i gradL(theta_{t-i})
 ```
 
-This is an exponentially weighted moving average with decay β.
+This is an exponentially weighted moving average with decay beta.
 
 **Properties:**
 - **Accelerates convergence** in relevant directions
 - **Dampens oscillations** in high-curvature directions
 - **Passes through small local minima** due to velocity
-- **Effective learning rate:** α/(1-β) for constant gradients
+- **Effective learning rate:** alpha/(1-beta) for constant gradients
 
 **Advantages:**
 - Faster convergence than vanilla SGD
@@ -195,17 +195,17 @@ This is an exponentially weighted moving average with decay β.
 - Works well in practice
 
 **Disadvantages:**
-- Introduces hyperparameter β
+- Introduces hyperparameter beta
 - Can overshoot minima
 
 **Optimal momentum value:**
 
-**Theorem (Polyak, 1964):** For quadratic loss, optimal β for condition number κ is:
+**Theorem (Polyak, 1964):** For quadratic loss, optimal beta for condition number kappa is:
 ```
-β* = (√κ - 1) / (√κ + 1)
+beta* = (sqrtkappa - 1) / (sqrtkappa + 1)
 ```
 
-In practice, β = 0.9 works well for most problems.
+In practice, beta = 0.9 works well for most problems.
 
 ### Nesterov Accelerated Gradient (NAG)
 
@@ -213,12 +213,12 @@ In practice, β = 0.9 works well for most problems.
 
 **Update equations:**
 ```
-v_t = β v_{t-1} + ∇L(θ_t - β v_{t-1})  # Lookahead gradient
-θ_{t+1} = θ_t - α v_t
+v_t = beta v_{t-1} + gradL(theta_t - beta v_{t-1})  # Lookahead gradient
+theta_{t+1} = theta_t - alpha v_t
 ```
 
 **Intuition:**
-1. Make a "trial" move: θ_t - β v_{t-1}
+1. Make a "trial" move: theta_t - beta v_{t-1}
 2. Compute gradient at trial position
 3. Update velocity based on lookahead gradient
 4. Update parameters
@@ -249,15 +249,15 @@ optimizer = torch.optim.SGD(
 
 **Update equations:**
 ```
-g_t = ∇L(θ_t)
-G_t = G_{t-1} + g_t ⊙ g_t  # Accumulate squared gradients
-θ_{t+1} = θ_t - α / (√G_t + ε) ⊙ g_t
+g_t = gradL(theta_t)
+G_t = G_{t-1} + g_t (o) g_t  # Accumulate squared gradients
+theta_{t+1} = theta_t - alpha / (sqrtG_t + epsilon) (o) g_t
 ```
 
 Where:
 - **G_t:** Accumulated squared gradients (element-wise)
-- **ε:** Small constant for numerical stability (typically 1e-8)
-- **⊙:** Element-wise multiplication
+- **epsilon:** Small constant for numerical stability (typically 1e-8)
+- **(o):** Element-wise multiplication
 
 **Properties:**
 - **Large gradients:** Learning rate decreases (G_t large)
@@ -282,14 +282,14 @@ Where:
 
 **Update equations:**
 ```
-g_t = ∇L(θ_t)
-E[g^2]_t = β E[g^2]_{t-1} + (1-β) g_t ⊙ g_t
-θ_{t+1} = θ_t - α / (√E[g^2]_t + ε) ⊙ g_t
+g_t = gradL(theta_t)
+E[g^2]_t = beta E[g^2]_{t-1} + (1-beta) g_t (o) g_t
+theta_{t+1} = theta_t - alpha / (sqrtE[g^2]_t + epsilon) (o) g_t
 ```
 
 Where:
 - **E[g^2]_t:** Exponential moving average of squared gradients
-- **β:** Decay rate (typically 0.9 or 0.99)
+- **beta:** Decay rate (typically 0.9 or 0.99)
 
 **Key difference from AdaGrad:** Uses moving average instead of cumulative sum.
 
@@ -299,7 +299,7 @@ Where:
 - Suitable for online learning
 
 **Disadvantages:**
-- Still has hyperparameters (α, β)
+- Still has hyperparameters (alpha, beta)
 - No momentum component
 - Can be unstable with large gradients
 
@@ -311,24 +311,24 @@ Where:
 
 **Update equations:**
 ```
-g_t = ∇L(θ_t)
-m_t = β_1 m_{t-1} + (1-β_1) g_t              # First moment (mean)
-v_t = β_2 v_{t-1} + (1-β_2) g_t ⊙ g_t        # Second moment (variance)
+g_t = gradL(theta_t)
+m_t = beta_1 m_{t-1} + (1-beta_1) g_t              # First moment (mean)
+v_t = beta_2 v_{t-1} + (1-beta_2) g_t (o) g_t        # Second moment (variance)
 
 # Bias correction
-m_hat_t = m_t / (1 - β_1^t)
-v_hat_t = v_t / (1 - β_2^t)
+m_hat_t = m_t / (1 - beta_1^t)
+v_hat_t = v_t / (1 - beta_2^t)
 
 # Update
-θ_{t+1} = θ_t - α m_hat_t / (√v_hat_t + ε)
+theta_{t+1} = theta_t - alpha m_hat_t / (sqrtv_hat_t + epsilon)
 ```
 
 Where:
 - **m_t:** First moment estimate (momentum)
 - **v_t:** Second moment estimate (RMSprop)
-- **β_1, β_2:** Decay rates (defaults: 0.9, 0.999)
-- **α:** Learning rate (default: 0.001)
-- **ε:** Numerical stability (default: 1e-8)
+- **beta_1, beta_2:** Decay rates (defaults: 0.9, 0.999)
+- **alpha:** Learning rate (default: 0.001)
+- **epsilon:** Numerical stability (default: 1e-8)
 
 **Bias correction:** Needed because m_t and v_t are initialized at 0, leading to bias toward zero in early iterations.
 
@@ -336,12 +336,12 @@ Where:
 
 Without bias correction, initial estimates are biased:
 ```
-E[m_1] = (1-β_1) E[g_1] ≠ E[g_1]  # Biased toward 0
+E[m_1] = (1-beta_1) E[g_1] != E[g_1]  # Biased toward 0
 ```
 
 With bias correction:
 ```
-E[m_hat_1] = E[m_1] / (1-β_1) = E[g_1]  # Unbiased
+E[m_hat_1] = E[m_1] / (1-beta_1) = E[g_1]  # Unbiased
 ```
 
 **Advantages:**
@@ -365,26 +365,26 @@ E[m_hat_1] = E[m_1] / (1-β_1) = E[g_1]  # Unbiased
 
 In vanilla Adam with L2 regularization:
 ```
-L_total = L(θ) + (λ/2) ||θ||^2
-∇L_total = ∇L(θ) + λθ
+L_total = L(theta) + (lambda/2) ||theta||^2
+gradL_total = gradL(theta) + lambdatheta
 
 # Adam applies adaptive learning rate to weight decay term
-θ_{t+1} = θ_t - α m_hat_t / (√v_hat_t + ε)  # where m_hat includes λθ
+theta_{t+1} = theta_t - alpha m_hat_t / (sqrtv_hat_t + epsilon)  # where m_hat includes lambdatheta
 ```
 
 This is **NOT equivalent** to proper L2 regularization because the adaptive learning rate scales the weight decay.
 
 **AdamW solution (decoupled weight decay):**
 ```
-g_t = ∇L(θ_t)
-m_t = β_1 m_{t-1} + (1-β_1) g_t
-v_t = β_2 v_{t-1} + (1-β_2) g_t ⊙ g_t
+g_t = gradL(theta_t)
+m_t = beta_1 m_{t-1} + (1-beta_1) g_t
+v_t = beta_2 v_{t-1} + (1-beta_2) g_t (o) g_t
 
-m_hat_t = m_t / (1 - β_1^t)
-v_hat_t = v_t / (1 - β_2^t)
+m_hat_t = m_t / (1 - beta_1^t)
+v_hat_t = v_t / (1 - beta_2^t)
 
 # Update with DECOUPLED weight decay
-θ_{t+1} = θ_t - α m_hat_t / (√v_hat_t + ε) - α λ θ_t
+theta_{t+1} = theta_t - alpha m_hat_t / (sqrtv_hat_t + epsilon) - alpha lambda theta_t
                                                ^^^^^^^^
                                             Weight decay applied
                                             separately
@@ -405,11 +405,11 @@ v_hat_t = v_t / (1 - β_2^t)
 
 **AdaMax:**
 ```
-v_t = max(β_2 v_{t-1}, |g_t|)  # L∞ norm instead of L2
-θ_{t+1} = θ_t - α m_hat_t / v_t
+v_t = max(beta_2 v_{t-1}, |g_t|)  # Linf norm instead of L2
+theta_{t+1} = theta_t - alpha m_hat_t / v_t
 ```
 
-**Advantages:** More stable to large gradients, less sensitive to β_2.
+**Advantages:** More stable to large gradients, less sensitive to beta_2.
 
 **Nadam (Nesterov + Adam):**
 ```
@@ -444,18 +444,18 @@ Adaptive warm-up for Adam to fix early training instability
 
 **Definition:**
 ```
-α_t = α_0 * γ^(⌊t/k⌋)
+alpha_t = alpha_0 * gamma^(floor(t/k))
 ```
 
 Where:
-- **α_0:** Initial learning rate
-- **γ:** Decay factor (typically 0.1 or 0.5)
+- **alpha_0:** Initial learning rate
+- **gamma:** Decay factor (typically 0.1 or 0.5)
 - **k:** Step size (epochs between decays)
 
-**Example:** α_0=0.1, γ=0.1, k=30
-- Epochs 0-29: α = 0.1
-- Epochs 30-59: α = 0.01
-- Epochs 60-89: α = 0.001
+**Example:** alpha_0=0.1, gamma=0.1, k=30
+- Epochs 0-29: alpha = 0.1
+- Epochs 30-59: alpha = 0.01
+- Epochs 60-89: alpha = 0.001
 
 **PyTorch implementation:**
 ```python
@@ -480,15 +480,15 @@ scheduler = torch.optim.lr_scheduler.StepLR(
 
 **Definition:**
 ```
-α_t = α_0 * e^(-λt)
+alpha_t = alpha_0 * e^(-lambdat)
 ```
 
 Or in discrete form:
 ```
-α_t = α_0 * γ^t
+alpha_t = alpha_0 * gamma^t
 ```
 
-Where γ = e^(-λ) ≈ 0.95 - 0.99.
+Where gamma = e^(-lambda) ~= 0.95 - 0.99.
 
 **PyTorch implementation:**
 ```python
@@ -510,15 +510,15 @@ scheduler = torch.optim.lr_scheduler.ExponentialLR(
 
 **Definition:**
 ```
-α_t = α_min + (α_max - α_min) * (1 + cos(πt/T)) / 2
+alpha_t = alpha_min + (alpha_max - alpha_min) * (1 + cos(pit/T)) / 2
 ```
 
 Where:
 - **T:** Total number of iterations/epochs
-- **α_min:** Minimum learning rate (often 0)
-- **α_max:** Maximum learning rate
+- **alpha_min:** Minimum learning rate (often 0)
+- **alpha_max:** Maximum learning rate
 
-**Shape:** Smooth cosine curve from α_max to α_min.
+**Shape:** Smooth cosine curve from alpha_max to alpha_min.
 
 **PyTorch implementation:**
 ```python
@@ -545,14 +545,14 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
 
 **Definition:**
 ```
-α_t = α_min + (α_max - α_min) * (1 + cos(πt_i/T_i)) / 2
+alpha_t = alpha_min + (alpha_max - alpha_min) * (1 + cos(pit_i/T_i)) / 2
 ```
 
 Where:
 - **t_i:** Iterations since last restart
 - **T_i:** Iterations until next restart
 
-**Warm restart:** Periodically reset learning rate to α_max.
+**Warm restart:** Periodically reset learning rate to alpha_max.
 
 **Schedule:**
 ```
@@ -587,8 +587,8 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
 **Core idea:** Gradually increase learning rate, then decrease (triangular schedule).
 
 **Schedule:**
-1. **Warm-up phase (first 30% of training):** Increase LR from α_min to α_max
-2. **Annealing phase (remaining 70%):** Decrease LR from α_max to α_min
+1. **Warm-up phase (first 30% of training):** Increase LR from alpha_min to alpha_max
+2. **Annealing phase (remaining 70%):** Decrease LR from alpha_max to alpha_min
 
 **Additional features:**
 - Momentum inversely related to learning rate
@@ -597,10 +597,10 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
 **Mathematical form:**
 ```
 # Warm-up phase (t < pct_start * T)
-α_t = α_min + (α_max - α_min) * (t / (pct_start * T))
+alpha_t = alpha_min + (alpha_max - alpha_min) * (t / (pct_start * T))
 
-# Annealing phase (t ≥ pct_start * T)
-α_t = α_max - (α_max - α_min) * ((t - pct_start*T) / ((1-pct_start)*T))
+# Annealing phase (t >= pct_start * T)
+alpha_t = alpha_max - (alpha_max - alpha_min) * ((t - pct_start*T) / ((1-pct_start)*T))
 ```
 
 **PyTorch implementation:**
@@ -635,7 +635,7 @@ scheduler = torch.optim.lr_scheduler.OneCycleLR(
 
 **Linear warm-up:**
 ```
-α_t = α_target * min(1, t / T_warmup)
+alpha_t = alpha_target * min(1, t / T_warmup)
 ```
 
 **Typical warm-up duration:** 1000-10000 steps, or 1-5 epochs.
@@ -808,9 +808,9 @@ Where ||g|| is the L2 norm of the gradient vector.
 
 **Derivation:**
 ```
-If ||g|| ≤ threshold: g_clipped = g
+If ||g|| <= threshold: g_clipped = g
 If ||g|| > threshold: g_clipped = g * (threshold / ||g||)
-                      → ||g_clipped|| = threshold
+                      --> ||g_clipped|| = threshold
 ```
 
 **PyTorch implementation:**
@@ -962,22 +962,22 @@ def plot_loss_surface_2d(model, data, target, criterion, param1_name, param2_nam
 
 **Sharp minimum:**
 ```
-High curvature → Small perturbations increase loss significantly
-→ Poor generalization
+High curvature --> Small perturbations increase loss significantly
+--> Poor generalization
 ```
 
 **Flat minimum:**
 ```
-Low curvature → Perturbations don't increase loss much
-→ Better generalization
+Low curvature --> Perturbations don't increase loss much
+--> Better generalization
 ```
 
 **Relationship to batch size:**
-- **Small batches:** Noisy gradients → Find flat minima → Better generalization
-- **Large batches:** Accurate gradients → Find sharp minima → Worse generalization
+- **Small batches:** Noisy gradients --> Find flat minima --> Better generalization
+- **Large batches:** Accurate gradients --> Find sharp minima --> Worse generalization
 
 **Solutions for large batch training:**
-1. Learning rate scaling: α_large = α_small * (B_large / B_small)
+1. Learning rate scaling: alpha_large = alpha_small * (B_large / B_small)
 2. Warm-up
 3. Ghost batch normalization
 4. Layer-wise adaptive learning rates
@@ -990,27 +990,27 @@ Low curvature → Perturbations don't increase loss much
 
 ```
 Task Type?
-│
-├─ General Deep Learning (CNNs, MLPs)
-│  └─ Use AdamW (lr=1e-3, weight_decay=1e-4)
-│     ├─ With cosine annealing
-│     └─ With warm-up for deep models
-│
-├─ Transformers / NLP
-│  └─ Use AdamW (lr=1e-4 to 5e-5, weight_decay=0.01)
-│     ├─ With linear warm-up (5-10% of steps)
-│     └─ With cosine or linear decay
-│
-├─ Computer Vision (from scratch)
-│  └─ Use SGD with momentum (lr=0.1, momentum=0.9, weight_decay=1e-4)
-│     └─ With step decay or cosine annealing
-│
-├─ Fine-tuning Pre-trained Models
-│  └─ Use AdamW with very small LR (1e-5 to 1e-6)
-│     └─ Optional: Discriminative learning rates (different LR per layer)
-│
-└─ Reinforcement Learning
-   └─ Use Adam or RMSprop (depending on algorithm)
+|
++--- General Deep Learning (CNNs, MLPs)
+|  +--- Use AdamW (lr=1e-3, weight_decay=1e-4)
+|     +--- With cosine annealing
+|     +--- With warm-up for deep models
+|
++--- Transformers / NLP
+|  +--- Use AdamW (lr=1e-4 to 5e-5, weight_decay=0.01)
+|     +--- With linear warm-up (5-10% of steps)
+|     +--- With cosine or linear decay
+|
++--- Computer Vision (from scratch)
+|  +--- Use SGD with momentum (lr=0.1, momentum=0.9, weight_decay=1e-4)
+|     +--- With step decay or cosine annealing
+|
++--- Fine-tuning Pre-trained Models
+|  +--- Use AdamW with very small LR (1e-5 to 1e-6)
+|     +--- Optional: Discriminative learning rates (different LR per layer)
+|
++--- Reinforcement Learning
+   +--- Use Adam or RMSprop (depending on algorithm)
 ```
 
 ### Hyperparameter Recommendations
@@ -1019,9 +1019,9 @@ Task Type?
 |-----------|---------------|--------------|------------------|
 | **SGD** | 0.01 - 0.1 | 1e-4 | momentum=0.9 |
 | **SGD (with momentum)** | 0.01 - 0.1 | 1e-4 | momentum=0.9, nesterov=True |
-| **Adam** | 1e-3 - 1e-4 | 0 (or use AdamW) | β1=0.9, β2=0.999, ε=1e-8 |
-| **AdamW** | 1e-3 - 1e-4 | 1e-4 - 1e-2 | β1=0.9, β2=0.999, ε=1e-8 |
-| **RMSprop** | 1e-3 - 1e-4 | 0 | β=0.9 |
+| **Adam** | 1e-3 - 1e-4 | 0 (or use AdamW) | beta1=0.9, beta2=0.999, epsilon=1e-8 |
+| **AdamW** | 1e-3 - 1e-4 | 1e-4 - 1e-2 | beta1=0.9, beta2=0.999, epsilon=1e-8 |
+| **RMSprop** | 1e-3 - 1e-4 | 0 | beta=0.9 |
 
 ### When to Use Each Optimizer
 
@@ -1133,7 +1133,7 @@ class Adam(Optimizer):
     Args:
         parameters: Model parameters
         lr: Learning rate
-        betas: Coefficients for computing running averages (β1, β2)
+        betas: Coefficients for computing running averages (beta1, beta2)
         eps: Term for numerical stability
         weight_decay: L2 regularization (NOT recommended, use AdamW instead)
     """
@@ -1186,7 +1186,7 @@ class AdamW(Optimizer):
     Args:
         parameters: Model parameters
         lr: Learning rate
-        betas: Coefficients for computing running averages (β1, β2)
+        betas: Coefficients for computing running averages (beta1, beta2)
         eps: Term for numerical stability
         weight_decay: Weight decay coefficient (decoupled from gradient)
     """
@@ -1680,7 +1680,7 @@ if __name__ == "__main__":
 5. Warm-up duration
 
 **Priority 3 (usually use defaults):**
-6. Adam β values
+6. Adam beta values
 7. Gradient clipping threshold
 8. Optimizer choice (AdamW for most tasks)
 

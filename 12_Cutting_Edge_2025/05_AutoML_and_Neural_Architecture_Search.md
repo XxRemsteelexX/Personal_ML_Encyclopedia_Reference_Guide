@@ -123,7 +123,7 @@ predictor.fit(
 - **TabPFN-Mix:** Foundation model for tabular data (zero-shot learning)
 - **Chronos:** Foundation model for time series
 - **Multi-layer stacking:** Automatic ensemble stacking
-- **4-line ML:** Load → Fit → Predict → Done
+- **4-line ML:** Load --> Fit --> Predict --> Done
 
 **Performance (2025 Benchmark):** AutoGluon scored 0.61+ across 21 datasets, outperforming most frameworks.
 
@@ -305,7 +305,7 @@ save_model(stacker, 'final_model')
 
 ### DARTS (Differentiable Architecture Search)
 
-**Breakthrough:** Continuous relaxation of discrete architecture search → gradient descent.
+**Breakthrough:** Continuous relaxation of discrete architecture search --> gradient descent.
 
 ```python
 import torch
@@ -482,7 +482,7 @@ def train_darts(model, train_data, valid_data, epochs=50):
 
 ### ENAS (Efficient NAS)
 
-**Parameter sharing:** All child models share weights → 1000x speedup.
+**Parameter sharing:** All child models share weights --> 1000x speedup.
 
 ```python
 class ENASController(nn.Module):

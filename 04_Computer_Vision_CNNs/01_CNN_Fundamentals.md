@@ -36,7 +36,7 @@ Convolutional Neural Networks (CNNs) are specialized neural networks designed fo
 CNNs implement a discrete convolution operation (technically cross-correlation in deep learning frameworks):
 
 ```
-(I * K)(i,j) = Σ_m Σ_n I(i+m, j+n) K(m,n)
+(I * K)(i,j) = sum_m sum_n I(i+m, j+n) K(m,n)
 ```
 
 Where:
@@ -55,27 +55,27 @@ Deep learning frameworks use **cross-correlation**, not mathematical convolution
 
 **Cross-correlation:**
 ```
-(I ⊗ K)(i,j) = Σ_m Σ_n I(i+m, j+n) K(m,n)
+(I (x) K)(i,j) = sum_m sum_n I(i+m, j+n) K(m,n)
 ```
 
 **True convolution:**
 ```
-(I * K)(i,j) = Σ_m Σ_n I(i-m, j-n) K(m,n)
+(I * K)(i,j) = sum_m sum_n I(i-m, j-n) K(m,n)
 ```
 
-The difference: true convolution flips the kernel. Since we learn the kernel weights, this distinction doesn't affect learning—we just learn the flipped version if needed.
+The difference: true convolution flips the kernel. Since we learn the kernel weights, this distinction doesn't affect learning--we just learn the flipped version if needed.
 
 ### Discrete 2D Convolution
 
-For a 2D image `I` of size `H × W` and kernel `K` of size `k_h × k_w`:
+For a 2D image `I` of size `H x W` and kernel `K` of size `k_h x k_w`:
 
 ```
-Output(i,j) = Σ_{m=0}^{k_h-1} Σ_{n=0}^{k_w-1} I(i+m, j+n) · K(m,n) + b
+Output(i,j) = sum_{m=0}^{k_h-1} sum_{n=0}^{k_w-1} I(i+m, j+n) * K(m,n) + b
 ```
 
 Where:
-- `i ∈ [0, H-k_h]`
-- `j ∈ [0, W-k_w]`
+- `i in [0, H-k_h]`
+- `j in [0, W-k_w]`
 - `b` is the bias term (shared across spatial locations)
 
 **Output dimensions (no padding, stride=1):**
@@ -89,7 +89,7 @@ W_out = W - k_w + 1
 For RGB images (3 channels) or multi-channel feature maps:
 
 ```
-Output(i,j) = Σ_{c=0}^{C_in-1} Σ_{m=0}^{k_h-1} Σ_{n=0}^{k_w-1} I(c,i+m,j+n) · K(c,m,n) + b
+Output(i,j) = sum_{c=0}^{C_in-1} sum_{m=0}^{k_h-1} sum_{n=0}^{k_w-1} I(c,i+m,j+n) * K(c,m,n) + b
 ```
 
 Where:
@@ -100,7 +100,7 @@ Where:
 **For multiple output channels:**
 - Use `C_out` different kernels
 - Each kernel produces one output channel
-- Total parameters: `C_out × C_in × k_h × k_w + C_out` (weights + biases)
+- Total parameters: `C_out x C_in x k_h x k_w + C_out` (weights + biases)
 
 ### PyTorch Example: Basic Convolution
 
@@ -268,14 +268,14 @@ Pooling reduces spatial dimensions while retaining important features. This prov
 Takes the maximum value in each pooling window:
 
 ```
-MaxPool(i,j) = max_{m,n ∈ Window} I(i+m, j+n)
+MaxPool(i,j) = max_{m,n in Window} I(i+m, j+n)
 ```
 
 **Properties:**
 - Preserves strongest activations
 - Provides exact translation invariance (within window)
 - Non-differentiable (uses subgradients in backprop)
-- Most commonly used: 2×2 window, stride 2
+- Most commonly used: 2x2 window, stride 2
 
 ```python
 import torch.nn as nn
@@ -329,7 +329,7 @@ print(f"Global max: {outputs['global_max'].shape}")  # [1, 64]
 Computes average of values in pooling window:
 
 ```
-AvgPool(i,j) = (1/k²) Σ_{m,n ∈ Window} I(i+m, j+n)
+AvgPool(i,j) = (1/k^2) sum_{m,n in Window} I(i+m, j+n)
 ```
 
 **Properties:**
@@ -342,7 +342,7 @@ AvgPool(i,j) = (1/k²) Σ_{m,n ∈ Window} I(i+m, j+n)
 
 **Global Average Pooling (GAP):**
 ```
-GAP(c) = (1/HW) Σ_i Σ_j I(c,i,j)
+GAP(c) = (1/HW) sum_i sum_j I(c,i,j)
 ```
 
 **Benefits:**
@@ -531,14 +531,14 @@ class DilatedConvolution(nn.Module):
 ### Why Parameter Sharing?
 
 **Fully Connected Layer:**
-- Input: 224×224×3 = 150,528 values
+- Input: 224x224x3 = 150,528 values
 - Hidden layer: 1000 neurons
-- Parameters: 150,528 × 1000 = 150M parameters
+- Parameters: 150,528 x 1000 = 150M parameters
 
 **Convolutional Layer:**
 - Same input
-- 64 filters of 3×3×3
-- Parameters: 64 × 3 × 3 × 3 = 1,728 parameters
+- 64 filters of 3x3x3
+- Parameters: 64 x 3 x 3 x 3 = 1,728 parameters
 
 **Benefits:**
 1. **Reduces parameters**: Dramatically fewer weights to learn
@@ -550,13 +550,13 @@ class DilatedConvolution(nn.Module):
 
 Standard neural network:
 ```
-h_i = σ(Σ_j W_ij × x_j + b_i)
+h_i = sigma(sum_j W_ij x x_j + b_i)
 ```
 Each connection has unique weight `W_ij`.
 
 Convolutional layer:
 ```
-h(i,j) = σ(Σ_m Σ_n W(m,n) × x(i+m, j+n) + b)
+h(i,j) = sigma(sum_m sum_n W(m,n) x x(i+m, j+n) + b)
 ```
 Same weights `W(m,n)` used at every spatial location `(i,j)`.
 
@@ -569,11 +569,11 @@ class DepthwiseSeparableConv(nn.Module):
     """
     Depthwise Separable Convolution.
 
-    Standard conv: C_in × C_out × k × k parameters
-    Depthwise separable: C_in × k × k + C_in × C_out parameters
+    Standard conv: C_in x C_out x k x k parameters
+    Depthwise separable: C_in x k x k + C_in x C_out parameters
 
-    Reduction factor: (C_in × k × k) / (C_in × C_out × k × k)
-                    ≈ 1/C_out + 1/k²
+    Reduction factor: (C_in x k x k) / (C_in x C_out x k x k)
+                    ~= 1/C_out + 1/k^2
 
     For k=3, C_out=64: ~9x parameter reduction
     """
@@ -629,13 +629,13 @@ RF = kernel_size
 
 For stacked layers:
 ```
-RF_l = RF_{l-1} + (kernel_size - 1) × Π_{i=1}^{l-1} stride_i
+RF_l = RF_{l-1} + (kernel_size - 1) x Pi_{i=1}^{l-1} stride_i
 ```
 
 **Simplified recursive formula:**
 ```
-RF_out = RF_in + (kernel_size - 1) × jump_in
-jump_out = jump_in × stride
+RF_out = RF_in + (kernel_size - 1) x jump_in
+jump_out = jump_in x stride
 ```
 
 ### PyTorch Example
@@ -674,7 +674,7 @@ vgg_layers = [
 ]
 
 rf, jump = calculate_receptive_field(vgg_layers)
-print(f"Receptive field: {rf}×{rf}")
+print(f"Receptive field: {rf}x{rf}")
 print(f"Jump (effective stride): {jump}")
 
 # ResNet-50 first few layers
@@ -687,7 +687,7 @@ resnet_layers = [
 ]
 
 rf, jump = calculate_receptive_field(resnet_layers)
-print(f"\nResNet receptive field: {rf}×{rf}")
+print(f"\nResNet receptive field: {rf}x{rf}")
 ```
 
 ### Effective Receptive Field
@@ -697,7 +697,7 @@ print(f"\nResNet receptive field: {rf}×{rf}")
 Research shows that the **effective receptive field** is much smaller than theoretical, with Gaussian distribution:
 - Center pixels contribute most
 - Edge pixels contribute little
-- Practical RF ≈ 0.25 × Theoretical RF
+- Practical RF ~= 0.25 x Theoretical RF
 
 **Implications:**
 - Need deeper networks for large images
@@ -1154,18 +1154,18 @@ def grad_cam(model, image, target_class, target_layer='features.12'):
 ### 1. Architecture Design
 
 ```python
-# ✓ GOOD: Increasing channels, decreasing spatial dimensions
+# [x] GOOD: Increasing channels, decreasing spatial dimensions
 channels = [64, 128, 256, 512, 512]
 spatial_sizes = [112, 56, 28, 14, 7]
 
-# ✗ BAD: Inconsistent channel scaling
+# [ ] BAD: Inconsistent channel scaling
 # channels = [64, 100, 200, 350, 512]
 ```
 
 ### 2. Normalization
 
 ```python
-# ✓ GOOD: BatchNorm after Conv, before activation
+# [x] GOOD: BatchNorm after Conv, before activation
 conv = nn.Conv2d(64, 128, 3, padding=1, bias=False)
 bn = nn.BatchNorm2d(128)
 relu = nn.ReLU()
@@ -1177,14 +1177,14 @@ ln = nn.LayerNorm([128, 28, 28])
 ### 3. Activation Functions
 
 ```python
-# ✓ GOOD: ReLU or GELU
+# [x] GOOD: ReLU or GELU
 relu = nn.ReLU(inplace=True)
 gelu = nn.GELU()
 
-# ✓ GOOD: Swish/SiLU for modern architectures
+# [x] GOOD: Swish/SiLU for modern architectures
 silu = nn.SiLU()
 
-# ✗ BAD: Sigmoid/Tanh in hidden layers (vanishing gradients)
+# [ ] BAD: Sigmoid/Tanh in hidden layers (vanishing gradients)
 ```
 
 ### 4. Initialization
@@ -1246,7 +1246,7 @@ optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
 
 ### Key Trends
 
-1. **Larger Kernels Return**: 7×7 and larger (ConvNeXt)
+1. **Larger Kernels Return**: 7x7 and larger (ConvNeXt)
 2. **Depthwise Separable**: Efficient convolutions (MobileNet, EfficientNet)
 3. **Hybrid Architectures**: CNNs + Transformers
 4. **Layer Normalization**: Replacing BatchNorm in some architectures

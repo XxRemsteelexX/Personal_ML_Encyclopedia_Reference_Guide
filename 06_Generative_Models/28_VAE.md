@@ -13,7 +13,7 @@ Variational Autoencoders (VAEs) are generative models that learn a probabilistic
 ### Problem with Standard Autoencoders
 
 - Latent space not structured
-- Random z → meaningless output
+- Random z --> meaningless output
 - Cannot generate new samples
 
 ### VAE Solution
@@ -38,12 +38,12 @@ Variational Autoencoders (VAEs) are generative models that learn a probabilistic
 
 ### Evidence Lower Bound (ELBO)
 
-**Intractable:** log p(x) = ∫ p(x|z)p(z) dz
+**Intractable:** log p(x) = integral p(x|z)p(z) dz
 
 **Solution:** Variational inference with ELBO
 
 ```
-log p(x) ≥ ELBO = E_q[log p(x|z)] - KL(q(z|x) || p(z))
+log p(x) >= ELBO = E_q[log p(x|z)] - KL(q(z|x) || p(z))
 ```
 
 Where:
@@ -54,7 +54,7 @@ Where:
 ### Loss Function
 
 ```python
-loss = reconstruction_loss + β * KL_divergence
+loss = reconstruction_loss + beta * KL_divergence
 
 # Reconstruction: how well we reconstruct
 reconstruction_loss = -E_q[log p(x|z)]
@@ -78,7 +78,7 @@ class VAE(nn.Module):
     def __init__(self, input_dim, latent_dim):
         super().__init__()
         
-        # Encoder: x -> μ, σ
+        # Encoder: x -> mu, sigma
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, 512),
             nn.ReLU(),
@@ -106,7 +106,7 @@ class VAE(nn.Module):
         return mu, logvar
     
     def reparameterize(self, mu, logvar):
-        # z = μ + σ * ε, where ε ~ N(0,1)
+        # z = mu + sigma * epsilon, where epsilon ~ N(0,1)
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return mu + eps * std
@@ -125,7 +125,7 @@ def vae_loss(x_recon, x, mu, logvar, beta=1.0):
     # Reconstruction loss (binary cross-entropy)
     recon_loss = F.binary_cross_entropy(x_recon, x, reduction='sum')
     
-    # KL divergence: -0.5 * sum(1 + log(σ²) - μ² - σ²)
+    # KL divergence: -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
     kl_div = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
     
     return recon_loss + beta * kl_div
@@ -152,10 +152,10 @@ for epoch in range(epochs):
 
 **Solution:** Reparameterize
 ```python
-# Instead of: z ~ N(μ, σ²)
-# Use: z = μ + σ * ε, where ε ~ N(0, 1)
+# Instead of: z ~ N(mu, sigma^2)
+# Use: z = mu + sigma * epsilon, where epsilon ~ N(0, 1)
 
-# This allows gradients to flow through μ and σ
+# This allows gradients to flow through mu and sigma
 ```
 
 ---
@@ -213,21 +213,21 @@ class ConvVAE(nn.Module):
 
 ---
 
-## 28.5 β-VAE
+## 28.5 beta-VAE
 
 **Problem:** Standard VAE produces blurry images
 
 **Solution:** Weight KL term differently
 
 ```python
-loss = reconstruction_loss + β * KL_divergence
+loss = reconstruction_loss + beta * KL_divergence
 
-# β > 1: More disentangled representations (but blurrier)
-# β < 1: Better reconstructions (but entangled)
-# β = 1: Standard VAE
+# beta > 1: More disentangled representations (but blurrier)
+# beta < 1: Better reconstructions (but entangled)
+# beta = 1: Standard VAE
 ```
 
-**β-VAE encourages disentangled representations:**
+**beta-VAE encourages disentangled representations:**
 - Each latent dimension captures independent factor of variation
 - e.g., z[0] = rotation, z[1] = color, z[2] = size
 
@@ -410,5 +410,5 @@ generated = model.decode(z, y)  # Generate class 3 sample
 ## Resources
 
 - "Auto-Encoding Variational Bayes" (Kingma & Welling, 2013)
-- "β-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework" (Higgins et al., 2017)
+- "beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework" (Higgins et al., 2017)
 - Tutorial: https://arxiv.org/abs/1606.05908

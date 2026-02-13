@@ -150,7 +150,7 @@ class DataGovernanceCompliance:
             dataset_pct = demographics[category]
             population_pct = population_stats[category]
 
-            # Allow ±5% deviation
+            # Allow +/-5% deviation
             is_representative = abs(dataset_pct - population_pct) < 0.05
 
             representativeness_score[category] = {
@@ -297,7 +297,7 @@ class TransparencyCompliance:
                     by analyzing financial history, income, and other factors.
                 ''',
                 'limitations': [
-                    'Not suitable for business loans > €1M',
+                    'Not suitable for business loans > EUR1M',
                     'Requires manual review for edge cases',
                     'May have reduced accuracy for self-employed applicants'
                 ],
@@ -558,21 +558,21 @@ china_ai_regulations = {
 
 | Violation | Maximum Fine |
 |-----------|-------------|
-| Prohibited AI practices | €35M or 7% global turnover |
-| Non-compliance with obligations | €15M or 3% global turnover |
-| Incorrect/incomplete information | €7.5M or 1% global turnover |
+| Prohibited AI practices | EUR35M or 7% global turnover |
+| Non-compliance with obligations | EUR15M or 3% global turnover |
+| Incorrect/incomplete information | EUR7.5M or 1% global turnover |
 
 ### GDPR Fines
 
 | Violation | Maximum Fine |
 |-----------|-------------|
-| Articles 5-22 (principles, rights, automated decisions) | €20M or 4% global turnover |
-| Other provisions | €10M or 2% global turnover |
+| Articles 5-22 (principles, rights, automated decisions) | EUR20M or 4% global turnover |
+| Other provisions | EUR10M or 2% global turnover |
 
 **Notable Cases:**
-- Amazon: €746M (2021) - Processing violations
-- Meta: €1.2B (2023) - Data transfers
-- Google: €90M (2020) - Cookie consent
+- Amazon: EUR746M (2021) - Processing violations
+- Meta: EUR1.2B (2023) - Data transfers
+- Google: EUR90M (2020) - Cookie consent
 
 ---
 

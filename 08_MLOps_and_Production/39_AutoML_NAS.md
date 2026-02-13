@@ -181,7 +181,7 @@ class SimpleAutoML:
                     continue
 
         # Train final model on full data
-        print(f"\n✅ Best model: {self.best_model_name}")
+        print(f"\n Best model: {self.best_model_name}")
         print(f"   Parameters: {self.best_params}")
         print(f"   {self.config.metric}: {self.best_score:.4f}")
 

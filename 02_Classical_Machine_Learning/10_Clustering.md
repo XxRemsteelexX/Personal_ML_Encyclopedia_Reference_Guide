@@ -31,9 +31,9 @@ Clustering is unsupervised learning that groups similar data points without labe
 ### Key Concepts
 
 **Distance Metrics**: How to measure similarity
-- Euclidean: √(Σ(xᵢ - yᵢ)²)
-- Manhattan: Σ|xᵢ - yᵢ|
-- Cosine: 1 - (x·y)/(||x||·||y||)
+- Euclidean: sqrt(sum(x_i - y_i)^2)
+- Manhattan: sum|x_i - y_i|
+- Cosine: 1 - (x*y)/(||x||*||y||)
 
 **Assumptions**:
 - Points in same cluster are similar
@@ -47,23 +47,23 @@ Clustering is unsupervised learning that groups similar data points without labe
 **Objective**: Minimize within-cluster sum of squares (WCSS)
 
 ```
-WCSS = ΣₖΣᵢ∈Cₖ ||xᵢ - μₖ||²
+WCSS = sum_ksum_iinC_k ||x_i - mu_k||^2
 
 Where:
-- Cₖ: cluster k
-- μₖ: centroid of cluster k
-- xᵢ: data point i
+- C_k: cluster k
+- mu_k: centroid of cluster k
+- x_i: data point i
 ```
 
 **Lloyd's Algorithm**:
 ```
-1. Initialize: Select K random centroids μ₁, ..., μₖ
+1. Initialize: Select K random centroids mu_1, ..., mu_k
 2. Repeat until convergence:
    a. Assignment: Assign each point to nearest centroid
-      Cₖ = {xᵢ : ||xᵢ - μₖ|| ≤ ||xᵢ - μⱼ|| for all j}
+      C_k = {x_i : ||x_i - mu_k|| <= ||x_i - mu_j|| for all j}
 
    b. Update: Recompute centroids as cluster means
-      μₖ = (1/|Cₖ|) Σᵢ∈Cₖ xᵢ
+      mu_k = (1/|C_k|) sum_iinC_k x_i
 
 3. Convergence: Stop when assignments don't change
 ```
@@ -71,7 +71,7 @@ Where:
 ### Properties
 
 **Advantages**:
-- Simple and fast: O(n·K·i·d) where i = iterations, d = dimensions
+- Simple and fast: O(n*K*i*d) where i = iterations, d = dimensions
 - Scales to large datasets
 - Guaranteed convergence
 
@@ -92,7 +92,7 @@ K-Means++ Algorithm:
 1. Choose first centroid uniformly at random
 2. For each remaining centroid:
    - For each point x, compute D(x) = distance to nearest chosen centroid
-   - Choose next centroid with probability ∝ D(x)²
+   - Choose next centroid with probability proportional to D(x)^2
 3. Proceed with standard K-Means
 ```
 
@@ -363,28 +363,28 @@ Build hierarchy of clusters (dendrogram) through iterative merging or splitting.
 
 1. **Single Linkage**: Minimum distance between points
    ```
-   d(C₁, C₂) = min{d(x, y) : x ∈ C₁, y ∈ C₂}
+   d(C_1, C_2) = min{d(x, y) : x in C_1, y in C_2}
    ```
    - Sensitive to outliers, can create "chains"
    - Good for non-globular clusters
 
 2. **Complete Linkage**: Maximum distance between points
    ```
-   d(C₁, C₂) = max{d(x, y) : x ∈ C₁, y ∈ C₂}
+   d(C_1, C_2) = max{d(x, y) : x in C_1, y in C_2}
    ```
    - Produces compact, spherical clusters
    - Less sensitive to outliers
 
 3. **Average Linkage**: Average distance between all pairs
    ```
-   d(C₁, C₂) = (1/|C₁||C₂|) ΣΣ d(x, y)
+   d(C_1, C_2) = (1/|C_1||C_2|) sumsum d(x, y)
    ```
    - Compromise between single and complete
    - Robust to outliers
 
 4. **Ward's Method**: Minimizes within-cluster variance
    ```
-   d(C₁, C₂) = increase in SSE from merging
+   d(C_1, C_2) = increase in SSE from merging
    ```
    - Similar to K-Means objective
    - **Recommended default** for most cases
@@ -526,9 +526,9 @@ print(f"Optimal K (hierarchical): {optimal_k_hier}")
 ### Core Concepts
 
 **Definitions**:
-- **ε-neighborhood**: Points within distance ε
-- **Core point**: Has at least min_samples points in ε-neighborhood
-- **Border point**: In ε-neighborhood of core point, but not core itself
+- **epsilon-neighborhood**: Points within distance epsilon
+- **Core point**: Has at least min_samples points in epsilon-neighborhood
+- **Border point**: In epsilon-neighborhood of core point, but not core itself
 - **Noise point**: Neither core nor border
 
 **Density-reachable**: Point q is density-reachable from p if there's a chain of core points from p to q
@@ -537,27 +537,27 @@ print(f"Optimal K (hierarchical): {optimal_k_hier}")
 
 ```
 1. For each point p:
-   - Find all points in ε-neighborhood
-   - If |neighborhood| ≥ min_samples:
+   - Find all points in epsilon-neighborhood
+   - If |neighborhood| >= min_samples:
      - Mark p as core point
      - Create new cluster (if p not assigned)
      - Add all density-reachable points to cluster
    - Else:
      - Mark as border or noise (determined later)
 
-2. Border points: In ε-neighborhood of core but not core
+2. Border points: In epsilon-neighborhood of core but not core
 3. Noise points: Neither core nor border
 ```
 
 ### Parameter Selection
 
-**eps (ε)**: Maximum distance for neighborhood
+**eps (epsilon)**: Maximum distance for neighborhood
 - Too small: Many noise points, fragmented clusters
 - Too large: Clusters merge
 
 **min_samples**: Minimum points for core point
-- Rule of thumb: min_samples ≥ d + 1 (d = dimensions)
-- Larger values → denser clusters required
+- Rule of thumb: min_samples >= d + 1 (d = dimensions)
+- Larger values --> denser clusters required
 
 **Finding eps**: k-distance graph
 
@@ -691,31 +691,31 @@ print(f"  Average cluster probability: {hdb.probabilities_.mean():.3f}")
 **Assumption**: Data generated from mixture of Gaussian distributions
 
 ```
-p(x) = Σₖ πₖ · N(x | μₖ, Σₖ)
+p(x) = sum_k pi_k * N(x | mu_k, sum_k)
 
 Where:
-- πₖ: mixing coefficient (weight) for component k
-- N(x | μₖ, Σₖ): Gaussian distribution with mean μₖ and covariance Σₖ
-- Σₖ πₖ = 1
+- pi_k: mixing coefficient (weight) for component k
+- N(x | mu_k, sum_k): Gaussian distribution with mean mu_k and covariance sum_k
+- sum_k pi_k = 1
 ```
 
 ### Expectation-Maximization (EM) Algorithm
 
-**Goal**: Find parameters {πₖ, μₖ, Σₖ} that maximize likelihood
+**Goal**: Find parameters {pi_k, mu_k, sum_k} that maximize likelihood
 
 ```
 E-step (Expectation):
-  Compute responsibility γᵢₖ = P(cluster k | point i)
+  Compute responsibility gamma_i_k = P(cluster k | point i)
 
-  γᵢₖ = πₖ · N(xᵢ | μₖ, Σₖ) / Σⱼ πⱼ · N(xᵢ | μⱼ, Σⱼ)
+  gamma_i_k = pi_k * N(x_i | mu_k, sum_k) / sum_j pi_j * N(x_i | mu_j, sum_j)
 
 M-step (Maximization):
   Update parameters using weighted maximum likelihood
 
-  Nₖ = Σᵢ γᵢₖ
-  πₖ = Nₖ / n
-  μₖ = (1/Nₖ) Σᵢ γᵢₖ · xᵢ
-  Σₖ = (1/Nₖ) Σᵢ γᵢₖ · (xᵢ - μₖ)(xᵢ - μₖ)ᵀ
+  N_k = sum_i gamma_i_k
+  pi_k = N_k / n
+  mu_k = (1/N_k) sum_i gamma_i_k * x_i
+  sum_k = (1/N_k) sum_i gamma_i_k * (x_i - mu_k)(x_i - mu_k)^T
 
 Repeat E and M steps until convergence
 ```
@@ -751,7 +751,7 @@ print(f"  BIC: {gmm.bic(X):.2f}")
 print(f"  AIC: {gmm.aic(X):.2f}")
 
 # Mixing coefficients
-print("\nMixing Coefficients (πₖ):")
+print("\nMixing Coefficients (pi_k):")
 for i, weight in enumerate(gmm.weights_):
     print(f"  Component {i}: {weight:.3f}")
 
@@ -803,7 +803,7 @@ plot_gmm(gmm, X, y_pred)
 
 **Bayesian Information Criterion (BIC)**:
 ```
-BIC = -2·ln(L) + k·ln(n)
+BIC = -2*ln(L) + k*ln(n)
 
 Where:
 - L: likelihood
@@ -813,7 +813,7 @@ Where:
 
 **Akaike Information Criterion (AIC)**:
 ```
-AIC = -2·ln(L) + 2k
+AIC = -2*ln(L) + 2k
 ```
 
 **Lower is better** (penalizes model complexity)
@@ -884,8 +884,8 @@ plt.tight_layout()
 plt.show()
 
 print("Covariance Types:")
-print("  'spherical': σ²I (same variance, uncorrelated)")
-print("  'diag': diag(σ₁², ..., σₐ²) (different variances, uncorrelated)")
+print("  'spherical': sigma^2I (same variance, uncorrelated)")
+print("  'diag': diag(sigma_1^2, ..., sigma_a^2) (different variances, uncorrelated)")
 print("  'tied': Same covariance for all components")
 print("  'full': Each component has own covariance (most flexible)")
 ```
@@ -908,11 +908,11 @@ score = silhouette_score(X, labels)
 **Definition**: Average similarity ratio of each cluster with its most similar cluster
 
 ```
-DB = (1/K) Σₖ max_{k≠j} [(σₖ + σⱼ) / d(cₖ, cⱼ)]
+DB = (1/K) sum_k max_{k!=j} [(sigma_k + sigma_j) / d(c_k, c_j)]
 
 Where:
-- σₖ: average distance within cluster k
-- d(cₖ, cⱼ): distance between cluster centers
+- sigma_k: average distance within cluster k
+- d(c_k, c_j): distance between cluster centers
 ```
 
 **Lower is better** (more separated clusters)
@@ -1176,61 +1176,61 @@ anomaly_methods = detect_anomalies_clustering(X_scaled, contamination=0.1)
 
 ```
 Use K-Means when:
-✓ Know number of clusters K
-✓ Clusters are spherical and similar size
-✓ Large dataset (fast, O(nKid))
-✓ Need fast, simple solution
+[x] Know number of clusters K
+[x] Clusters are spherical and similar size
+[x] Large dataset (fast, O(nKid))
+[x] Need fast, simple solution
 
 Avoid when:
-✗ Clusters have different shapes
-✗ Clusters have different sizes/densities
-✗ Outliers present
-✗ Don't know K
+[ ] Clusters have different shapes
+[ ] Clusters have different sizes/densities
+[ ] Outliers present
+[ ] Don't know K
 ```
 
 ### Hierarchical Clustering
 
 ```
 Use Hierarchical when:
-✓ Want to explore cluster hierarchy
-✓ Don't know K (can choose later from dendrogram)
-✓ Small to medium dataset (n < 10,000)
-✓ Need deterministic results
+[x] Want to explore cluster hierarchy
+[x] Don't know K (can choose later from dendrogram)
+[x] Small to medium dataset (n < 10,000)
+[x] Need deterministic results
 
 Avoid when:
-✗ Large dataset (O(n² log n) for some methods)
-✗ High-dimensional data
-✗ Need fast clustering
+[ ] Large dataset (O(n^2 log n) for some methods)
+[ ] High-dimensional data
+[ ] Need fast clustering
 ```
 
 ### DBSCAN
 
 ```
 Use DBSCAN when:
-✓ Clusters have arbitrary shapes
-✓ Outliers/noise present
-✓ Don't know K
-✓ Varying cluster densities (use HDBSCAN)
+[x] Clusters have arbitrary shapes
+[x] Outliers/noise present
+[x] Don't know K
+[x] Varying cluster densities (use HDBSCAN)
 
 Avoid when:
-✗ Clusters have varying densities (use HDBSCAN instead)
-✗ High-dimensional data (curse of dimensionality)
-✗ All points must be assigned to clusters
+[ ] Clusters have varying densities (use HDBSCAN instead)
+[ ] High-dimensional data (curse of dimensionality)
+[ ] All points must be assigned to clusters
 ```
 
 ### GMM
 
 ```
 Use GMM when:
-✓ Need soft clustering (probabilities)
-✓ Data approximately Gaussian
-✓ Want to model data distribution
-✓ Clusters have elliptical shapes
+[x] Need soft clustering (probabilities)
+[x] Data approximately Gaussian
+[x] Want to model data distribution
+[x] Clusters have elliptical shapes
 
 Avoid when:
-✗ Non-Gaussian data
-✗ Very large dataset (slower than K-Means)
-✗ Clusters have complex shapes
+[ ] Non-Gaussian data
+[ ] Very large dataset (slower than K-Means)
+[ ] Clusters have complex shapes
 ```
 
 ### 2025 Recommendations

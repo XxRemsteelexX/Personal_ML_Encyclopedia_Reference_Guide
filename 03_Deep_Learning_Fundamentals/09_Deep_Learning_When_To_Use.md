@@ -13,48 +13,48 @@ Deep learning (DL) is powerful but not always necessary. This guide helps you de
 ```
 Should I use Deep Learning?
 
-├─ Data Type?
-│  ├─ TABULAR/STRUCTURED
-│  │  └─ ❌ Use Traditional ML (XGBoost, Random Forest)
-│  │     Exception: Very large datasets (1M+ rows) with complex interactions
-│  │
-│  ├─ IMAGES
-│  │  └─ ✅ Use CNNs (Convolutional Neural Networks)
-│  │
-│  ├─ TEXT
-│  │  └─ ✅ Use Transformers or RNNs/LSTMs
-│  │
-│  ├─ TIME SERIES (Sequential)
-│  │  └─ ✅ Use RNNs/LSTMs or Transformers
-│  │
-│  └─ AUDIO/VIDEO
-│     └─ ✅ Use CNNs + RNNs or specialized architectures
-│
-├─ Dataset Size?
-│  ├─ < 10,000 samples
-│  │  └─ ❌ Too small for DL, use Traditional ML
-│  │
-│  ├─ 10K - 100K samples
-│  │  └─ ⚠️ Consider transfer learning or traditional ML
-│  │
-│  └─ > 100K samples
-│     └─ ✅ Deep Learning viable
-│
-├─ Need Interpretability?
-│  └─ YES → ❌ Use Traditional ML (easier to explain)
-│
-├─ Computational Resources?
-│  └─ Limited (no GPU) → ❌ Use Traditional ML (faster)
-│
-└─ Automatic Feature Learning?
-   └─ YES (raw pixels, text) → ✅ Use Deep Learning
++--- Data Type?
+|  +--- TABULAR/STRUCTURED
+|  |  +---  Use Traditional ML (XGBoost, Random Forest)
+|  |     Exception: Very large datasets (1M+ rows) with complex interactions
+|  |
+|  +--- IMAGES
+|  |  +---  Use CNNs (Convolutional Neural Networks)
+|  |
+|  +--- TEXT
+|  |  +---  Use Transformers or RNNs/LSTMs
+|  |
+|  +--- TIME SERIES (Sequential)
+|  |  +---  Use RNNs/LSTMs or Transformers
+|  |
+|  +--- AUDIO/VIDEO
+|     +---  Use CNNs + RNNs or specialized architectures
+|
++--- Dataset Size?
+|  +--- < 10,000 samples
+|  |  +---  Too small for DL, use Traditional ML
+|  |
+|  +--- 10K - 100K samples
+|  |  +--- [WARNING] Consider transfer learning or traditional ML
+|  |
+|  +--- > 100K samples
+|     +---  Deep Learning viable
+|
++--- Need Interpretability?
+|  +--- YES -->  Use Traditional ML (easier to explain)
+|
++--- Computational Resources?
+|  +--- Limited (no GPU) -->  Use Traditional ML (faster)
+|
++--- Automatic Feature Learning?
+   +--- YES (raw pixels, text) -->  Use Deep Learning
 ```
 
 ---
 
 ## 9.2 When to Use Deep Learning
 
-### ✅ Use Deep Learning When:
+###  Use Deep Learning When:
 
 #### 1. **Unstructured Data (Images, Audio, Video)**
 
@@ -105,8 +105,8 @@ Should I use Deep Learning?
 **Why:** Multiple layers can model very complex relationships
 
 **Examples:**
-- Speech recognition (waveforms → words)
-- Video understanding (frame sequences → actions)
+- Speech recognition (waveforms --> words)
+- Video understanding (frame sequences --> actions)
 - Game playing (AlphaGo, DeepMind)
 
 ---
@@ -118,7 +118,7 @@ Should I use Deep Learning?
 **Examples:**
 - Raw pixel data (no need to manually extract edges)
 - Raw audio waveforms
-- End-to-end learning (input → output directly)
+- End-to-end learning (input --> output directly)
 
 ---
 
@@ -132,7 +132,7 @@ Should I use Deep Learning?
 
 ---
 
-### ❌ When NOT to Use Deep Learning
+###  When NOT to Use Deep Learning
 
 #### 1. **Tabular/Structured Data**
 
@@ -261,7 +261,7 @@ Should I use Deep Learning?
 
 **What:** Fully connected layers (each neuron connects to all in next layer)
 
-### ✅ When to Use MLP
+###  When to Use MLP
 
 1. **Tabular/structured data**
    - Loan applications, fraud detection
@@ -272,10 +272,10 @@ Should I use Deep Learning?
    - When data doesn't have spatial or temporal structure
 
 3. **As final layers in hybrid architectures**
-   - CNN → MLP (extract features, then classify)
-   - RNN → MLP (process sequence, then predict)
+   - CNN --> MLP (extract features, then classify)
+   - RNN --> MLP (process sequence, then predict)
 
-### ❌ When NOT to Use MLP
+###  When NOT to Use MLP
 
 1. **Images** (use CNN instead)
    - MLP treats each pixel independently
@@ -294,9 +294,9 @@ Should I use Deep Learning?
 
 ### 9.3.2 CNN (Convolutional Neural Network)
 
-**What:** Uses convolutional layers to detect spatial patterns (edges → shapes → objects)
+**What:** Uses convolutional layers to detect spatial patterns (edges --> shapes --> objects)
 
-### ✅ When to Use CNN
+###  When to Use CNN
 
 1. **Image classification**
    - Cat vs dog, digit recognition
@@ -318,7 +318,7 @@ Should I use Deep Learning?
    - Text as 2D images
    - Surprisingly effective for NLP
 
-### ❌ When NOT to Use CNN
+###  When NOT to Use CNN
 
 1. **Tabular data**
    - No spatial structure
@@ -334,7 +334,7 @@ Should I use Deep Learning?
 
 **What:** Processes sequences one element at a time, maintains hidden state (memory)
 
-### ✅ When to Use RNN/LSTM
+###  When to Use RNN/LSTM
 
 1. **Sequential text**
    - Sentiment analysis
@@ -346,15 +346,15 @@ Should I use Deep Learning?
    - Sensor data
 
 3. **Speech recognition**
-   - Waveform → text
+   - Waveform --> text
 
 4. **Video captioning**
-   - Sequence of frames → description
+   - Sequence of frames --> description
 
 5. **Music generation**
    - Sequence of notes
 
-### ❌ When NOT to Use RNN
+###  When NOT to Use RNN
 
 1. **Long sequences (>100 steps)**
    - Vanishing gradient problem
@@ -388,7 +388,7 @@ Should I use Deep Learning?
 **Guidelines:**
 - **Start with 32 or 64**
 - Use powers of 2 (32, 64, 128, 256) for GPU efficiency
-- Larger batch size → increase learning rate proportionally
+- Larger batch size --> increase learning rate proportionally
 
 **Code:**
 ```python
@@ -608,13 +608,13 @@ for epoch in range(num_epochs):
 
 ### Pitfall 1: Not Enough Data
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Training ResNet50 from scratch on 1000 images
 model = resnet50(pretrained=False)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Use transfer learning
 model = resnet50(pretrained=True)
@@ -629,13 +629,13 @@ model.fc = nn.Linear(model.fc.in_features, num_classes)
 
 ### Pitfall 2: Not Normalizing Inputs
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Raw pixel values [0, 255]
 X = images
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Normalize to [0, 1] or standardize
 X = images / 255.0
@@ -648,19 +648,19 @@ std = [0.229, 0.224, 0.225]
 
 ### Pitfall 3: Overfitting Without Noticing
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Only checking training loss
 train_loss = 0.01  # Great!
 # But validation loss = 2.5 (overfitting!)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Always monitor both
 print(f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}")
 if val_loss > train_loss * 1.5:
-    print("⚠️ Overfitting detected!")
+    print("[WARNING] Overfitting detected!")
     # Add regularization, reduce model complexity
 ```
 
@@ -668,14 +668,14 @@ if val_loss > train_loss * 1.5:
 
 ### Pitfall 4: Using CPU When GPU Available
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Slow training on CPU
 model = Model()
 output = model(data)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = Model().to(device)
@@ -687,14 +687,14 @@ output = model(data)
 
 ### Pitfall 5: Forgetting to Set model.eval()
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Dropout/BatchNorm still active during testing!
 with torch.no_grad():
     predictions = model(test_data)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 model.eval()  # Disable dropout, use BN running stats
 with torch.no_grad():
@@ -709,26 +709,26 @@ model.train()  # Re-enable for training
 ```
 What's your data type?
 
-├─ TABULAR
-│  └─ Use XGBoost (not deep learning)
-│     Exception: 1M+ rows with complex interactions → try MLP
-│
-├─ IMAGES
-│  └─ Use CNN
-│     ├─ < 10K images? → Transfer learning (ResNet, EfficientNet)
-│     └─ > 100K images? → Train from scratch or fine-tune
-│
-├─ TEXT
-│  └─ Use Transformers (BERT, GPT)
-│     ├─ < 10K samples? → Use pretrained models
-│     └─ Simple task? → Try simpler models first (logistic, LSTM)
-│
-├─ TIME SERIES
-│  └─ Try traditional methods first (ARIMA, Prophet)
-│     If complex: → LSTM or Transformer
-│
-└─ MIXED (tabular + images/text)
-   └─ Hybrid: CNN/Transformer → embeddings → concatenate → MLP
++--- TABULAR
+|  +--- Use XGBoost (not deep learning)
+|     Exception: 1M+ rows with complex interactions --> try MLP
+|
++--- IMAGES
+|  +--- Use CNN
+|     +--- < 10K images? --> Transfer learning (ResNet, EfficientNet)
+|     +--- > 100K images? --> Train from scratch or fine-tune
+|
++--- TEXT
+|  +--- Use Transformers (BERT, GPT)
+|     +--- < 10K samples? --> Use pretrained models
+|     +--- Simple task? --> Try simpler models first (logistic, LSTM)
+|
++--- TIME SERIES
+|  +--- Try traditional methods first (ARIMA, Prophet)
+|     If complex: --> LSTM or Transformer
+|
++--- MIXED (tabular + images/text)
+   +--- Hybrid: CNN/Transformer --> embeddings --> concatenate --> MLP
 ```
 
 ---
@@ -782,7 +782,7 @@ What's your data type?
 
 **Books:**
 - "Deep Learning" by Goodfellow, Bengio, Courville
-- "Hands-On Machine Learning" by Géron
+- "Hands-On Machine Learning" by Geron
 
 ---
 

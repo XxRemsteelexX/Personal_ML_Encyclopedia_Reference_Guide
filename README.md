@@ -2,7 +2,7 @@
 
 Personal reference library covering machine learning and data science topics I've needed while building production systems. Started this while working on my healthcare AI capstone and kept adding to it as I learned new techniques.
 
-**94 markdown files | 107K+ lines | Foundations through 2025 methods**
+**86 markdown files | 121K+ lines | Foundations through 2025 methods**
 
 Designed to work as a RAG knowledge base -- every file is dense with specific model names, hyperparameters, production-ready code, and concrete techniques.
 
@@ -48,7 +48,6 @@ Designed to work as a RAG knowledge base -- every file is dense with specific mo
 
 ### Reference Guides
 - **Master Guide** (3 files) - Model selection decision tree, Kaggle competition playbook, production ML checklist
-- **Quick Reference** - Cheat sheets
 
 ---
 

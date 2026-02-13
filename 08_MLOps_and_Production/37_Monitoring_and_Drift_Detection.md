@@ -382,7 +382,7 @@ drift_results = detector.detect_drift_all_features(current_data, method='psi')
 
 for feature, result in drift_results.items():
     if result['drift_detected']:
-        print(f"⚠️  Drift detected in {feature}: PSI = {result['psi']:.3f}")
+        print(f"[WARNING]  Drift detected in {feature}: PSI = {result['psi']:.3f}")
 ```
 
 ### Advanced Drift Detection with ADWIN
@@ -438,7 +438,7 @@ for i in range(1000):
     result = adaptive_detector.update(error)
 
     if result['any_drift']:
-        print(f"🚨 Drift detected at sample {i}: {result}")
+        print(f" Drift detected at sample {i}: {result}")
 ```
 
 ---
@@ -850,9 +850,9 @@ def email_handler(alert: Alert):
             server.starttls()
             server.login(sender, password)
             server.send_message(msg)
-        print(f"✅ Email alert sent: {alert.rule_name}")
+        print(f" Email alert sent: {alert.rule_name}")
     except Exception as e:
-        print(f"❌ Failed to send email: {e}")
+        print(f" Failed to send email: {e}")
 
 def slack_handler(alert: Alert):
     """Send Slack alert."""
@@ -881,9 +881,9 @@ def slack_handler(alert: Alert):
     try:
         response = requests.post(webhook_url, json=payload)
         response.raise_for_status()
-        print(f"✅ Slack alert sent: {alert.rule_name}")
+        print(f" Slack alert sent: {alert.rule_name}")
     except Exception as e:
-        print(f"❌ Failed to send Slack alert: {e}")
+        print(f" Failed to send Slack alert: {e}")
 
 # Usage
 alert_manager = AlertManager()
@@ -1037,7 +1037,7 @@ class WhyLabsMonitor:
 
         writer.write(profile=results.profile())
 
-        print(f"✅ Logged {len(df)} records to WhyLabs")
+        print(f" Logged {len(df)} records to WhyLabs")
 
     def log_predictions(
         self,
@@ -1183,7 +1183,7 @@ class AutomatedRetrainingPipeline:
 
     def retrain_and_deploy(self, reason: str):
         """Execute retraining and deployment."""
-        print(f"🔄 Starting retraining: {reason}")
+        print(f" Starting retraining: {reason}")
 
         try:
             # Retrain model
@@ -1195,16 +1195,16 @@ class AutomatedRetrainingPipeline:
                 self.deploy_function(new_model)
 
                 self.last_retrain_time = datetime.now()
-                print(f"✅ Retraining complete and deployed")
+                print(f" Retraining complete and deployed")
 
                 # Send notification
                 self._notify_retraining(reason, success=True)
             else:
-                print(f"❌ New model failed validation")
+                print(f" New model failed validation")
                 self._notify_retraining(reason, success=False)
 
         except Exception as e:
-            print(f"❌ Retraining failed: {e}")
+            print(f" Retraining failed: {e}")
             self._notify_retraining(reason, success=False, error=str(e))
 
     def _validate_model(self, model) -> bool:
@@ -1233,7 +1233,7 @@ class AutomatedRetrainingPipeline:
         # Schedule periodic checks
         schedule.every(check_interval_minutes).minutes.do(check_and_retrain)
 
-        print(f"🚀 Starting continuous monitoring (check every {check_interval_minutes} min)")
+        print(f" Starting continuous monitoring (check every {check_interval_minutes} min)")
 
         while True:
             schedule.run_pending()

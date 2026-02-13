@@ -230,10 +230,10 @@ Throughout this section:
 - **Vectors:** lowercase bold (x, w, b)
 - **Matrices:** uppercase bold (X, W)
 - **Tensors:** uppercase calligraphic (X, W)
-- **Gradients:** ∇ or ∂/∂
-- **Activation functions:** σ (sigmoid), φ (general)
+- **Gradients:** grad or d/d
+- **Activation functions:** sigma (sigmoid), phi (general)
 - **Loss function:** L or J
-- **Learning rate:** α or η
+- **Learning rate:** alpha or eta
 - **Batch size:** B or N
 - **Layer index:** superscript [l]
 - **Training example:** subscript (i) or (j)

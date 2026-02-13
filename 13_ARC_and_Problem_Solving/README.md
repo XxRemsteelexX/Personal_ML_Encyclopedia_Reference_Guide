@@ -13,7 +13,7 @@ This folder contains comprehensive documentation on the **ARC (Abstraction and R
 
 ---
 
-## 📁 Files in This Folder
+## [folder] Files in This Folder
 
 ### 1. **01_ARC_Challenge_Overview.md**
 
@@ -45,7 +45,7 @@ This folder contains comprehensive documentation on the **ARC (Abstraction and R
 - Pre-training phase with extensive augmentation
 - Multi-task training (output generation + input distribution learning)
 - Test-time fine-tuning implementation
-- Voting with multiple predictions (96 predictions → mode)
+- Voting with multiple predictions (96 predictions --> mode)
 
 **Complete code:**
 - Data augmentation (rotations, flips, color remapping)
@@ -96,7 +96,7 @@ This folder contains comprehensive documentation on the **ARC (Abstraction and R
 - Why ensembles work (complementary strengths)
 - Transduction vs induction (both needed, ~40% each)
 - The ARChitects ensemble architecture
-- Multi-stage pipeline (heuristics → TTT → LLM → program synthesis)
+- Multi-stage pipeline (heuristics --> TTT --> LLM --> program synthesis)
 - Intelligent selection (weighted voting, verification, meta-learning)
 
 **Complete implementation:**
@@ -121,7 +121,7 @@ This folder contains comprehensive documentation on the **ARC (Abstraction and R
 **Transferable principles beyond ARC:**
 - Few-shot generalization (adapt from minimal examples)
 - Multi-method ensembles (combine diverse approaches)
-- Verification and self-correction (generate → verify → refine)
+- Verification and self-correction (generate --> verify --> refine)
 - Multi-perspective reasoning (analyze from multiple viewpoints)
 - Adaptive computation (allocate resources based on difficulty)
 - Neuro-symbolic integration (combine neural + symbolic)
@@ -144,7 +144,7 @@ This folder contains comprehensive documentation on the **ARC (Abstraction and R
 
 ---
 
-## 🎯 Quick Start Guide
+##  Quick Start Guide
 
 ### For ARC Competition Participants
 
@@ -157,7 +157,7 @@ Focus: Task structure, why it's hard, current SOTA
 **Step 2:** Implement test-time training
 ```
 Read: 02_Test_Time_Training.md
-Implement: Pre-training → TTT → voting pipeline
+Implement: Pre-training --> TTT --> voting pipeline
 Expected: ~40% accuracy
 ```
 
@@ -180,22 +180,22 @@ Expected: 55%+ accuracy (current SOTA)
 ### For AI Researchers
 
 **Want to understand AGI bottlenecks?**
-→ Read `01_ARC_Challenge_Overview.md`
+--> Read `01_ARC_Challenge_Overview.md`
 - Learn why GPT-4 scores 5-10% despite passing bar exam
 - Understand the intelligence vs pattern-matching gap
 
 **Interested in few-shot learning?**
-→ Read `02_Test_Time_Training.md`
+--> Read `02_Test_Time_Training.md`
 - See how 3-5 examples can specialize a model
 - Learn test-time adaptation techniques
 
 **Working on LLM reasoning?**
-→ Read `03_LLM_Based_Reasoning.md`
+--> Read `03_LLM_Based_Reasoning.md`
 - Multi-perspective prompting strategies
 - Self-correction and verification loops
 
 **Building production systems?**
-→ Read `04_Hybrid_Ensembles.md` + `05_General_Problem_Solving_Strategies.md`
+--> Read `04_Hybrid_Ensembles.md` + `05_General_Problem_Solving_Strategies.md`
 - Ensemble architectures
 - Adaptive computation
 - Verification frameworks
@@ -217,13 +217,13 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## 🔍 Key Concepts
+## [search] Key Concepts
 
 ### ARC-Specific
 
 **Test-Time Training:**
 - Adapt model to each task using task's training examples
-- +60% relative improvement (25% → 40%)
+- +60% relative improvement (25% --> 40%)
 - 300 steps optimal, LoRA for efficiency
 
 **Multi-Perspective Prompting:**
@@ -268,7 +268,7 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## 💡 Best Practices
+##  Best Practices
 
 ### ARC Competition
 
@@ -316,46 +316,46 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## 🏆 What Makes This Unique
+## [trophy] What Makes This Unique
 
 ### Comprehensive ARC Coverage
 
-✅ **Only guide covering all 2024 SOTA methods**
+ **Only guide covering all 2024 SOTA methods**
 - Test-time training (Omni-ARC approach)
 - LLM reasoning (ARChitects approach)
 - Hybrid ensembles (competition winners)
 
-✅ **Production-ready code**
+ **Production-ready code**
 - Complete implementations, not pseudocode
 - Tested techniques, not speculation
 - Ready to run and modify
 
-✅ **Performance benchmarks**
+ **Performance benchmarks**
 - Clear accuracy metrics for each method
 - Component contribution analysis
 - Computational cost comparisons
 
 ### Generalization Beyond ARC
 
-✅ **Transferable strategies**
+ **Transferable strategies**
 - Apply to any reasoning domain
 - Code generation, robotics, medical diagnosis
 - General AI problem-solving patterns
 
-✅ **Design patterns**
+ **Design patterns**
 - Generate-verify-select
 - Coarse-to-fine
 - Divide-and-conquer
 - Neuro-symbolic integration
 
-✅ **Production considerations**
+ **Production considerations**
 - Timeouts and resource allocation
 - Human-in-the-loop workflows
 - Adaptive computation
 
 ---
 
-## 📊 Performance Summary
+##  Performance Summary
 
 ### ARC Challenge
 
@@ -380,25 +380,25 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## 🚀 Quick Reference
+##  Quick Reference
 
 **Need to...**
 
-**Understand ARC challenge?** → 01_ARC_Challenge_Overview.md
+**Understand ARC challenge?** --> 01_ARC_Challenge_Overview.md
 
-**Implement adaptive learning?** → 02_Test_Time_Training.md (TTT pipeline)
+**Implement adaptive learning?** --> 02_Test_Time_Training.md (TTT pipeline)
 
-**Use LLMs for reasoning?** → 03_LLM_Based_Reasoning.md (prompting strategies)
+**Use LLMs for reasoning?** --> 03_LLM_Based_Reasoning.md (prompting strategies)
 
-**Build SOTA system?** → 04_Hybrid_Ensembles.md (ensemble architecture)
+**Build SOTA system?** --> 04_Hybrid_Ensembles.md (ensemble architecture)
 
-**Design reasoning system?** → 05_General_Problem_Solving_Strategies.md (design patterns)
+**Design reasoning system?** --> 05_General_Problem_Solving_Strategies.md (design patterns)
 
-**See production code?** → All files (complete implementations throughout)
+**See production code?** --> All files (complete implementations throughout)
 
 ---
 
-## 📚 Related Content
+##  Related Content
 
 **In this encyclopedia:**
 - `05_NLP_and_Transformers/` - LLM fundamentals for reasoning
@@ -414,7 +414,7 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## ✅ Checklists
+##  Checklists
 
 ### Implementing ARC Solver
 
@@ -442,7 +442,7 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## 🎓 Learning Path
+## [graduation] Learning Path
 
 ### Beginner (Understanding)
 
@@ -469,7 +469,7 @@ Expected: 55%+ accuracy (current SOTA)
 
 ---
 
-## 🔬 Research Directions
+##  Research Directions
 
 **Path to 85%:**
 
@@ -506,4 +506,4 @@ Expected: 55%+ accuracy (current SOTA)
 
 **Unique Value:** Only complete guide to ARC 2024 breakthrough + transferable problem-solving strategies
 
-**You now have cutting-edge knowledge for building intelligent reasoning systems! 🧠**
+**You now have cutting-edge knowledge for building intelligent reasoning systems! [brain]**

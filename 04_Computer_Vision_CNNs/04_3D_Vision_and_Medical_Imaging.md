@@ -1,396 +1,551 @@
-# 3D Vision and Medical Imaging - Complete Guide
+# 3D Vision and Medical Imaging
 
 ## Table of Contents
+
 - [Introduction](#introduction)
-- [Medical Image Formats and Preprocessing](#medical-image-formats-and-preprocessing)
-- [3D CNNs](#3d-cnns)
-- [3D Medical Image Segmentation](#3d-medical-image-segmentation)
-- [Point Cloud Processing](#point-cloud-processing)
-- [Data Augmentation for Medical Imaging](#data-augmentation-for-medical-imaging)
-- [Transfer Learning for Medical Imaging](#transfer-learning-for-medical-imaging)
-- [Object Detection in Medical Images](#object-detection-in-medical-images)
+- [3D Data Formats](#3d-data-formats)
+  - [Volumetric Grids (Voxels)](#volumetric-grids-voxels)
+  - [Point Clouds](#point-clouds)
+  - [Meshes](#meshes)
+  - [DICOM Format](#dicom-format)
+  - [NIfTI Format](#nifti-format)
+- [Medical Image Preprocessing](#medical-image-preprocessing)
+  - [Hounsfield Unit Windowing](#hounsfield-unit-windowing)
+  - [Spacing Normalization](#spacing-normalization)
+  - [Intensity Normalization](#intensity-normalization)
+  - [Brain Extraction and Skull Stripping](#brain-extraction-and-skull-stripping)
+  - [N4 Bias Field Correction](#n4-bias-field-correction)
+  - [Registration and Atlas Alignment](#registration-and-atlas-alignment)
+- [3D CNN Architectures](#3d-cnn-architectures)
+  - [3D Convolutions](#3d-convolutions)
+  - [3D ResNet](#3d-resnet)
+  - [3D DenseNet](#3d-densenet)
+  - [SE-ResNet3D](#se-resnet3d)
+  - [I3D Inflated 3D ConvNets](#i3d-inflated-3d-convnets)
+  - [C3D for Video Understanding](#c3d-for-video-understanding)
+  - [Memory Considerations](#memory-considerations)
+- [3D U-Net for Medical Segmentation](#3d-u-net-for-medical-segmentation)
+  - [Standard 3D U-Net](#standard-3d-u-net)
+  - [V-Net](#v-net)
+  - [Attention U-Net](#attention-u-net)
+  - [nnU-Net](#nnu-net)
+  - [MONAI Framework](#monai-framework)
+- [Point Cloud Networks](#point-cloud-networks)
+  - [PointNet](#pointnet)
+  - [PointNet++](#pointnet-1)
+  - [DGCNN](#dgcnn)
+  - [Point Transformer](#point-transformer)
+  - [PointPillars](#pointpillars)
+- [3D Object Detection](#3d-object-detection)
+  - [VoxelNet](#voxelnet)
+  - [PointPillars for Detection](#pointpillars-for-detection)
+  - [CenterPoint](#centerpoint)
+  - [SECOND](#second)
+  - [BEV Methods](#bev-methods)
+- [Medical Image Classification](#medical-image-classification)
+  - [Patch-Based Classification](#patch-based-classification)
+  - [Multi-Instance Learning](#multi-instance-learning)
+  - [Transfer Learning 2D to 3D](#transfer-learning-2d-to-3d)
+  - [Class Imbalance Handling](#class-imbalance-handling)
 - [Radiomics and Feature Extraction](#radiomics-and-feature-extraction)
-- [Evaluation Metrics for Medical Imaging](#evaluation-metrics-for-medical-imaging)
+  - [PyRadiomics](#pyradiomics)
+  - [Texture Features](#texture-features)
+  - [Shape and First-Order Features](#shape-and-first-order-features)
+- [Neural Radiance Fields](#neural-radiance-fields)
+  - [NeRF Architecture](#nerf-architecture)
+  - [Positional Encoding](#positional-encoding)
+  - [Instant-NGP](#instant-ngp)
+  - [3D Gaussian Splatting](#3d-gaussian-splatting)
+- [Data Augmentation for 3D and Medical Imaging](#data-augmentation-for-3d-and-medical-imaging)
 - [Regulatory and Clinical Considerations](#regulatory-and-clinical-considerations)
-- [Resources and References](#resources-and-references)
+  - [FDA Clearance Pathways](#fda-clearance-pathways)
+  - [EU MDR and AI Act](#eu-mdr-and-ai-act)
+  - [Explainability for Clinical AI](#explainability-for-clinical-ai)
+  - [Dataset Bias and Fairness](#dataset-bias-and-fairness)
+- [See Also](#see-also)
+- [Resources](#resources)
 
 ---
 
 ## Introduction
 
-### The 3D Vision Landscape
+**3D vision** extends computer vision from 2D images (H x W) to volumetric data (D x H x W) or unstructured 3D representations such as point clouds and meshes. **Medical imaging** is one of the most important application domains for 3D vision, as modalities like CT, MRI, and PET produce inherently volumetric data.
 
-**3D vision** extends traditional 2D computer vision to volumetric data, enabling analysis of spatial relationships across depth. This is critical in:
+Key differences from standard 2D computer vision:
 
-- **Medical imaging**: CT, MRI, PET scans are inherently 3D
-- **Autonomous driving**: LiDAR point clouds for environment mapping
-- **Robotics**: 3D object manipulation and scene understanding
-- **Video understanding**: Temporal dimension as third axis
-- **AR/VR**: Depth estimation and 3D reconstruction
+- **Dimensionality**: 3D convolutions operate over three spatial axes, increasing parameter counts and memory requirements cubically compared to 2D.
+- **Anisotropic resolution**: Medical scans often have different resolutions along different axes (e.g., 0.5mm in-plane but 3mm slice thickness).
+- **Domain-specific preprocessing**: Raw medical images require specialized preprocessing (windowing, resampling, bias correction) before model input.
+- **Data scarcity**: Labeled 3D medical datasets are orders of magnitude smaller than ImageNet-scale 2D datasets due to annotation cost and privacy constraints.
+- **Regulatory requirements**: Clinical deployment requires regulatory approval, explainability, and rigorous validation beyond standard ML benchmarks.
+- **Specialized formats**: Medical images use DICOM and NIfTI formats that carry critical metadata (patient info, acquisition parameters, spatial orientation).
 
-### Medical Imaging Modalities
-
-**Computed Tomography (CT)**
-- X-ray based volumetric imaging
-- Excellent for bone and lung tissue
-- Hounsfield Units (HU) measure radiodensity
-- Typical resolution: 0.5-1mm isotropic
-
-**Magnetic Resonance Imaging (MRI)**
-- Uses magnetic fields and radio waves
-- Superior soft tissue contrast
-- Multiple sequences: T1, T2, FLAIR, DWI
-- No ionizing radiation
-
-**X-ray**
-- 2D projection imaging
-- Fast and widely available
-- Limited soft tissue contrast
-
-**Ultrasound**
-- Real-time imaging using sound waves
-- Safe for pregnancy, portable
-- Operator-dependent quality
-
-**Positron Emission Tomography (PET)**
-- Functional imaging showing metabolism
-- Often combined with CT (PET/CT)
-- Used for cancer staging
-
-### Why 3D Matters in Medical Imaging
-
-**Volumetric Context**
-- Tumors have 3D extent and irregular shapes
-- Organ segmentation requires spatial continuity
-- Pathology spreads in 3D space
-
-**Spatial Relationships**
-- Anatomical structures have consistent 3D topology
-- Distance to critical structures affects treatment planning
-- Vessel networks require 3D tracking
-
-**Clinical Decision Making**
-- Tumor volume is prognostic indicator
-- 3D visualization aids surgical planning
-- Radiation therapy requires precise 3D targeting
+The field spans two broad application areas: (1) **medical imaging AI** for diagnosis, segmentation, and treatment planning, and (2) **general 3D vision** for autonomous driving, robotics, augmented reality, and 3D reconstruction.
 
 ---
 
-## Medical Image Formats and Preprocessing
+## 3D Data Formats
+
+### Volumetric Grids (Voxels)
+
+**Voxels** (volumetric pixels) are the 3D analog of pixels. A volumetric grid is a regular 3D array of shape `(D, H, W)` where each element stores an intensity value, label, or feature vector.
+
+- **Advantages**: Regular structure allows standard 3D convolutions; straightforward extension of 2D methods.
+- **Disadvantages**: Memory scales as O(N^3); most voxels in sparse scenes are empty (wasted computation).
+- **Typical sizes**: Medical CT/MRI volumes range from 128x128x64 to 512x512x512. Larger volumes require patch-based processing.
+
+**Occupancy grids** are binary voxel grids indicating whether each cell is occupied. **Signed Distance Functions (SDF)** store the distance to the nearest surface at each voxel, with sign indicating inside/outside.
+
+### Point Clouds
+
+A **point cloud** is an unstructured set of 3D points `{(x_i, y_i, z_i)}` with optional per-point features (color, normal, intensity). Point clouds are the native output of LiDAR sensors and depth cameras.
+
+- **Advantages**: Memory-efficient for sparse 3D data; preserves fine geometric detail; no discretization artifacts.
+- **Disadvantages**: Unstructured and unordered, requiring specialized architectures; no regular grid for standard convolutions.
+- **Typical sizes**: Indoor scenes have 10K-1M points; outdoor LiDAR sweeps have 60K-120K points; dense reconstructions can reach tens of millions.
+
+### Meshes
+
+A **mesh** represents 3D surfaces as a collection of **vertices** (3D points) connected by **faces** (typically triangles). Meshes are the standard representation in computer graphics and CAD.
+
+- **Vertices**: List of (x, y, z) coordinates.
+- **Faces**: List of vertex index tuples defining polygons.
+- **Advantages**: Efficient surface representation; well-suited for rendering; compact for smooth surfaces.
+- **Disadvantages**: Topology changes are difficult; not directly compatible with standard neural network operations.
 
 ### DICOM Format
 
-**DICOM (Digital Imaging and Communications in Medicine)** is the standard for medical imaging data.
+**DICOM** (Digital Imaging and Communications in Medicine) is the universal standard for medical images. A single scan produces a **DICOM series** consisting of multiple **instances** (individual slice files), each containing:
+
+- **Pixel data**: The actual image array.
+- **Patient metadata**: Name, ID, age, sex (PHI -- Protected Health Information).
+- **Acquisition parameters**: Slice thickness, pixel spacing, tube voltage, repetition time.
+- **Spatial information**: Image position, image orientation, slice location.
+- **Series/Study UIDs**: Unique identifiers linking slices to series and studies.
 
 ```python
 import pydicom
 import numpy as np
-import matplotlib.pyplot as plt
+import os
 from pathlib import Path
 
-def load_dicom_series(dicom_folder):
-    """Load a complete DICOM series from folder."""
-    # Get all DICOM files
-    dicom_files = sorted(Path(dicom_folder).glob('*.dcm'))
 
-    # Read first file to get metadata
-    ref_dicom = pydicom.dcmread(str(dicom_files[0]))
+def load_dicom_series(dicom_dir):
+    """Load a DICOM series from a directory into a 3D volume."""
+    # Read all DICOM files in directory
+    dicom_files = []
+    for fname in os.listdir(dicom_dir):
+        fpath = os.path.join(dicom_dir, fname)
+        try:
+            ds = pydicom.dcmread(fpath)
+            dicom_files.append(ds)
+        except Exception:
+            continue  # Skip non-DICOM files
 
-    # Extract image dimensions
-    pixel_dims = (int(ref_dicom.Rows), int(ref_dicom.Columns), len(dicom_files))
-    pixel_spacing = (float(ref_dicom.PixelSpacing[0]),
-                     float(ref_dicom.PixelSpacing[1]),
-                     float(ref_dicom.SliceThickness))
+    if not dicom_files:
+        raise ValueError(f"No DICOM files found in {dicom_dir}")
 
-    # Create 3D volume
-    volume = np.zeros(pixel_dims, dtype=ref_dicom.pixel_array.dtype)
+    # Sort by ImagePositionPatient (z-coordinate) or InstanceNumber
+    dicom_files.sort(key=lambda x: float(x.ImagePositionPatient[2]))
 
-    # Load all slices
-    for i, dicom_file in enumerate(dicom_files):
-        ds = pydicom.dcmread(str(dicom_file))
-        volume[:, :, i] = ds.pixel_array
+    # Extract metadata
+    pixel_spacing = dicom_files[0].PixelSpacing
+    slice_thickness = dicom_files[0].SliceThickness
+    spacing = np.array([
+        float(slice_thickness),
+        float(pixel_spacing[0]),
+        float(pixel_spacing[1])
+    ])
 
-    return volume, pixel_spacing, ref_dicom
+    # Stack slices into 3D volume
+    slices = []
+    for ds in dicom_files:
+        # Apply RescaleSlope and RescaleIntercept to get Hounsfield Units
+        pixel_array = ds.pixel_array.astype(np.float32)
+        slope = float(getattr(ds, "RescaleSlope", 1))
+        intercept = float(getattr(ds, "RescaleIntercept", 0))
+        pixel_array = pixel_array * slope + intercept
+        slices.append(pixel_array)
 
-def extract_dicom_metadata(dicom_header):
-    """Extract key metadata from DICOM header."""
-    metadata = {
-        'PatientID': dicom_header.get('PatientID', 'Unknown'),
-        'StudyDate': dicom_header.get('StudyDate', 'Unknown'),
-        'Modality': dicom_header.get('Modality', 'Unknown'),
-        'SeriesDescription': dicom_header.get('SeriesDescription', 'Unknown'),
-        'ManufacturerModelName': dicom_header.get('ManufacturerModelName', 'Unknown'),
-        'KVP': dicom_header.get('KVP', None),  # For CT
-        'SliceThickness': dicom_header.get('SliceThickness', None),
-        'PixelSpacing': dicom_header.get('PixelSpacing', None),
-    }
-    return metadata
+    volume = np.stack(slices, axis=0)  # Shape: (D, H, W)
 
-# Example usage
-volume, spacing, header = load_dicom_series('/path/to/dicom/folder')
-metadata = extract_dicom_metadata(header)
-print(f"Volume shape: {volume.shape}")
-print(f"Spacing (mm): {spacing}")
-print(f"Modality: {metadata['Modality']}")
+    print(f"Volume shape: {volume.shape}")
+    print(f"Spacing (D, H, W): {spacing} mm")
+    print(f"HU range: [{volume.min():.0f}, {volume.max():.0f}]")
+
+    return volume, spacing, dicom_files[0]
+
+
+# Usage
+# volume, spacing, ref_dcm = load_dicom_series("/path/to/dicom/series/")
 ```
 
 ### NIfTI Format
 
-**NIfTI (Neuroimaging Informatics Technology Initiative)** is common in research, especially neuroimaging.
+**NIfTI** (Neuroimaging Informatics Technology Initiative) is the standard format for neuroimaging research. Unlike DICOM (one file per slice), NIfTI stores the entire 3D (or 4D) volume in a single file.
+
+- **File extensions**: `.nii` (uncompressed) or `.nii.gz` (gzip compressed).
+- **Header**: Contains dimensions, voxel sizes, data type, and an **affine matrix** encoding the mapping from voxel indices to world coordinates (typically MNI or scanner space).
+- **Affine matrix**: A 4x4 transformation matrix enabling spatial alignment across subjects.
 
 ```python
 import nibabel as nib
 import numpy as np
 
-def load_nifti(nifti_path):
-    """Load NIfTI file with proper orientation."""
-    nii = nib.load(nifti_path)
 
-    # Get image data
-    volume = nii.get_fdata()
+def load_nifti(filepath):
+    """Load a NIfTI file and extract volume, affine, and header info."""
+    nii = nib.load(filepath)
 
-    # Get affine transformation matrix
+    # Get volume data as numpy array
+    volume = nii.get_fdata().astype(np.float32)
+
+    # Get affine matrix (voxel-to-world mapping)
     affine = nii.affine
 
-    # Get voxel spacing
-    spacing = nii.header.get_zooms()
+    # Get header info
+    header = nii.header
+    voxel_sizes = header.get_zooms()  # Voxel dimensions in mm
 
-    return volume, affine, spacing
+    print(f"Volume shape: {volume.shape}")
+    print(f"Voxel sizes: {voxel_sizes} mm")
+    print(f"Data type: {header.get_data_dtype()}")
+    print(f"Affine matrix:\n{affine}")
 
-def save_nifti(volume, affine, output_path):
-    """Save volume as NIfTI file."""
-    nii = nib.Nifti1Image(volume, affine)
-    nib.save(nii, output_path)
+    return volume, affine, header
 
-# Example usage
-volume, affine, spacing = load_nifti('brain_mri.nii.gz')
-print(f"Volume shape: {volume.shape}")
-print(f"Voxel spacing: {spacing}")
-print(f"Affine matrix:\n{affine}")
-```
 
-### CT Windowing
+def save_nifti(volume, affine, filepath):
+    """Save a numpy array as a NIfTI file."""
+    nii = nib.Nifti1Image(volume.astype(np.float32), affine)
+    nib.save(nii, filepath)
+    print(f"Saved NIfTI to {filepath}")
 
-**Windowing** adjusts contrast by mapping HU values to display range.
 
-```python
-def apply_ct_window(ct_volume, window_center, window_width):
-    """Apply CT windowing (level/width adjustment)."""
-    lower_bound = window_center - (window_width / 2)
-    upper_bound = window_center + (window_width / 2)
-
-    windowed = np.clip(ct_volume, lower_bound, upper_bound)
-    windowed = (windowed - lower_bound) / window_width
-
-    return windowed
-
-def get_preset_window(preset_name):
-    """Get common CT window presets."""
-    presets = {
-        'lung': {'center': -600, 'width': 1500},
-        'bone': {'center': 300, 'width': 1500},
-        'soft_tissue': {'center': 40, 'width': 400},
-        'brain': {'center': 40, 'width': 80},
-        'liver': {'center': 30, 'width': 150},
-        'mediastinum': {'center': 50, 'width': 350},
-    }
-    return presets.get(preset_name, {'center': 0, 'width': 400})
-
-# Example: Apply different windows
-ct_scan, _, _ = load_dicom_series('/path/to/ct')
-
-lung_window = apply_ct_window(ct_scan, **get_preset_window('lung'))
-bone_window = apply_ct_window(ct_scan, **get_preset_window('bone'))
-brain_window = apply_ct_window(ct_scan, **get_preset_window('brain'))
-
-# Visualize
-fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-axes[0].imshow(lung_window[:, :, ct_scan.shape[2]//2], cmap='gray')
-axes[0].set_title('Lung Window')
-axes[1].imshow(bone_window[:, :, ct_scan.shape[2]//2], cmap='gray')
-axes[1].set_title('Bone Window')
-axes[2].imshow(brain_window[:, :, ct_scan.shape[2]//2], cmap='gray')
-axes[2].set_title('Brain Window')
-plt.tight_layout()
-```
-
-### MRI Normalization Techniques
-
-```python
-from scipy.ndimage import zoom
-import SimpleITK as sitk
-
-def n4_bias_correction(mri_volume, shrink_factor=4, iterations=50):
-    """Apply N4 bias field correction to MRI."""
-    # Convert numpy to SimpleITK
-    image = sitk.GetImageFromArray(mri_volume)
-
-    # Create mask (non-zero voxels)
-    mask = sitk.OtsuThreshold(image, 0, 1, 200)
-
-    # Apply N4 bias correction
-    corrector = sitk.N4BiasFieldCorrectionImageFilter()
-    corrector.SetMaximumNumberOfIterations([iterations] * 4)
-
-    corrected = corrector.Execute(image, mask)
-
-    return sitk.GetArrayFromImage(corrected)
-
-def zscore_normalize(volume, mask=None):
-    """Z-score normalization (zero mean, unit variance)."""
-    if mask is not None:
-        mean = volume[mask > 0].mean()
-        std = volume[mask > 0].std()
-    else:
-        mean = volume.mean()
-        std = volume.std()
-
-    normalized = (volume - mean) / (std + 1e-8)
-    return normalized
-
-def percentile_normalize(volume, lower=1, upper=99):
-    """Normalize based on percentiles to handle outliers."""
-    lower_val = np.percentile(volume, lower)
-    upper_val = np.percentile(volume, upper)
-
-    volume = np.clip(volume, lower_val, upper_val)
-    volume = (volume - lower_val) / (upper_val - lower_val)
-
-    return volume
-
-# Example usage
-mri_scan, _, _ = load_nifti('brain_t1.nii.gz')
-
-# Bias correction
-corrected_mri = n4_bias_correction(mri_scan)
-
-# Z-score normalization
-normalized_mri = zscore_normalize(corrected_mri)
-
-# Percentile normalization (robust to outliers)
-percentile_normalized = percentile_normalize(mri_scan)
-```
-
-### Resampling to Isotropic Spacing
-
-```python
-def resample_to_isotropic(volume, original_spacing, target_spacing=1.0):
-    """Resample volume to isotropic spacing."""
-    # Calculate zoom factors
-    zoom_factors = np.array(original_spacing) / target_spacing
-
-    # Resample
-    resampled = zoom(volume, zoom_factors, order=3)  # cubic interpolation
-
-    return resampled
-
-def resample_sitk(volume, original_spacing, target_spacing, interpolation='linear'):
-    """Resample using SimpleITK for better quality."""
-    # Convert to SimpleITK image
-    image = sitk.GetImageFromArray(volume)
-    image.SetSpacing(original_spacing[::-1])  # ITK uses reverse order
-
-    # Calculate new size
-    original_size = np.array(volume.shape[::-1])
-    new_size = (original_size * np.array(original_spacing) /
-                np.array([target_spacing] * 3)).astype(int)
-
-    # Set up resampler
-    resampler = sitk.ResampleImageFilter()
-    resampler.SetOutputSpacing([target_spacing] * 3)
-    resampler.SetSize(new_size.tolist())
-    resampler.SetOutputDirection(image.GetDirection())
-    resampler.SetOutputOrigin(image.GetOrigin())
-    resampler.SetTransform(sitk.Transform())
-
-    if interpolation == 'linear':
-        resampler.SetInterpolator(sitk.sitkLinear)
-    elif interpolation == 'nearest':
-        resampler.SetInterpolator(sitk.sitkNearestNeighbor)
-    elif interpolation == 'bspline':
-        resampler.SetInterpolator(sitk.sitkBSpline)
-
-    resampled = resampler.Execute(image)
-    return sitk.GetArrayFromImage(resampled)
-
-# Example
-ct_volume, spacing, _ = load_dicom_series('/path/to/ct')
-print(f"Original spacing: {spacing}")
-print(f"Original shape: {ct_volume.shape}")
-
-# Resample to 1mm isotropic
-isotropic_volume = resample_to_isotropic(ct_volume, spacing, target_spacing=1.0)
-print(f"Resampled shape: {isotropic_volume.shape}")
-```
-
-### Intensity Normalization and Clipping
-
-```python
-def clip_and_normalize_ct(ct_volume, min_hu=-1000, max_hu=400):
-    """Clip CT values and normalize to [0, 1]."""
-    clipped = np.clip(ct_volume, min_hu, max_hu)
-    normalized = (clipped - min_hu) / (max_hu - min_hu)
-    return normalized
-
-def standardize_intensity(volume, mean=None, std=None):
-    """Standardize to specific mean and std."""
-    if mean is None:
-        mean = volume.mean()
-    if std is None:
-        std = volume.std()
-
-    standardized = (volume - volume.mean()) / (volume.std() + 1e-8)
-    standardized = standardized * std + mean
-
-    return standardized
-
-# Complete preprocessing pipeline
-def preprocess_ct_scan(dicom_folder, target_spacing=1.0, clip_range=(-1000, 400)):
-    """Complete CT preprocessing pipeline."""
-    # Load DICOM series
-    volume, spacing, header = load_dicom_series(dicom_folder)
-
-    # Resample to isotropic
-    volume = resample_to_isotropic(volume, spacing, target_spacing)
-
-    # Clip and normalize
-    volume = clip_and_normalize_ct(volume, *clip_range)
-
-    return volume
+# Usage
+# volume, affine, header = load_nifti("/path/to/brain.nii.gz")
+# save_nifti(processed_volume, affine, "/path/to/output.nii.gz")
 ```
 
 ---
 
-## 3D CNNs
+## Medical Image Preprocessing
 
-### 3D Convolution Operation
+### Hounsfield Unit Windowing
 
-**3D convolution** extends 2D convolution with an additional spatial dimension:
-- **Kernel dimensions**: (D, H, W) instead of (H, W)
-- **Parameters**: For C_in input channels, C_out output channels, kernel size k: `C_out * C_in * k * k * k + C_out` (bias)
-- **Computational cost**: Significantly higher than 2D (cubic vs quadratic)
+In CT imaging, voxel values are measured in **Hounsfield Units (HU)**, a standardized scale where water = 0 HU and air = -1000 HU. **Windowing** maps a specific HU range to the display range [0, 1] to highlight different tissue types:
 
-### 3D CNN Architectures
+| Window Name   | Center (HU) | Width (HU) | Range (HU)       | Use Case                  |
+|---------------|-------------|------------|-------------------|---------------------------|
+| Soft Tissue   | 50          | 400        | [-150, 250]       | Abdomen, general          |
+| Lung          | -600        | 1500       | [-1350, 150]      | Lung parenchyma           |
+| Bone          | 400         | 1800       | [-500, 1300]      | Skeletal structures       |
+| Brain         | 40          | 80         | [0, 80]           | Intracranial soft tissue  |
+| Liver         | 60          | 160        | [-20, 140]        | Hepatic imaging           |
+| Mediastinum   | 50          | 350        | [-125, 225]       | Chest mediastinum         |
+
+Common clinical ranges (alternative specification as [min, max]):
+
+- **Soft tissue**: [-100, 300]
+- **Lung**: [-1000, 400]
+- **Bone**: [-200, 2000]
+
+```python
+def apply_hu_window(volume, window_min, window_max):
+    """Apply HU windowing to a CT volume."""
+    volume = np.clip(volume, window_min, window_max)
+    volume = (volume - window_min) / (window_max - window_min)
+    return volume.astype(np.float32)
+
+
+# Soft tissue window
+soft_tissue = apply_hu_window(volume, -100, 300)
+
+# Lung window
+lung = apply_hu_window(volume, -1000, 400)
+
+# Bone window
+bone = apply_hu_window(volume, -200, 2000)
+```
+
+### Spacing Normalization
+
+Medical images have **anisotropic voxel spacing** -- the physical distance between voxels differs along axes. For example, a CT scan might have 0.7mm x 0.7mm in-plane resolution but 5mm slice thickness. **Resampling to isotropic voxels** ensures uniform spatial resolution.
+
+```python
+from scipy.ndimage import zoom
+
+
+def resample_volume(volume, original_spacing, target_spacing=(1.0, 1.0, 1.0)):
+    """Resample volume to target isotropic spacing."""
+    original_spacing = np.array(original_spacing, dtype=np.float64)
+    target_spacing = np.array(target_spacing, dtype=np.float64)
+
+    # Compute zoom factors
+    zoom_factors = original_spacing / target_spacing
+
+    # Resample using spline interpolation
+    resampled = zoom(volume, zoom_factors, order=3)  # order=3 for cubic
+
+    print(f"Original shape: {volume.shape}, spacing: {original_spacing}")
+    print(f"Resampled shape: {resampled.shape}, spacing: {target_spacing}")
+
+    return resampled
+
+
+def resample_mask(mask, original_spacing, target_spacing=(1.0, 1.0, 1.0)):
+    """Resample a segmentation mask (use nearest-neighbor interpolation)."""
+    original_spacing = np.array(original_spacing, dtype=np.float64)
+    target_spacing = np.array(target_spacing, dtype=np.float64)
+    zoom_factors = original_spacing / target_spacing
+
+    # order=0 for nearest-neighbor (preserves label values)
+    resampled = zoom(mask, zoom_factors, order=0)
+    return resampled
+```
+
+### Intensity Normalization
+
+Different normalization strategies suit different modalities:
+
+- **Z-score normalization**: Subtract mean, divide by standard deviation. Standard for MRI where absolute intensities are not standardized.
+- **Min-max normalization**: Scale to [0, 1] range. Simple but sensitive to outliers.
+- **Percentile clipping**: Clip at 0.5th and 99.5th percentiles before normalization. Robust to outlier voxels.
+
+```python
+def zscore_normalize(volume, mask=None):
+    """Z-score normalization, optionally within a foreground mask."""
+    if mask is not None:
+        foreground = volume[mask > 0]
+        mean_val = foreground.mean()
+        std_val = foreground.std()
+    else:
+        mean_val = volume.mean()
+        std_val = volume.std()
+
+    normalized = (volume - mean_val) / (std_val + 1e-8)
+    return normalized.astype(np.float32)
+
+
+def percentile_clip_normalize(volume, lower=0.5, upper=99.5):
+    """Clip to percentile range then normalize to [0, 1]."""
+    p_low = np.percentile(volume, lower)
+    p_high = np.percentile(volume, upper)
+    volume = np.clip(volume, p_low, p_high)
+    volume = (volume - p_low) / (p_high - p_low + 1e-8)
+    return volume.astype(np.float32)
+```
+
+### Brain Extraction and Skull Stripping
+
+**Skull stripping** removes non-brain tissue (skull, scalp, meninges) from MRI scans. This is critical for neuroimaging analyses to avoid confounds from non-brain structures.
+
+Common tools:
+
+- **BET** (Brain Extraction Tool, FSL): Fast, threshold-based surface evolution.
+- **HD-BET**: Deep learning-based, more accurate than BET on challenging cases.
+- **SynthStrip**: Robust to contrast variations, works on any MRI sequence.
+- **ANTs Brain Extraction**: Template-based approach using registration.
+
+### N4 Bias Field Correction
+
+MRI images suffer from **bias field inhomogeneity** -- a smooth, low-frequency intensity variation across the image caused by RF coil non-uniformity. **N4ITK** (improved N3) corrects this multiplicative bias field.
+
+```python
+import SimpleITK as sitk
+
+
+def n4_bias_field_correction(input_path, output_path, shrink_factor=4):
+    """Apply N4 bias field correction to an MRI volume."""
+    # Read image
+    input_image = sitk.ReadImage(input_path, sitk.sitkFloat32)
+
+    # Create a brain mask (threshold-based for simplicity)
+    mask_filter = sitk.OtsuThresholdImageFilter()
+    mask_filter.SetInsideValue(0)
+    mask_filter.SetOutsideValue(1)
+    mask = mask_filter.Execute(input_image)
+
+    # Shrink for faster processing
+    shrunk_image = sitk.Shrink(
+        input_image, [shrink_factor] * input_image.GetDimension()
+    )
+    shrunk_mask = sitk.Shrink(
+        mask, [shrink_factor] * mask.GetDimension()
+    )
+
+    # N4 correction
+    corrector = sitk.N4BiasFieldCorrectionImageFilter()
+    corrector.SetMaximumNumberOfIterations([50, 50, 50, 50])
+    corrector.SetConvergenceThreshold(0.001)
+    corrected = corrector.Execute(shrunk_image, shrunk_mask)
+
+    # Get the bias field and apply to full-resolution image
+    log_bias_field = corrector.GetLogBiasFieldAsImage(input_image)
+    corrected_full = input_image / sitk.Exp(log_bias_field)
+
+    sitk.WriteImage(corrected_full, output_path)
+    print(f"N4 corrected image saved to {output_path}")
+    return corrected_full
+```
+
+### Registration and Atlas Alignment
+
+**Image registration** aligns images from different subjects, time points, or modalities into a common coordinate system. This enables voxel-wise comparisons and atlas-based analyses.
+
+- **Rigid registration**: 6 degrees of freedom (3 translation + 3 rotation). Used for intra-subject alignment.
+- **Affine registration**: 12 degrees of freedom (rigid + scaling + shearing). Corrects for global shape differences.
+- **Deformable registration**: Non-linear, dense displacement fields. Captures local anatomical variability.
+- **Atlas-based**: Align to a standard template (e.g., MNI152 for brain). Enables group analyses.
+
+Tools: **ANTs** (SyN algorithm, gold standard for deformable), **FSL FLIRT/FNIRT**, **SimpleITK**, **VoxelMorph** (deep learning-based).
+
+**Complete CT preprocessing pipeline:**
+
+```python
+import numpy as np
+from scipy.ndimage import zoom
+
+
+def ct_preprocessing_pipeline(volume, spacing, target_spacing=(1.0, 1.0, 1.0),
+                               hu_window=(-100, 300)):
+    """
+    Complete CT preprocessing pipeline.
+
+    Steps:
+    1. Resample to isotropic spacing
+    2. Apply HU windowing
+    3. Normalize to [0, 1]
+    """
+    # Step 1: Resample to target spacing
+    zoom_factors = np.array(spacing) / np.array(target_spacing)
+    volume_resampled = zoom(volume, zoom_factors, order=3)
+
+    # Step 2: HU windowing
+    hu_min, hu_max = hu_window
+    volume_windowed = np.clip(volume_resampled, hu_min, hu_max)
+
+    # Step 3: Normalize to [0, 1]
+    volume_normalized = (volume_windowed - hu_min) / (hu_max - hu_min)
+
+    print(f"CT pipeline: {volume.shape} -> {volume_normalized.shape}")
+    print(f"Spacing: {spacing} -> {target_spacing}")
+    print(f"HU window: [{hu_min}, {hu_max}]")
+
+    return volume_normalized.astype(np.float32)
+
+
+def ct_preprocessing_with_mask(volume, mask, spacing,
+                                target_spacing=(1.0, 1.0, 1.0),
+                                hu_window=(-100, 300)):
+    """CT preprocessing with corresponding segmentation mask."""
+    zoom_factors = np.array(spacing) / np.array(target_spacing)
+
+    volume_resampled = zoom(volume, zoom_factors, order=3)
+    mask_resampled = zoom(mask, zoom_factors, order=0)  # Nearest for labels
+
+    hu_min, hu_max = hu_window
+    volume_windowed = np.clip(volume_resampled, hu_min, hu_max)
+    volume_normalized = (volume_windowed - hu_min) / (hu_max - hu_min)
+
+    return volume_normalized.astype(np.float32), mask_resampled.astype(np.int64)
+```
+
+**MRI preprocessing pipeline:**
+
+```python
+import SimpleITK as sitk
+import numpy as np
+
+
+def mri_preprocessing_pipeline(input_path, output_path,
+                                target_spacing=(1.0, 1.0, 1.0),
+                                do_bias_correction=True,
+                                do_skull_strip=False):
+    """
+    Complete MRI preprocessing pipeline.
+
+    Steps:
+    1. N4 bias field correction
+    2. Resample to isotropic spacing
+    3. Z-score intensity normalization
+    """
+    image = sitk.ReadImage(input_path, sitk.sitkFloat32)
+
+    # Step 1: N4 bias field correction
+    if do_bias_correction:
+        mask_filter = sitk.OtsuThresholdImageFilter()
+        mask_filter.SetInsideValue(0)
+        mask_filter.SetOutsideValue(1)
+        mask = mask_filter.Execute(image)
+
+        corrector = sitk.N4BiasFieldCorrectionImageFilter()
+        corrector.SetMaximumNumberOfIterations([50, 50, 30, 20])
+        image = corrector.Execute(image, mask)
+
+    # Step 2: Resample to isotropic spacing
+    original_spacing = image.GetSpacing()
+    original_size = image.GetSize()
+    new_size = [
+        int(round(osz * ospc / tspc))
+        for osz, ospc, tspc in zip(original_size, original_spacing, target_spacing)
+    ]
+
+    resampler = sitk.ResampleImageFilter()
+    resampler.SetOutputSpacing(target_spacing)
+    resampler.SetSize(new_size)
+    resampler.SetOutputDirection(image.GetDirection())
+    resampler.SetOutputOrigin(image.GetOrigin())
+    resampler.SetInterpolator(sitk.sitkBSpline)
+    image = resampler.Execute(image)
+
+    # Step 3: Z-score normalization
+    volume = sitk.GetArrayFromImage(image).astype(np.float32)
+
+    # Compute stats on foreground (non-zero voxels)
+    foreground = volume[volume > 0]
+    if len(foreground) > 0:
+        mean_val = foreground.mean()
+        std_val = foreground.std()
+        volume = (volume - mean_val) / (std_val + 1e-8)
+
+    # Convert back to SimpleITK and save
+    result = sitk.GetImageFromArray(volume)
+    result.CopyInformation(image)
+    sitk.WriteImage(result, output_path)
+
+    print(f"MRI pipeline complete: {output_path}")
+    return result
+```
+
+---
+
+## 3D CNN Architectures
+
+### 3D Convolutions
+
+A **3D convolution** extends the 2D convolution by adding a depth dimension to the kernel. For a kernel of size `(k_d, k_h, k_w)`, the operation slides across three spatial dimensions.
+
+```
+Conv3d(in_channels, out_channels, kernel_size=3, stride=1, padding=1)
+```
+
+- **Parameters**: For a 3x3x3 kernel with C_in input channels and C_out output channels: `C_out x C_in x 3 x 3 x 3` weights.
+- **Computation**: A single 3D conv layer with 64 input and 64 output channels using 3x3x3 kernels has 64 x 64 x 27 = 110,592 parameters (plus bias).
+- **Memory**: Feature maps scale cubically with spatial dimensions. A 128x128x128 volume with 64 channels requires 128 MB in float32.
+
+### 3D ResNet
+
+**3D ResNet** extends ResNet to volumetric data by replacing all 2D operations with 3D counterparts.
 
 ```python
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-class Conv3DBlock(nn.Module):
-    """3D Convolution block with BatchNorm and ReLU."""
-    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1):
-        super().__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size,
-                              stride=stride, padding=padding, bias=False)
-        self.bn = nn.BatchNorm3d(out_channels)
-        self.relu = nn.ReLU(inplace=True)
-
-    def forward(self, x):
-        return self.relu(self.bn(self.conv(x)))
 
 class ResBlock3D(nn.Module):
-    """3D Residual block."""
+    """3D residual block with two 3x3x3 convolutions."""
+
     def __init__(self, in_channels, out_channels, stride=1):
         super().__init__()
         self.conv1 = nn.Conv3d(in_channels, out_channels, kernel_size=3,
@@ -399,2535 +554,1434 @@ class ResBlock3D(nn.Module):
         self.conv2 = nn.Conv3d(out_channels, out_channels, kernel_size=3,
                                stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm3d(out_channels)
+        self.relu = nn.ReLU(inplace=True)
 
-        # Shortcut connection
-        self.shortcut = nn.Sequential()
+        self.downsample = None
         if stride != 1 or in_channels != out_channels:
-            self.shortcut = nn.Sequential(
+            self.downsample = nn.Sequential(
                 nn.Conv3d(in_channels, out_channels, kernel_size=1,
                           stride=stride, bias=False),
                 nn.BatchNorm3d(out_channels)
             )
 
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
+        identity = x
+        out = self.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        out += self.shortcut(x)
-        out = F.relu(out)
-        return out
+        if self.downsample is not None:
+            identity = self.downsample(x)
+        out += identity
+        return self.relu(out)
+
 
 class ResNet3D(nn.Module):
-    """3D ResNet for volumetric data."""
-    def __init__(self, num_classes=2, in_channels=1):
-        super().__init__()
-        self.in_channels = 64
+    """3D ResNet for volumetric classification."""
 
-        # Initial convolution
-        self.conv1 = nn.Conv3d(in_channels, 64, kernel_size=7, stride=2,
-                               padding=3, bias=False)
-        self.bn1 = nn.BatchNorm3d(64)
-        self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
-
-        # Residual layers
-        self.layer1 = self._make_layer(64, 2, stride=1)
-        self.layer2 = self._make_layer(128, 2, stride=2)
-        self.layer3 = self._make_layer(256, 2, stride=2)
-        self.layer4 = self._make_layer(512, 2, stride=2)
-
-        # Global average pooling and classifier
-        self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
-        self.fc = nn.Linear(512, num_classes)
-
-    def _make_layer(self, out_channels, num_blocks, stride):
-        layers = []
-        layers.append(ResBlock3D(self.in_channels, out_channels, stride))
-        self.in_channels = out_channels
-        for _ in range(1, num_blocks):
-            layers.append(ResBlock3D(out_channels, out_channels, 1))
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = self.maxpool(x)
-
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
-
-        x = self.avgpool(x)
-        x = torch.flatten(x, 1)
-        x = self.fc(x)
-
-        return x
-
-# Example usage
-model = ResNet3D(num_classes=3, in_channels=1)
-input_volume = torch.randn(2, 1, 64, 64, 64)  # Batch of 2, 64^3 volumes
-output = model(input_volume)
-print(f"Input shape: {input_volume.shape}")
-print(f"Output shape: {output.shape}")
-```
-
-### Video Understanding Models
-
-```python
-class C3D(nn.Module):
-    """C3D network for video classification."""
-    def __init__(self, num_classes=101, dropout=0.5):
+    def __init__(self, in_channels=1, num_classes=2,
+                 channels=(64, 128, 256, 512), blocks_per_stage=(2, 2, 2, 2)):
         super().__init__()
 
-        self.conv1 = nn.Conv3d(3, 64, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.pool1 = nn.MaxPool3d(kernel_size=(1, 2, 2), stride=(1, 2, 2))
+        # Stem
+        self.stem = nn.Sequential(
+            nn.Conv3d(in_channels, channels[0], kernel_size=7,
+                      stride=2, padding=3, bias=False),
+            nn.BatchNorm3d(channels[0]),
+            nn.ReLU(inplace=True),
+            nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
+        )
 
-        self.conv2 = nn.Conv3d(64, 128, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.pool2 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2))
+        # Residual stages
+        self.stages = nn.ModuleList()
+        in_ch = channels[0]
+        for i, (out_ch, num_blocks) in enumerate(
+            zip(channels, blocks_per_stage)
+        ):
+            stride = 1 if i == 0 else 2
+            blocks = [ResBlock3D(in_ch, out_ch, stride=stride)]
+            for _ in range(1, num_blocks):
+                blocks.append(ResBlock3D(out_ch, out_ch))
+            self.stages.append(nn.Sequential(*blocks))
+            in_ch = out_ch
 
-        self.conv3a = nn.Conv3d(128, 256, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.conv3b = nn.Conv3d(256, 256, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.pool3 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2))
-
-        self.conv4a = nn.Conv3d(256, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.conv4b = nn.Conv3d(512, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.pool4 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2))
-
-        self.conv5a = nn.Conv3d(512, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.conv5b = nn.Conv3d(512, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.pool5 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=(0, 1, 1))
-
-        self.fc6 = nn.Linear(8192, 4096)
-        self.fc7 = nn.Linear(4096, 4096)
-        self.fc8 = nn.Linear(4096, num_classes)
-
-        self.dropout = nn.Dropout(p=dropout)
-        self.relu = nn.ReLU()
+        # Classification head
+        self.global_pool = nn.AdaptiveAvgPool3d(1)
+        self.fc = nn.Linear(channels[-1], num_classes)
 
     def forward(self, x):
-        # x shape: (batch, channels, depth, height, width)
-        x = self.relu(self.conv1(x))
-        x = self.pool1(x)
+        x = self.stem(x)
+        for stage in self.stages:
+            x = stage(x)
+        x = self.global_pool(x).flatten(1)
+        return self.fc(x)
 
-        x = self.relu(self.conv2(x))
-        x = self.pool2(x)
 
-        x = self.relu(self.conv3a(x))
-        x = self.relu(self.conv3b(x))
-        x = self.pool3(x)
-
-        x = self.relu(self.conv4a(x))
-        x = self.relu(self.conv4b(x))
-        x = self.pool4(x)
-
-        x = self.relu(self.conv5a(x))
-        x = self.relu(self.conv5b(x))
-        x = self.pool5(x)
-
-        x = x.view(-1, 8192)
-        x = self.relu(self.fc6(x))
-        x = self.dropout(x)
-        x = self.relu(self.fc7(x))
-        x = self.dropout(x)
-
-        logits = self.fc8(x)
-
-        return logits
+# Usage
+model = ResNet3D(in_channels=1, num_classes=3)
+x = torch.randn(2, 1, 64, 64, 64)  # (B, C, D, H, W)
+out = model(x)
+print(f"Output shape: {out.shape}")  # (2, 3)
 ```
 
-### Memory Management for 3D Volumes
+### 3D DenseNet
+
+**3D DenseNet** uses dense connections within each block, where every layer receives feature maps from all preceding layers. This promotes feature reuse and reduces the number of parameters needed compared to ResNet.
+
+Key differences from 3D ResNet:
+- Each layer outputs `k` feature maps (the **growth rate**), and all are concatenated.
+- **Transition layers** between blocks use 1x1x1 convolution and 3D average pooling to reduce dimensions.
+- More parameter-efficient but memory-intensive due to concatenation.
+
+### SE-ResNet3D
+
+**Squeeze-and-Excitation (SE)** blocks add channel attention to 3D ResNets. The SE block:
+
+1. **Squeeze**: Global average pooling over spatial dimensions to produce a channel descriptor.
+2. **Excitation**: Two FC layers (reduce then expand) with sigmoid to produce per-channel weights.
+3. **Scale**: Multiply original feature maps by channel weights.
 
 ```python
-class PatchDataset(torch.utils.data.Dataset):
-    """Dataset that extracts patches from 3D volumes."""
-    def __init__(self, volume_paths, patch_size=(64, 64, 64),
-                 stride=(32, 32, 32), transform=None):
-        self.volume_paths = volume_paths
-        self.patch_size = patch_size
-        self.stride = stride
-        self.transform = transform
+class SE3DBlock(nn.Module):
+    """Squeeze-and-Excitation block for 3D feature maps."""
 
-        # Pre-compute patch locations for each volume
-        self.patch_locations = []
-        for vol_path in volume_paths:
-            volume, _, _ = load_nifti(vol_path)
-            patches = self._get_patch_locations(volume.shape)
-            self.patch_locations.extend([(vol_path, loc) for loc in patches])
+    def __init__(self, channels, reduction=16):
+        super().__init__()
+        self.squeeze = nn.AdaptiveAvgPool3d(1)
+        self.excitation = nn.Sequential(
+            nn.Linear(channels, channels // reduction, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Linear(channels // reduction, channels, bias=False),
+            nn.Sigmoid()
+        )
 
-    def _get_patch_locations(self, volume_shape):
-        """Get all valid patch locations in volume."""
-        locations = []
-        for z in range(0, volume_shape[0] - self.patch_size[0] + 1, self.stride[0]):
-            for y in range(0, volume_shape[1] - self.patch_size[1] + 1, self.stride[1]):
-                for x in range(0, volume_shape[2] - self.patch_size[2] + 1, self.stride[2]):
-                    locations.append((z, y, x))
-        return locations
+    def forward(self, x):
+        b, c, _, _, _ = x.shape
+        w = self.squeeze(x).view(b, c)
+        w = self.excitation(w).view(b, c, 1, 1, 1)
+        return x * w
+```
 
-    def __len__(self):
-        return len(self.patch_locations)
+### I3D Inflated 3D ConvNets
 
-    def __getitem__(self, idx):
-        vol_path, (z, y, x) = self.patch_locations[idx]
+**I3D** (Inflated Inception-V1) converts a pretrained 2D CNN to 3D by "inflating" 2D kernels:
 
-        # Load volume (consider caching for efficiency)
-        volume, _, _ = load_nifti(vol_path)
+- A 2D kernel of shape `(k, k)` becomes `(k, k, k)` in 3D.
+- Pretrained 2D weights are replicated along the temporal/depth dimension and divided by `k` to preserve output magnitude.
+- This provides a strong initialization for 3D networks using ImageNet-pretrained features.
 
-        # Extract patch
-        patch = volume[z:z+self.patch_size[0],
-                      y:y+self.patch_size[1],
-                      x:x+self.patch_size[2]]
+Inflation procedure: For a 2D weight tensor `W` of shape `(C_out, C_in, k, k)`, create `W_3d` of shape `(C_out, C_in, k, k, k)` where each depth slice equals `W / k`.
 
-        # Add channel dimension
-        patch = patch[np.newaxis, ...]
+### C3D for Video Understanding
 
-        if self.transform:
-            patch = self.transform(patch)
+**C3D** (Convolutional 3D) is an early architecture for spatiotemporal feature learning from video:
 
-        return torch.FloatTensor(patch)
+- All convolutions are 3x3x3 with stride 1, padding 1.
+- All pooling layers are 2x2x2 except the first (1x2x2 to preserve temporal resolution early).
+- 8 convolution layers, 5 pooling layers, 2 FC layers.
+- Input: 16 frames of 112x112 pixels.
+- Pretrained on Sports-1M dataset.
 
-# Training with patch-based approach
-def train_3d_model_with_patches():
-    """Train 3D model using patch extraction."""
-    # Create dataset
-    volume_paths = ['/path/to/volume1.nii.gz', '/path/to/volume2.nii.gz']
-    dataset = PatchDataset(volume_paths, patch_size=(64, 64, 64))
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=4,
-                                             shuffle=True, num_workers=4)
+### Memory Considerations
 
-    # Model
-    model = ResNet3D(num_classes=2, in_channels=1)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
+3D convolutions are significantly more memory-intensive than 2D:
 
-    # Training loop
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+| Aspect          | 2D (256x256)    | 3D (128x128x128)     |
+|-----------------|------------------|-----------------------|
+| Input voxels    | 65,536           | 2,097,152             |
+| 3x3 kernel      | 9 weights/ch     | 27 weights/ch (3x3x3) |
+| Feature map (64ch) | 16 MB         | 512 MB                |
 
-    model.train()
-    for epoch in range(10):
-        total_loss = 0
-        for batch_idx, patches in enumerate(dataloader):
-            patches = patches.to(device)
+**Strategies to manage memory:**
 
-            # Forward pass
-            outputs = model(patches)
+- **Patch-based training**: Train on random 3D patches (e.g., 96x96x96) rather than full volumes.
+- **Mixed precision** (FP16): Halves memory with minimal accuracy loss.
+- **Gradient checkpointing**: Trade compute for memory by recomputing activations during backward pass.
+- **Sparse convolutions**: Only compute on occupied voxels (MinkowskiEngine, SpConv).
 
-            # For this example, we need labels (not shown)
-            # labels = ...
-            # loss = criterion(outputs, labels)
+**Loading pretrained 3D models:**
 
-            # Backward pass
-            optimizer.zero_grad()
-            # loss.backward()
-            optimizer.step()
+```python
+import torch
+import torch.nn as nn
+from torchvision.models.video import r3d_18, R3D_18_Weights
 
-            # total_loss += loss.item()
 
-        print(f"Epoch {epoch+1}, Loss: {total_loss/len(dataloader):.4f}")
+def load_pretrained_3d_resnet(num_classes=10, pretrained=True):
+    """Load a pretrained 3D ResNet-18 and adapt for custom classes."""
+    if pretrained:
+        model = r3d_18(weights=R3D_18_Weights.DEFAULT)
+    else:
+        model = r3d_18(weights=None)
+
+    # Replace the final FC layer for custom number of classes
+    in_features = model.fc.in_features
+    model.fc = nn.Linear(in_features, num_classes)
+
+    return model
+
+
+# For single-channel medical images, modify the first conv layer
+def adapt_3d_resnet_for_medical(num_classes=2):
+    """Adapt pretrained 3D ResNet for single-channel medical volumes."""
+    model = r3d_18(weights=R3D_18_Weights.DEFAULT)
+
+    # Modify first conv: average RGB weights for single channel
+    old_conv = model.stem[0]
+    new_conv = nn.Conv3d(
+        1, old_conv.out_channels,
+        kernel_size=old_conv.kernel_size,
+        stride=old_conv.stride,
+        padding=old_conv.padding,
+        bias=False
+    )
+    # Average pretrained RGB weights across channel dimension
+    new_conv.weight.data = old_conv.weight.data.mean(dim=1, keepdim=True)
+    model.stem[0] = new_conv
+
+    # Replace classifier
+    model.fc = nn.Linear(model.fc.in_features, num_classes)
+
+    return model
 ```
 
 ---
 
-## 3D Medical Image Segmentation
+## 3D U-Net for Medical Segmentation
 
-### 3D U-Net Architecture
+### Standard 3D U-Net
+
+**3D U-Net** extends the U-Net architecture to volumetric data. It follows the encoder-decoder design with skip connections:
+
+- **Encoder**: Series of 3D conv blocks + 3D max pooling for downsampling.
+- **Bottleneck**: Deepest layer with highest channel count.
+- **Decoder**: 3D transposed convolution (or trilinear upsampling) + skip connections from encoder.
+- **Skip connections**: Concatenate encoder features with decoder features at matching resolution.
 
 ```python
-class DoubleConv3D(nn.Module):
-    """Double convolution block for 3D U-Net."""
+import torch
+import torch.nn as nn
+
+
+class ConvBlock3D(nn.Module):
+    """Double 3D convolution block."""
+
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.double_conv = nn.Sequential(
+        self.block = nn.Sequential(
             nn.Conv3d(in_channels, out_channels, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm3d(out_channels),
-            nn.ReLU(inplace=True),
+            nn.InstanceNorm3d(out_channels),
+            nn.LeakyReLU(0.01, inplace=True),
             nn.Conv3d(out_channels, out_channels, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm3d(out_channels),
-            nn.ReLU(inplace=True)
+            nn.InstanceNorm3d(out_channels),
+            nn.LeakyReLU(0.01, inplace=True),
         )
 
     def forward(self, x):
-        return self.double_conv(x)
+        return self.block(x)
+
 
 class UNet3D(nn.Module):
     """3D U-Net for volumetric segmentation."""
-    def __init__(self, in_channels=1, num_classes=2, features=[32, 64, 128, 256]):
+
+    def __init__(self, in_channels=1, num_classes=2,
+                 features=(32, 64, 128, 256)):
         super().__init__()
-        self.encoder_blocks = nn.ModuleList()
-        self.decoder_blocks = nn.ModuleList()
-        self.pool = nn.MaxPool3d(kernel_size=2, stride=2)
 
-        # Encoder
-        for feature in features:
-            self.encoder_blocks.append(DoubleConv3D(in_channels, feature))
-            in_channels = feature
-
-        # Decoder
-        for feature in reversed(features[:-1]):
-            self.decoder_blocks.append(
-                nn.ConvTranspose3d(feature*2, feature, kernel_size=2, stride=2)
-            )
-            self.decoder_blocks.append(DoubleConv3D(feature*2, feature))
+        # Encoder path
+        self.encoders = nn.ModuleList()
+        self.pools = nn.ModuleList()
+        ch = in_channels
+        for f in features:
+            self.encoders.append(ConvBlock3D(ch, f))
+            self.pools.append(nn.MaxPool3d(kernel_size=2, stride=2))
+            ch = f
 
         # Bottleneck
-        self.bottleneck = DoubleConv3D(features[-1], features[-1]*2)
+        self.bottleneck = ConvBlock3D(features[-1], features[-1] * 2)
 
-        # Final convolution
+        # Decoder path
+        self.upconvs = nn.ModuleList()
+        self.decoders = nn.ModuleList()
+        reversed_features = list(reversed(features))
+        ch = features[-1] * 2
+        for f in reversed_features:
+            self.upconvs.append(
+                nn.ConvTranspose3d(ch, f, kernel_size=2, stride=2)
+            )
+            self.decoders.append(ConvBlock3D(f * 2, f))  # f*2 due to skip concat
+            ch = f
+
+        # Output
         self.final_conv = nn.Conv3d(features[0], num_classes, kernel_size=1)
 
     def forward(self, x):
-        skip_connections = []
-
         # Encoder
-        for encoder_block in self.encoder_blocks:
-            x = encoder_block(x)
+        skip_connections = []
+        for encoder, pool in zip(self.encoders, self.pools):
+            x = encoder(x)
             skip_connections.append(x)
-            x = self.pool(x)
+            x = pool(x)
 
         # Bottleneck
         x = self.bottleneck(x)
 
-        # Reverse skip connections
-        skip_connections = skip_connections[::-1]
-
         # Decoder
-        for idx in range(0, len(self.decoder_blocks), 2):
-            x = self.decoder_blocks[idx](x)  # Upsampling
-            skip = skip_connections[idx//2]
-
-            # Handle size mismatch
+        skip_connections = skip_connections[::-1]
+        for upconv, decoder, skip in zip(
+            self.upconvs, self.decoders, skip_connections
+        ):
+            x = upconv(x)
+            # Handle shape mismatches from odd dimensions
             if x.shape != skip.shape:
-                x = F.interpolate(x, size=skip.shape[2:])
-
+                x = nn.functional.pad(x, [
+                    0, skip.shape[4] - x.shape[4],
+                    0, skip.shape[3] - x.shape[3],
+                    0, skip.shape[2] - x.shape[2],
+                ])
             x = torch.cat([skip, x], dim=1)
-            x = self.decoder_blocks[idx+1](x)  # Double conv
+            x = decoder(x)
 
         return self.final_conv(x)
 
-# Example usage
-model = UNet3D(in_channels=1, num_classes=3)
-input_volume = torch.randn(1, 1, 128, 128, 128)
-output = model(input_volume)
-print(f"Input: {input_volume.shape}, Output: {output.shape}")
+
+# Usage
+model = UNet3D(in_channels=1, num_classes=4)
+x = torch.randn(1, 1, 64, 64, 64)
+out = model(x)
+print(f"Output shape: {out.shape}")  # (1, 4, 64, 64, 64)
 ```
 
-### V-Net Architecture
+### V-Net
+
+**V-Net** introduced several improvements over 3D U-Net:
+
+- **Residual connections** within each stage (instead of plain convolutions).
+- **Dice loss** as the training objective, directly optimizing the overlap metric.
+- **PReLU** activation instead of ReLU.
+- Designed for prostate segmentation in MRI but widely adopted.
+
+**Dice loss**:
 
 ```python
-class VNetBlock(nn.Module):
-    """V-Net residual block."""
-    def __init__(self, in_channels, out_channels, num_convs=2):
-        super().__init__()
-        self.convs = nn.ModuleList()
+def dice_loss(pred, target, smooth=1.0):
+    """Dice loss for binary or multi-class segmentation."""
+    pred = torch.sigmoid(pred)
+    # Flatten spatial dimensions
+    pred_flat = pred.view(pred.size(0), pred.size(1), -1)
+    target_flat = target.view(target.size(0), target.size(1), -1)
 
-        for i in range(num_convs):
-            if i == 0:
-                self.convs.append(nn.Conv3d(in_channels, out_channels,
-                                           kernel_size=5, padding=2))
-            else:
-                self.convs.append(nn.Conv3d(out_channels, out_channels,
-                                           kernel_size=5, padding=2))
+    intersection = (pred_flat * target_flat).sum(dim=2)
+    union = pred_flat.sum(dim=2) + target_flat.sum(dim=2)
 
-        self.activation = nn.PReLU(out_channels)
-
-        # Residual connection
-        if in_channels != out_channels:
-            self.residual = nn.Conv3d(in_channels, out_channels, kernel_size=1)
-        else:
-            self.residual = nn.Identity()
-
-    def forward(self, x):
-        residual = self.residual(x)
-
-        for conv in self.convs:
-            x = conv(x)
-            x = self.activation(x)
-
-        return x + residual
-
-class VNet(nn.Module):
-    """V-Net for 3D medical image segmentation."""
-    def __init__(self, in_channels=1, num_classes=2):
-        super().__init__()
-
-        # Encoder
-        self.enc1 = VNetBlock(in_channels, 16, num_convs=1)
-        self.down1 = nn.Conv3d(16, 32, kernel_size=2, stride=2)
-
-        self.enc2 = VNetBlock(32, 32, num_convs=2)
-        self.down2 = nn.Conv3d(32, 64, kernel_size=2, stride=2)
-
-        self.enc3 = VNetBlock(64, 64, num_convs=3)
-        self.down3 = nn.Conv3d(64, 128, kernel_size=2, stride=2)
-
-        self.enc4 = VNetBlock(128, 128, num_convs=3)
-        self.down4 = nn.Conv3d(128, 256, kernel_size=2, stride=2)
-
-        # Bottleneck
-        self.bottleneck = VNetBlock(256, 256, num_convs=3)
-
-        # Decoder
-        self.up4 = nn.ConvTranspose3d(256, 128, kernel_size=2, stride=2)
-        self.dec4 = VNetBlock(256, 128, num_convs=3)
-
-        self.up3 = nn.ConvTranspose3d(128, 64, kernel_size=2, stride=2)
-        self.dec3 = VNetBlock(128, 64, num_convs=3)
-
-        self.up2 = nn.ConvTranspose3d(64, 32, kernel_size=2, stride=2)
-        self.dec2 = VNetBlock(64, 32, num_convs=2)
-
-        self.up1 = nn.ConvTranspose3d(32, 16, kernel_size=2, stride=2)
-        self.dec1 = VNetBlock(32, 16, num_convs=1)
-
-        # Output
-        self.out = nn.Conv3d(16, num_classes, kernel_size=1)
-
-    def forward(self, x):
-        # Encoder
-        x1 = self.enc1(x)
-        x = self.down1(x1)
-
-        x2 = self.enc2(x)
-        x = self.down2(x2)
-
-        x3 = self.enc3(x)
-        x = self.down3(x3)
-
-        x4 = self.enc4(x)
-        x = self.down4(x4)
-
-        # Bottleneck
-        x = self.bottleneck(x)
-
-        # Decoder
-        x = self.up4(x)
-        x = torch.cat([x, x4], dim=1)
-        x = self.dec4(x)
-
-        x = self.up3(x)
-        x = torch.cat([x, x3], dim=1)
-        x = self.dec3(x)
-
-        x = self.up2(x)
-        x = torch.cat([x, x2], dim=1)
-        x = self.dec2(x)
-
-        x = self.up1(x)
-        x = torch.cat([x, x1], dim=1)
-        x = self.dec1(x)
-
-        return self.out(x)
+    dice = (2.0 * intersection + smooth) / (union + smooth)
+    return 1.0 - dice.mean()
 ```
 
-### nnU-Net Framework
+### Attention U-Net
 
-**nnU-Net** is a self-configuring framework that automatically adapts to any dataset.
+**Attention U-Net** adds **attention gates** to the skip connections. Instead of blindly concatenating encoder features, attention gates learn to highlight relevant regions and suppress irrelevant ones.
+
+The attention gate computes:
+1. Linearly project both the gating signal (from decoder) and the skip connection (from encoder).
+2. Sum and apply ReLU.
+3. Apply a 1x1x1 convolution followed by sigmoid to produce an attention map.
+4. Multiply the skip connection by the attention map.
 
 ```python
-# nnU-Net usage example (command-line based)
-"""
-# 1. Set up environment variables
-export nnUNet_raw="/path/to/nnUNet_raw"
-export nnUNet_preprocessed="/path/to/nnUNet_preprocessed"
-export nnUNet_results="/path/to/nnUNet_results"
+class AttentionGate3D(nn.Module):
+    """Attention gate for 3D U-Net skip connections."""
 
-# 2. Organize data according to nnU-Net format:
-# nnUNet_raw/
-#   Dataset001_TaskName/
-#     imagesTr/  # Training images
-#     labelsTr/  # Training labels
-#     imagesTs/  # Test images (optional)
-#     dataset.json  # Dataset description
+    def __init__(self, gate_channels, skip_channels, inter_channels):
+        super().__init__()
+        self.W_gate = nn.Conv3d(gate_channels, inter_channels, kernel_size=1, bias=False)
+        self.W_skip = nn.Conv3d(skip_channels, inter_channels, kernel_size=1, bias=False)
+        self.psi = nn.Sequential(
+            nn.Conv3d(inter_channels, 1, kernel_size=1, bias=False),
+            nn.Sigmoid()
+        )
+        self.relu = nn.ReLU(inplace=True)
 
-# 3. Preprocess the dataset
-nnUNetv2_plan_and_preprocess -d 1 --verify_dataset_integrity
+    def forward(self, gate, skip):
+        g = self.W_gate(gate)
+        s = self.W_skip(skip)
+        # Upsample gate to match skip spatial size if needed
+        if g.shape[2:] != s.shape[2:]:
+            g = nn.functional.interpolate(g, size=s.shape[2:], mode="trilinear",
+                                          align_corners=False)
+        attention = self.psi(self.relu(g + s))
+        return skip * attention
+```
 
-# 4. Train the model (3D full resolution)
-nnUNetv2_train 1 3d_fullres 0  # Dataset 1, 3D config, fold 0
+### nnU-Net
 
-# 5. Run inference
-nnUNetv2_predict -i /path/to/input -o /path/to/output -d 1 -c 3d_fullres
-"""
+**nnU-Net** (no-new-Net) is a self-configuring segmentation framework that automatically adapts preprocessing, architecture, and training to any new dataset. It has won or placed highly in the majority of medical segmentation challenges since its introduction.
 
-# Creating dataset.json for nnU-Net
+Key principles:
+
+- **Automatic preprocessing**: Analyzes dataset statistics to determine resampling strategy, normalization, and patch size.
+- **Three configurations**: 2D (slice-by-slice), 3D full-resolution, and 3D cascade (low-res followed by high-res refinement).
+- **Architecture adaptation**: Automatically selects encoder depth, feature map sizes, batch size based on available GPU memory and dataset properties.
+- **Robust training**: 5-fold cross-validation, extensive data augmentation, combined Dice + cross-entropy loss.
+- **Postprocessing**: Automatic selection of best configuration and ensemble strategies.
+
+```python
+# nnU-Net v2 usage (command-line based)
+# Step 1: Set environment variables
+# export nnUNet_raw="/path/to/nnUNet_raw"
+# export nnUNet_preprocessed="/path/to/nnUNet_preprocessed"
+# export nnUNet_results="/path/to/nnUNet_results"
+
+# Step 2: Organize data in nnU-Net format
+# nnUNet_raw/Dataset001_BrainTumor/
+#   imagesTr/    (training images: case_0000.nii.gz)
+#   labelsTr/    (training labels: case.nii.gz)
+#   imagesTs/    (test images)
+#   dataset.json
+
+# Step 3: Plan and preprocess
+# nnUNetv2_plan_and_preprocess -d 1 --verify_dataset_integrity
+
+# Step 4: Train (all 5 folds, 3d_fullres)
+# nnUNetv2_train 1 3d_fullres 0  # fold 0
+# nnUNetv2_train 1 3d_fullres 1  # fold 1
+# ... repeat for folds 2, 3, 4
+
+# Step 5: Predict
+# nnUNetv2_predict -i /path/to/test -o /path/to/output -d 1 \
+#   -c 3d_fullres -f 0 1 2 3 4
+
+# Creating dataset.json programmatically:
 import json
 
-def create_nnunet_dataset_json(output_path, task_name, num_training):
-    """Create dataset.json for nnU-Net."""
-    dataset_json = {
-        "name": task_name,
-        "description": "Medical image segmentation task",
-        "tensorImageSize": "4D",
-        "reference": "Your institution",
-        "licence": "CC-BY-SA 4.0",
-        "release": "1.0",
-        "modality": {
-            "0": "CT"  # or MRI, etc.
-        },
-        "labels": {
-            "background": 0,
-            "organ": 1,
-            "tumor": 2
-        },
-        "numTraining": num_training,
-        "numTest": 0,
-        "training": [
-            {
-                "image": f"./imagesTr/case_{i:05d}.nii.gz",
-                "label": f"./labelsTr/case_{i:05d}.nii.gz"
-            }
-            for i in range(num_training)
-        ],
-        "test": []
-    }
+dataset_json = {
+    "channel_names": {
+        "0": "T1",
+        "1": "T1ce",
+        "2": "T2",
+        "3": "FLAIR"
+    },
+    "labels": {
+        "background": 0,
+        "edema": 1,
+        "enhancing_tumor": 2,
+        "necrosis": 3
+    },
+    "numTraining": 484,
+    "file_ending": ".nii.gz"
+}
 
-    with open(output_path, 'w') as f:
-        json.dump(dataset_json, f, indent=4)
-
-# Example
-create_nnunet_dataset_json(
-    '/path/to/nnUNet_raw/Dataset001_Liver/dataset.json',
-    'LiverSegmentation',
-    num_training=100
-)
+with open("dataset.json", "w") as f:
+    json.dump(dataset_json, f, indent=4)
 ```
 
 ### MONAI Framework
 
+**MONAI** (Medical Open Network for AI) is a PyTorch-based framework specifically designed for medical imaging deep learning. It provides:
+
+- **Transforms**: Medical-specific data augmentation and preprocessing.
+- **Networks**: Pretrained and configurable architectures (UNet, UNETR, SwinUNETR, SegResNet).
+- **Losses**: Dice, DiceCE, Focal, Tversky, and more.
+- **Metrics**: Dice score, Hausdorff distance, surface distance.
+- **Data loading**: Support for DICOM, NIfTI, and other medical formats.
+
 ```python
-from monai.networks.nets import UNet
-from monai.networks.layers import Norm
-from monai.losses import DiceLoss, DiceCELoss
+import torch
+import monai
+from monai.networks.nets import UNet, SwinUNETR
+from monai.losses import DiceCELoss
 from monai.metrics import DiceMetric
 from monai.transforms import (
     Compose, LoadImaged, EnsureChannelFirstd, Spacingd,
-    Orientationd, ScaleIntensityRanged, RandCropByPosNegLabeld
+    ScaleIntensityRanged, CropForegroundd, RandCropByPosNegLabeld,
+    RandFlipd, RandRotate90d, EnsureTyped,
 )
-from monai.data import Dataset, DataLoader
+from monai.data import CacheDataset, DataLoader, decollate_batch
+from monai.inferers import sliding_window_inference
 
-# Define transforms
+
+# Define transforms for training
 train_transforms = Compose([
     LoadImaged(keys=["image", "label"]),
     EnsureChannelFirstd(keys=["image", "label"]),
-    Spacingd(keys=["image", "label"], pixdim=(1.0, 1.0, 1.0), mode=("bilinear", "nearest")),
-    Orientationd(keys=["image", "label"], axcodes="RAS"),
-    ScaleIntensityRanged(keys=["image"], a_min=-1000, a_max=400, b_min=0.0, b_max=1.0, clip=True),
+    Spacingd(keys=["image", "label"],
+             pixdim=(1.0, 1.0, 1.0),
+             mode=("bilinear", "nearest")),
+    ScaleIntensityRanged(keys=["image"],
+                         a_min=-100, a_max=300,
+                         b_min=0.0, b_max=1.0, clip=True),
+    CropForegroundd(keys=["image", "label"], source_key="image"),
     RandCropByPosNegLabeld(
         keys=["image", "label"],
         label_key="label",
         spatial_size=(96, 96, 96),
-        pos=1,
-        neg=1,
-        num_samples=4
+        pos=1, neg=1, num_samples=4,
     ),
+    RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=0),
+    RandRotate90d(keys=["image", "label"], prob=0.5, spatial_axes=(0, 1)),
+    EnsureTyped(keys=["image", "label"]),
 ])
 
-# Create dataset
-data_dicts = [
-    {"image": "img1.nii.gz", "label": "seg1.nii.gz"},
-    {"image": "img2.nii.gz", "label": "seg2.nii.gz"},
-]
-
-train_ds = Dataset(data=data_dicts, transform=train_transforms)
-train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)
-
 # Create model
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = UNet(
-    spatial_dims=3,
+model = SwinUNETR(
+    img_size=(96, 96, 96),
     in_channels=1,
-    out_channels=3,
-    channels=(16, 32, 64, 128, 256),
-    strides=(2, 2, 2, 2),
-    num_res_units=2,
-    norm=Norm.BATCH,
-).to(device)
+    out_channels=4,
+    feature_size=48,
+    use_checkpoint=True,  # Gradient checkpointing for memory
+)
 
 # Loss and optimizer
-loss_function = DiceCELoss(to_onehot_y=True, softmax=True)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-dice_metric = DiceMetric(include_background=False, reduction="mean")
+loss_fn = DiceCELoss(to_onehot_y=True, softmax=True)
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-5)
 
-# Training loop
-def train_monai_model(model, train_loader, loss_function, optimizer, num_epochs=10):
-    """Train MONAI model."""
-    model.train()
-
-    for epoch in range(num_epochs):
-        epoch_loss = 0
-        step = 0
-
-        for batch_data in train_loader:
-            step += 1
-            inputs, labels = batch_data["image"].to(device), batch_data["label"].to(device)
-
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = loss_function(outputs, labels)
-            loss.backward()
-            optimizer.step()
-
-            epoch_loss += loss.item()
-
-        epoch_loss /= step
-        print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {epoch_loss:.4f}")
-```
-
-### Segmentation Loss Functions
-
-```python
-class DiceLoss(nn.Module):
-    """Dice loss for segmentation."""
-    def __init__(self, smooth=1.0):
-        super().__init__()
-        self.smooth = smooth
-
-    def forward(self, pred, target):
-        pred = F.softmax(pred, dim=1)
-
-        # Flatten
-        pred = pred.contiguous().view(pred.size(0), pred.size(1), -1)
-        target = target.contiguous().view(target.size(0), -1)
-
-        # One-hot encode target
-        target_one_hot = F.one_hot(target.long(), num_classes=pred.size(1))
-        target_one_hot = target_one_hot.permute(0, 2, 1).float()
-
-        # Compute Dice
-        intersection = (pred * target_one_hot).sum(dim=2)
-        union = pred.sum(dim=2) + target_one_hot.sum(dim=2)
-
-        dice = (2.0 * intersection + self.smooth) / (union + self.smooth)
-        dice_loss = 1 - dice.mean()
-
-        return dice_loss
-
-class DiceCELoss(nn.Module):
-    """Combined Dice and Cross-Entropy loss."""
-    def __init__(self, dice_weight=0.5, ce_weight=0.5):
-        super().__init__()
-        self.dice_weight = dice_weight
-        self.ce_weight = ce_weight
-        self.dice_loss = DiceLoss()
-        self.ce_loss = nn.CrossEntropyLoss()
-
-    def forward(self, pred, target):
-        dice = self.dice_loss(pred, target)
-        ce = self.ce_loss(pred, target.long())
-        return self.dice_weight * dice + self.ce_weight * ce
-
-class TverskyLoss(nn.Module):
-    """Tversky loss - generalization of Dice, useful for imbalanced data."""
-    def __init__(self, alpha=0.7, beta=0.3, smooth=1.0):
-        super().__init__()
-        self.alpha = alpha  # False positive weight
-        self.beta = beta    # False negative weight
-        self.smooth = smooth
-
-    def forward(self, pred, target):
-        pred = F.softmax(pred, dim=1)
-
-        # Flatten
-        pred = pred.contiguous().view(pred.size(0), pred.size(1), -1)
-        target = target.contiguous().view(target.size(0), -1)
-
-        # One-hot encode
-        target_one_hot = F.one_hot(target.long(), num_classes=pred.size(1))
-        target_one_hot = target_one_hot.permute(0, 2, 1).float()
-
-        # True positives, false positives, false negatives
-        TP = (pred * target_one_hot).sum(dim=2)
-        FP = (pred * (1 - target_one_hot)).sum(dim=2)
-        FN = ((1 - pred) * target_one_hot).sum(dim=2)
-
-        tversky = (TP + self.smooth) / (TP + self.alpha * FP + self.beta * FN + self.smooth)
-
-        return 1 - tversky.mean()
-
-class FocalLoss(nn.Module):
-    """Focal loss for handling class imbalance."""
-    def __init__(self, alpha=0.25, gamma=2.0):
-        super().__init__()
-        self.alpha = alpha
-        self.gamma = gamma
-
-    def forward(self, pred, target):
-        ce_loss = F.cross_entropy(pred, target.long(), reduction='none')
-        p_t = torch.exp(-ce_loss)
-        focal_loss = self.alpha * (1 - p_t) ** self.gamma * ce_loss
-        return focal_loss.mean()
+# Sliding window inference for full-volume prediction
+def predict_full_volume(model, image, device):
+    """Predict on a full volume using sliding window."""
+    model.eval()
+    with torch.no_grad():
+        output = sliding_window_inference(
+            inputs=image.to(device),
+            roi_size=(96, 96, 96),
+            sw_batch_size=4,
+            predictor=model,
+            overlap=0.5,
+        )
+    return output.argmax(dim=1)
 ```
 
 ---
 
-## Point Cloud Processing
+## Point Cloud Networks
 
-### PointNet Architecture
+### PointNet
+
+**PointNet** (Qi et al., 2017) is the foundational architecture for direct point cloud processing. Key design principles:
+
+- **Permutation invariance**: Point clouds are unordered sets. PointNet processes each point independently through shared MLPs, then applies a symmetric function (max pooling) to aggregate.
+- **Spatial Transformer Network**: Learns a 3x3 (and 64x64) transformation matrix to align the input, providing invariance to rigid transformations.
+- **Architecture**: Input (N x 3) -> T-Net -> shared MLP (64, 128, 1024) -> max pool -> MLP classifier.
+
+**Limitations**: PointNet treats each point independently before max pooling, so it cannot capture local geometric structures.
+
+### PointNet++
+
+**PointNet++** (Qi et al., 2017) introduces hierarchical feature learning:
+
+1. **Sampling**: Select a subset of points as centroids using Farthest Point Sampling (FPS).
+2. **Grouping**: Find neighbors within a radius (ball query) around each centroid.
+3. **PointNet**: Apply PointNet to each local neighborhood.
+4. **Repeat**: Stack multiple Set Abstraction (SA) layers for hierarchical features.
+
+Multi-scale grouping (MSG) applies PointNet at multiple radii to handle varying point density.
+
+### DGCNN
+
+**Dynamic Graph CNN** (Wang et al., 2019) constructs a k-NN graph in feature space and applies edge convolutions:
+
+- **EdgeConv**: For each point, compute edge features relative to its k nearest neighbors, apply MLP, and aggregate.
+- **Dynamic**: The k-NN graph is recomputed at each layer based on updated features (not just spatial coordinates).
+- Combines local geometric structure with global feature learning.
+
+### Point Transformer
+
+**Point Transformer** (Zhao et al., 2021) applies self-attention to point clouds:
+
+- **Vector attention**: Attention weights are vectors (not scalars), allowing channel-wise modulation.
+- **Local attention**: Computed within k-NN neighborhoods for efficiency.
+- **Positional encoding**: Relative position encodings capture geometric relationships.
+- Achieves state-of-the-art on multiple point cloud benchmarks.
+
+### PointPillars
+
+**PointPillars** (Lang et al., 2019) converts point clouds to a 2D pseudo-image for fast detection:
+
+1. **Pillar creation**: Discretize the x-y plane into a grid. Points in each grid cell form a "pillar."
+2. **Pillar features**: Apply PointNet to each pillar to produce a fixed-size feature vector.
+3. **Scatter**: Place pillar features into a 2D grid (bird's eye view pseudo-image).
+4. **2D backbone**: Apply standard 2D CNN detection head (SSD-style).
+
+This approach achieves real-time performance (62 Hz) with competitive accuracy.
+
+**PointNet classification in PyTorch:**
 
 ```python
+import torch
+import torch.nn as nn
+
+
 class TNet(nn.Module):
-    """Transformation network for spatial transformation."""
+    """Spatial Transformer Network for PointNet."""
+
     def __init__(self, k=3):
         super().__init__()
         self.k = k
-
-        self.conv1 = nn.Conv1d(k, 64, 1)
-        self.conv2 = nn.Conv1d(64, 128, 1)
-        self.conv3 = nn.Conv1d(128, 1024, 1)
-
-        self.fc1 = nn.Linear(1024, 512)
-        self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, k * k)
-
-        self.bn1 = nn.BatchNorm1d(64)
-        self.bn2 = nn.BatchNorm1d(128)
-        self.bn3 = nn.BatchNorm1d(1024)
-        self.bn4 = nn.BatchNorm1d(512)
-        self.bn5 = nn.BatchNorm1d(256)
+        self.mlp = nn.Sequential(
+            nn.Conv1d(k, 64, 1),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.Conv1d(64, 128, 1),
+            nn.BatchNorm1d(128),
+            nn.ReLU(),
+            nn.Conv1d(128, 1024, 1),
+            nn.BatchNorm1d(1024),
+            nn.ReLU(),
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(1024, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.BatchNorm1d(256),
+            nn.ReLU(),
+            nn.Linear(256, k * k),
+        )
 
     def forward(self, x):
         batch_size = x.size(0)
+        # x: (B, k, N)
+        out = self.mlp(x)
+        out = out.max(dim=2)[0]  # (B, 1024)
+        out = self.fc(out)  # (B, k*k)
+        # Initialize as identity
+        identity = torch.eye(self.k, device=x.device).flatten().unsqueeze(0)
+        out = out + identity
+        return out.view(batch_size, self.k, self.k)
 
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
 
-        x = torch.max(x, 2, keepdim=True)[0]
-        x = x.view(-1, 1024)
+class PointNetClassifier(nn.Module):
+    """PointNet classification network."""
 
-        x = F.relu(self.bn4(self.fc1(x)))
-        x = F.relu(self.bn5(self.fc2(x)))
-        x = self.fc3(x)
-
-        # Initialize as identity matrix
-        identity = torch.eye(self.k, device=x.device).view(1, self.k * self.k).repeat(batch_size, 1)
-        x = x + identity
-        x = x.view(-1, self.k, self.k)
-
-        return x
-
-class PointNet(nn.Module):
-    """PointNet for point cloud classification."""
-    def __init__(self, num_classes=10, num_points=1024):
+    def __init__(self, num_classes=40, num_points=1024):
         super().__init__()
+        self.num_points = num_points
 
-        # Input transformation
+        # Input transform
         self.input_transform = TNet(k=3)
 
-        # MLP on points
-        self.conv1 = nn.Conv1d(3, 64, 1)
-        self.conv2 = nn.Conv1d(64, 64, 1)
+        # MLP 1
+        self.mlp1 = nn.Sequential(
+            nn.Conv1d(3, 64, 1),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.Conv1d(64, 64, 1),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+        )
 
-        # Feature transformation
+        # Feature transform
         self.feature_transform = TNet(k=64)
 
-        # MLP on features
-        self.conv3 = nn.Conv1d(64, 64, 1)
-        self.conv4 = nn.Conv1d(64, 128, 1)
-        self.conv5 = nn.Conv1d(128, 1024, 1)
+        # MLP 2
+        self.mlp2 = nn.Sequential(
+            nn.Conv1d(64, 128, 1),
+            nn.BatchNorm1d(128),
+            nn.ReLU(),
+            nn.Conv1d(128, 1024, 1),
+            nn.BatchNorm1d(1024),
+            nn.ReLU(),
+        )
 
-        # Batch norms
-        self.bn1 = nn.BatchNorm1d(64)
-        self.bn2 = nn.BatchNorm1d(64)
-        self.bn3 = nn.BatchNorm1d(64)
-        self.bn4 = nn.BatchNorm1d(128)
-        self.bn5 = nn.BatchNorm1d(1024)
-
-        # Classification head
-        self.fc1 = nn.Linear(1024, 512)
-        self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, num_classes)
-
-        self.bn6 = nn.BatchNorm1d(512)
-        self.bn7 = nn.BatchNorm1d(256)
-
-        self.dropout = nn.Dropout(p=0.3)
+        # Classifier
+        self.classifier = nn.Sequential(
+            nn.Linear(1024, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(512, 256),
+            nn.BatchNorm1d(256),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(256, num_classes),
+        )
 
     def forward(self, x):
-        # x shape: (batch, 3, num_points)
+        """
+        Args:
+            x: (B, N, 3) point cloud
+        Returns:
+            logits: (B, num_classes)
+        """
         batch_size = x.size(0)
-        num_points = x.size(2)
+        x = x.transpose(1, 2)  # (B, 3, N)
 
-        # Input transformation
-        trans_input = self.input_transform(x)
-        x = x.transpose(2, 1)
-        x = torch.bmm(x, trans_input)
-        x = x.transpose(2, 1)
+        # Input transform
+        t1 = self.input_transform(x)  # (B, 3, 3)
+        x = torch.bmm(t1, x)  # (B, 3, N)
 
-        # MLP(64, 64)
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
+        # MLP 1
+        x = self.mlp1(x)  # (B, 64, N)
 
-        # Feature transformation
-        trans_feat = self.feature_transform(x)
-        x = x.transpose(2, 1)
-        x = torch.bmm(x, trans_feat)
-        x = x.transpose(2, 1)
+        # Feature transform
+        t2 = self.feature_transform(x)  # (B, 64, 64)
+        x = torch.bmm(t2, x)  # (B, 64, N)
 
-        # MLP(64, 128, 1024)
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = F.relu(self.bn4(self.conv4(x)))
-        x = F.relu(self.bn5(self.conv5(x)))
+        # MLP 2
+        x = self.mlp2(x)  # (B, 1024, N)
 
-        # Max pooling (global feature)
-        x = torch.max(x, 2, keepdim=True)[0]
-        x = x.view(-1, 1024)
+        # Max pooling (symmetric function for permutation invariance)
+        x = x.max(dim=2)[0]  # (B, 1024)
 
-        # Classification MLP
-        x = F.relu(self.bn6(self.fc1(x)))
-        x = self.dropout(x)
-        x = F.relu(self.bn7(self.fc2(x)))
-        x = self.dropout(x)
-        x = self.fc3(x)
+        # Classification
+        logits = self.classifier(x)  # (B, num_classes)
 
-        return x, trans_input, trans_feat
+        return logits, t2  # Return t2 for regularization loss
 
-# Example usage
-model = PointNet(num_classes=40, num_points=1024)
-point_cloud = torch.randn(4, 3, 1024)  # Batch of 4, 1024 points with xyz
-output, trans1, trans2 = model(point_cloud)
-print(f"Input: {point_cloud.shape}, Output: {output.shape}")
-```
 
-### Open3D Library Usage
-
-```python
-import open3d as o3d
-import numpy as np
-
-def load_and_visualize_point_cloud(file_path):
-    """Load and visualize point cloud."""
-    # Load point cloud
-    pcd = o3d.io.read_point_cloud(file_path)
-
-    print(f"Point cloud has {len(pcd.points)} points")
-
-    # Visualize
-    o3d.visualization.draw_geometries([pcd])
-
-    return pcd
-
-def preprocess_point_cloud(pcd, voxel_size=0.05):
-    """Preprocess point cloud: downsample, estimate normals."""
-    # Downsample
-    pcd_down = pcd.voxel_down_sample(voxel_size)
-
-    # Estimate normals
-    pcd_down.estimate_normals(
-        search_param=o3d.geometry.KDTreeSearchParamHybrid(
-            radius=voxel_size * 2, max_nn=30
-        )
+def pointnet_regularization_loss(transform, weight=0.001):
+    """Regularization loss to keep feature transform close to orthogonal."""
+    batch_size = transform.size(0)
+    k = transform.size(1)
+    identity = torch.eye(k, device=transform.device).unsqueeze(0).expand(
+        batch_size, -1, -1
     )
+    diff = torch.bmm(transform, transform.transpose(1, 2)) - identity
+    return weight * diff.norm(dim=(1, 2)).mean()
 
-    # Remove outliers
-    pcd_clean, ind = pcd_down.remove_statistical_outlier(
-        nb_neighbors=20, std_ratio=2.0
-    )
 
-    return pcd_clean
+# Usage
+model = PointNetClassifier(num_classes=40, num_points=1024)
+points = torch.randn(8, 1024, 3)  # (B, N, 3)
+logits, feat_transform = model(points)
+print(f"Logits shape: {logits.shape}")  # (8, 40)
 
-def point_cloud_registration(source, target, threshold=0.02):
-    """Register two point clouds using ICP."""
-    # Initial alignment (identity)
-    trans_init = np.eye(4)
-
-    # ICP registration
-    reg_p2p = o3d.pipelines.registration.registration_icp(
-        source, target, threshold, trans_init,
-        o3d.pipelines.registration.TransformationEstimationPointToPoint(),
-        o3d.pipelines.registration.ICPConvergenceCriteria(max_iteration=2000)
-    )
-
-    print(f"Fitness: {reg_p2p.fitness:.4f}")
-    print(f"Inlier RMSE: {reg_p2p.inlier_rmse:.4f}")
-
-    return reg_p2p.transformation
-
-def convert_to_pytorch_format(pcd, num_points=1024):
-    """Convert Open3D point cloud to PyTorch tensor."""
-    points = np.asarray(pcd.points)
-
-    # Sample or pad to fixed number of points
-    if len(points) > num_points:
-        indices = np.random.choice(len(points), num_points, replace=False)
-        points = points[indices]
-    elif len(points) < num_points:
-        indices = np.random.choice(len(points), num_points, replace=True)
-        points = points[indices]
-
-    # Convert to PyTorch
-    points_tensor = torch.FloatTensor(points).transpose(0, 1)  # (3, num_points)
-
-    return points_tensor
-
-# Example workflow
-# pcd = load_and_visualize_point_cloud('pointcloud.ply')
-# pcd_clean = preprocess_point_cloud(pcd)
-# points_tensor = convert_to_pytorch_format(pcd_clean)
+# Combined loss
+cls_loss = nn.CrossEntropyLoss()(logits, torch.randint(0, 40, (8,)))
+reg_loss = pointnet_regularization_loss(feat_transform)
+total_loss = cls_loss + reg_loss
 ```
 
 ---
 
-## Data Augmentation for Medical Imaging
+## 3D Object Detection
 
-### MONAI Transforms Pipeline
+### VoxelNet
+
+**VoxelNet** (Zhou and Tuber, 2018) is an end-to-end 3D detection network:
+
+1. **Voxelization**: Divide the 3D space into a regular voxel grid. Group points into voxels.
+2. **Voxel Feature Encoding (VFE)**: Apply stacked PointNet-like layers within each voxel to produce voxel-wise features.
+3. **3D Convolutions**: Apply sparse 3D convolutions on the voxel grid.
+4. **RPN**: Region Proposal Network on the bird's eye view feature map.
+
+Limitation: 3D convolutions are computationally expensive. SECOND and PointPillars addressed this.
+
+### PointPillars for Detection
+
+PointPillars replaces voxels with **pillars** (vertical columns) and eliminates 3D convolutions entirely:
+
+- Input point cloud is discretized into a 2D x-y grid.
+- Each pillar's points are encoded with a simplified PointNet.
+- Results in a 2D pseudo-image processed by a standard 2D backbone.
+- Achieves 62 Hz inference on KITTI benchmark -- fast enough for real-time autonomous driving.
+
+### CenterPoint
+
+**CenterPoint** (Yin et al., 2021) is a center-based 3D object detector:
+
+1. **Backbone**: VoxelNet or PointPillars-style feature extraction.
+2. **Center heatmap**: Predict a heatmap of object centers in bird's eye view.
+3. **Per-center regression**: For each detected center, regress 3D box dimensions, z-center, and orientation.
+4. **Two-stage refinement**: Optional second stage refines detections using point features.
+
+Advantages: Anchor-free design avoids complex anchor tuning. Naturally handles arbitrary orientations.
+
+### SECOND
+
+**SECOND** (Sparsely Embedded Convolutional Detection) introduces **sparse convolutions** for 3D detection:
+
+- Only computes convolutions at occupied voxel locations.
+- Uses a hash table to track active voxels.
+- 3-5x faster than dense 3D convolutions for typical LiDAR scenes (which are 95%+ empty).
+- Implementation: `spconv` library provides efficient CUDA kernels for sparse 3D convolutions.
+
+### BEV Methods
+
+**Bird's Eye View (BEV)** methods project 3D information onto a top-down 2D plane:
+
+- **BEVFusion**: Fuses LiDAR BEV features with camera features projected to BEV.
+- **BEVDet**: Camera-only 3D detection by lifting 2D image features to BEV using depth estimation.
+- **BEVFormer**: Transformer-based BEV generation from multi-view cameras.
+
+BEV is natural for autonomous driving because the ground plane captures the most relevant spatial relationships for driving decisions.
+
+**3D detection with MMDetection3D:**
 
 ```python
+# 3D object detection with MMDetection3D
+# Installation: pip install mmdet3d
+
+# Example configuration for PointPillars on KITTI
+# File: pointpillars_kitti.py (MMDetection3D config)
+
+# Command-line usage:
+# python tools/train.py configs/pointpillars/pointpillars_hv_secfpn_8xb6_kitti-3d-3class.py
+
+# Inference example:
+from mmdet3d.apis import init_model, inference_detector
+
+config_file = "configs/pointpillars/pointpillars_hv_secfpn_8xb6_kitti-3d-3class.py"
+checkpoint_file = "checkpoints/pointpillars_kitti.pth"
+
+# Build model
+model = init_model(config_file, checkpoint_file, device="cuda:0")
+
+# Run inference on a point cloud
+result = inference_detector(model, "demo/data/kitti/000008.bin")
+
+# result contains:
+# - pred_instances_3d.bboxes_3d: 3D bounding boxes (x, y, z, w, l, h, yaw)
+# - pred_instances_3d.scores_3d: confidence scores
+# - pred_instances_3d.labels_3d: class labels
+
+for i in range(len(result.pred_instances_3d.scores_3d)):
+    score = result.pred_instances_3d.scores_3d[i].item()
+    if score > 0.3:
+        bbox = result.pred_instances_3d.bboxes_3d[i]
+        label = result.pred_instances_3d.labels_3d[i].item()
+        print(f"Class {label}, Score {score:.2f}, Box: {bbox}")
+```
+
+---
+
+## Medical Image Classification
+
+### Patch-Based Classification
+
+For large 3D volumes that do not fit in GPU memory, **patch-based classification** extracts regions of interest (ROIs) and classifies each patch:
+
+1. **Extract patches**: Slide a window across the volume or sample around candidate locations.
+2. **Classify patches**: Apply a 3D CNN to each patch.
+3. **Aggregate**: Combine patch-level predictions via majority voting, averaging, or learned aggregation.
+
+This approach is common in pathology (whole-slide images) and CT nodule classification.
+
+### Multi-Instance Learning
+
+**Multi-Instance Learning (MIL)** treats each patient/scan as a **bag** of instances (patches):
+
+- **Bag label**: The scan-level label (e.g., cancer present / absent).
+- **Instance labels**: Unknown -- only the bag label is provided.
+- **Key assumption**: A positive bag contains at least one positive instance; a negative bag has no positive instances.
+
+MIL approaches:
+
+- **Attention-based MIL**: Learn attention weights for each instance, then aggregate with weighted sum.
+- **Max-pooling MIL**: The bag prediction is the maximum instance prediction.
+- **Transformer MIL**: Use self-attention across instances.
+
+### Transfer Learning 2D to 3D
+
+When 3D pretrained models are unavailable, **2D-to-3D transfer learning** leverages ImageNet-pretrained 2D models:
+
+1. **Slice-level**: Process each 2D slice with a pretrained 2D CNN to extract features.
+2. **Aggregation**: Combine slice features using RNN, attention, or max pooling.
+3. **Fine-tuning**: End-to-end fine-tuning on the 3D task.
+
+Alternative strategies:
+- **Multi-planar**: Extract axial, coronal, sagittal slices and fuse predictions from three 2D networks.
+- **2.5D approach**: Use three adjacent slices as RGB channels for a pretrained 2D model.
+- **Weight inflation**: Replicate 2D weights along the depth dimension (I3D approach).
+
+### Class Imbalance Handling
+
+Medical datasets are typically severely imbalanced (e.g., 1% positive lesion voxels):
+
+- **Oversampling**: Ensure each batch has balanced positive/negative examples (MONAI's `RandCropByPosNegLabeld`).
+- **Loss weighting**: Inverse frequency weighting in cross-entropy loss.
+- **Focal loss**: Down-weight easy examples, focus on hard ones. `FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t)`.
+- **Dice loss**: Directly optimizes the overlap metric, inherently handles imbalance.
+- **Combined losses**: DiceCE (Dice + Cross-Entropy) is the standard in medical segmentation.
+
+**Medical image classifier with MONAI:**
+
+```python
+import torch
+import torch.nn as nn
+from monai.networks.nets import DenseNet121
 from monai.transforms import (
     Compose, LoadImaged, EnsureChannelFirstd, Spacingd,
-    Orientationd, ScaleIntensityRanged, RandRotate90d,
-    RandFlipd, RandAffined, RandGaussianNoised,
-    RandGaussianSmoothd, RandAdjustContrastd, RandShiftIntensityd,
-    RandElasticd, RandCropByPosNegLabeld
+    ScaleIntensityRanged, Resized, RandFlipd, RandRotate90d,
+    EnsureTyped,
 )
+from monai.data import CacheDataset, DataLoader
 
-# Comprehensive augmentation pipeline
-train_transforms = Compose([
-    # Load data
-    LoadImaged(keys=["image", "label"]),
-    EnsureChannelFirstd(keys=["image", "label"]),
 
-    # Spatial preprocessing
-    Spacingd(keys=["image", "label"], pixdim=(1.0, 1.0, 1.0), mode=("bilinear", "nearest")),
-    Orientationd(keys=["image", "label"], axcodes="RAS"),
-
-    # Intensity preprocessing
-    ScaleIntensityRanged(
-        keys=["image"],
-        a_min=-1000,  # CT min HU
-        a_max=400,    # CT max HU
-        b_min=0.0,
-        b_max=1.0,
-        clip=True
-    ),
-
-    # Spatial augmentations
-    RandRotate90d(keys=["image", "label"], prob=0.5, spatial_axes=(0, 2)),
-    RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=0),
-    RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=1),
-    RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=2),
-
-    RandAffined(
-        keys=["image", "label"],
-        prob=0.5,
-        rotate_range=(0.1, 0.1, 0.1),  # ~6 degrees
-        scale_range=(0.1, 0.1, 0.1),
-        mode=("bilinear", "nearest"),
-        padding_mode="border"
-    ),
-
-    RandElasticd(
-        keys=["image", "label"],
-        prob=0.2,
-        sigma_range=(5, 7),
-        magnitude_range=(50, 150),
-        mode=("bilinear", "nearest")
-    ),
-
-    # Intensity augmentations
-    RandGaussianNoised(keys=["image"], prob=0.15, mean=0.0, std=0.1),
-    RandGaussianSmoothd(keys=["image"], prob=0.15, sigma_x=(0.5, 1.0)),
-    RandAdjustContrastd(keys=["image"], prob=0.15, gamma=(0.7, 1.5)),
-    RandShiftIntensityd(keys=["image"], prob=0.15, offsets=0.1),
-
-    # Random crop
-    RandCropByPosNegLabeld(
-        keys=["image", "label"],
-        label_key="label",
-        spatial_size=(96, 96, 96),
-        pos=1,
-        neg=1,
-        num_samples=4
-    ),
-])
-
-# Validation transforms (no augmentation)
-val_transforms = Compose([
-    LoadImaged(keys=["image", "label"]),
-    EnsureChannelFirstd(keys=["image", "label"]),
-    Spacingd(keys=["image", "label"], pixdim=(1.0, 1.0, 1.0), mode=("bilinear", "nearest")),
-    Orientationd(keys=["image", "label"], axcodes="RAS"),
-    ScaleIntensityRanged(keys=["image"], a_min=-1000, a_max=400, b_min=0.0, b_max=1.0, clip=True),
-])
-```
-
-### TorchIO for Medical Image Augmentation
-
-```python
-import torchio as tio
-
-# Define comprehensive augmentation
-augmentation = tio.Compose([
-    # Spatial transforms
-    tio.RandomFlip(axes=('LR',), flip_probability=0.5),
-    tio.RandomAffine(
-        scales=(0.9, 1.1),
-        degrees=10,
-        translation=5,
-        p=0.5
-    ),
-    tio.RandomElasticDeformation(
-        num_control_points=7,
-        max_displacement=7.5,
-        locked_borders=2,
-        p=0.2
-    ),
-
-    # Intensity transforms
-    tio.RandomBiasField(coefficients=0.5, p=0.3),
-    tio.RandomNoise(std=(0, 0.05), p=0.25),
-    tio.RandomGamma(log_gamma=(-0.3, 0.3), p=0.25),
-    tio.RandomBlur(std=(0, 2), p=0.15),
-
-    # Medical-specific
-    tio.RandomSpike(num_spikes=(1, 3), intensity=(0.1, 1), p=0.1),  # MRI artifact
-    tio.RandomGhosting(num_ghosts=(4, 10), intensity=(0.5, 1), p=0.1),  # MRI artifact
-    tio.RandomMotion(degrees=10, translation=10, num_transforms=2, p=0.1),  # Motion artifact
-])
-
-# Create subject
-subject = tio.Subject(
-    image=tio.ScalarImage('ct_scan.nii.gz'),
-    label=tio.LabelMap('segmentation.nii.gz'),
-)
-
-# Apply augmentation
-augmented = augmentation(subject)
-
-# Create dataset
-subjects = [
-    tio.Subject(image=tio.ScalarImage(f'image_{i}.nii.gz'),
-                label=tio.LabelMap(f'label_{i}.nii.gz'))
-    for i in range(100)
-]
-
-dataset = tio.SubjectsDataset(subjects, transform=augmentation)
-
-# Patch-based sampling
-sampler = tio.data.UniformSampler(patch_size=96)
-patches_queue = tio.Queue(
-    dataset,
-    max_length=40,
-    samples_per_volume=10,
-    sampler=sampler,
-    num_workers=4
-)
-
-# DataLoader
-from torch.utils.data import DataLoader
-patch_loader = DataLoader(patches_queue, batch_size=4)
-```
-
-### CutMix/MixUp for 3D
-
-```python
-def mixup_3d(x, y, alpha=1.0):
-    """MixUp augmentation for 3D volumes."""
-    if alpha > 0:
-        lam = np.random.beta(alpha, alpha)
-    else:
-        lam = 1
-
-    batch_size = x.size(0)
-    index = torch.randperm(batch_size).to(x.device)
-
-    mixed_x = lam * x + (1 - lam) * x[index]
-    y_a, y_b = y, y[index]
-
-    return mixed_x, y_a, y_b, lam
-
-def cutmix_3d(x, y, alpha=1.0):
-    """CutMix augmentation for 3D volumes."""
-    if alpha > 0:
-        lam = np.random.beta(alpha, alpha)
-    else:
-        lam = 1
-
-    batch_size = x.size(0)
-    index = torch.randperm(batch_size).to(x.device)
-
-    # Random bounding box
-    D, H, W = x.size()[2:]
-    cut_rat = np.sqrt(1. - lam)
-    cut_d = int(D * cut_rat)
-    cut_h = int(H * cut_rat)
-    cut_w = int(W * cut_rat)
-
-    # Uniform
-    cz = np.random.randint(D)
-    cy = np.random.randint(H)
-    cx = np.random.randint(W)
-
-    bbz1 = np.clip(cz - cut_d // 2, 0, D)
-    bbz2 = np.clip(cz + cut_d // 2, 0, D)
-    bby1 = np.clip(cy - cut_h // 2, 0, H)
-    bby2 = np.clip(cy + cut_h // 2, 0, H)
-    bbx1 = np.clip(cx - cut_w // 2, 0, W)
-    bbx2 = np.clip(cx + cut_w // 2, 0, W)
-
-    # Apply cutmix
-    x[:, :, bbz1:bbz2, bby1:bby2, bbx1:bbx2] = x[index, :, bbz1:bbz2, bby1:bby2, bbx1:bbx2]
-
-    # Adjust lambda
-    lam = 1 - ((bbz2 - bbz1) * (bby2 - bby1) * (bbx2 - bbx1) / (D * H * W))
-
-    y_a, y_b = y, y[index]
-    return x, y_a, y_b, lam
-
-# Training with MixUp/CutMix
-def train_with_augmentation(model, dataloader, criterion, optimizer):
-    """Train with MixUp or CutMix."""
-    model.train()
-
-    for images, labels in dataloader:
-        images, labels = images.to(device), labels.to(device)
-
-        # Apply MixUp or CutMix randomly
-        if np.random.rand() < 0.5:
-            images, labels_a, labels_b, lam = mixup_3d(images, labels)
-        else:
-            images, labels_a, labels_b, lam = cutmix_3d(images, labels)
-
-        # Forward pass
-        outputs = model(images)
-
-        # Mixed loss
-        loss = lam * criterion(outputs, labels_a) + (1 - lam) * criterion(outputs, labels_b)
-
-        # Backward pass
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-```
-
----
-
-## Transfer Learning for Medical Imaging
-
-### ImageNet Pretrained Models
-
-Despite domain differences, **ImageNet pretrained models work surprisingly well** for medical imaging:
-
-```python
-import torchvision.models as models
-
-def get_pretrained_model_for_medical(num_classes, in_channels=1):
-    """Adapt ImageNet pretrained model for medical imaging."""
-    # Load pretrained ResNet
-    model = models.resnet50(pretrained=True)
-
-    # Modify first conv layer for grayscale or different channels
-    if in_channels != 3:
-        weight = model.conv1.weight.clone()
-
-        if in_channels == 1:
-            # Average RGB weights for grayscale
-            model.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
-            model.conv1.weight.data = weight.mean(dim=1, keepdim=True)
-        else:
-            # Replicate or adapt for other channel counts
-            model.conv1 = nn.Conv2d(in_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
-            model.conv1.weight.data = weight.repeat(1, in_channels//3 + 1, 1, 1)[:, :in_channels, :, :]
-
-    # Modify classifier
-    num_features = model.fc.in_features
-    model.fc = nn.Linear(num_features, num_classes)
-
+def build_medical_classifier():
+    """Build a medical image classifier using MONAI DenseNet121."""
+    model = DenseNet121(
+        spatial_dims=3,
+        in_channels=1,
+        out_channels=2,
+    )
     return model
 
-# Example usage
-model = get_pretrained_model_for_medical(num_classes=3, in_channels=1)
 
-# Freeze backbone for initial training
-for param in model.parameters():
-    param.requires_grad = False
+def get_classification_transforms(phase="train"):
+    """Get transforms for medical image classification."""
+    common = [
+        LoadImaged(keys=["image"]),
+        EnsureChannelFirstd(keys=["image"]),
+        Spacingd(keys=["image"], pixdim=(1.5, 1.5, 2.0), mode="bilinear"),
+        ScaleIntensityRanged(keys=["image"],
+                             a_min=-100, a_max=300,
+                             b_min=0.0, b_max=1.0, clip=True),
+        Resized(keys=["image"], spatial_size=(128, 128, 64)),
+    ]
+    if phase == "train":
+        common.extend([
+            RandFlipd(keys=["image"], prob=0.5, spatial_axis=0),
+            RandRotate90d(keys=["image"], prob=0.5, spatial_axes=(0, 1)),
+        ])
+    common.append(EnsureTyped(keys=["image"]))
+    return Compose(common)
 
-# Unfreeze classifier
-for param in model.fc.parameters():
-    param.requires_grad = True
-```
 
-### Models Genesis - Medical-Specific Pretraining
+def train_medical_classifier(train_files, val_files, num_epochs=100):
+    """Training loop for medical image classifier."""
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-**Models Genesis** provides self-supervised pretraining on medical images:
+    train_ds = CacheDataset(train_files, get_classification_transforms("train"))
+    val_ds = CacheDataset(val_files, get_classification_transforms("val"))
+    train_loader = DataLoader(train_ds, batch_size=4, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_ds, batch_size=4, num_workers=4)
 
-```python
-# Models Genesis uses self-supervised tasks:
-# 1. Local shuffling
-# 2. Non-linear transformation
-# 3. Inner/outer cutout
-# 4. Painting
+    model = build_medical_classifier().to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-5)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs)
+    loss_fn = nn.CrossEntropyLoss(weight=torch.tensor([1.0, 3.0]).to(device))
 
-def models_genesis_pretraining():
-    """Pseudo-code for Models Genesis approach."""
-    # Download pretrained weights
-    # url = 'https://zenodo.org/record/3431873/files/Genesis_Chest_CT.pt'
-
-    # Load 3D UNet
-    model = UNet3D(in_channels=1, num_classes=1)
-
-    # Load pretrained weights
-    # model.load_state_dict(torch.load('Genesis_Chest_CT.pt'))
-
-    # Fine-tune on your task
-    # Replace final layer
-    # model.final_conv = nn.Conv3d(32, num_classes, kernel_size=1)
-
-    return model
-
-# Transfer learning strategy
-def finetune_with_genesis(model, train_loader, num_epochs=50):
-    """Fine-tune Models Genesis pretrained model."""
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
-
-    # Stage 1: Train only classifier (first 10 epochs)
-    for param in model.parameters():
-        param.requires_grad = False
-    for param in model.final_conv.parameters():
-        param.requires_grad = True
-
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3)
-    criterion = DiceCELoss()
-
-    for epoch in range(10):
-        model.train()
-        for images, labels in train_loader:
-            images, labels = images.to(device), labels.to(device)
-
-            outputs = model(images)
-            loss = criterion(outputs, labels)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-    # Stage 2: Unfreeze all and train with lower learning rate
-    for param in model.parameters():
-        param.requires_grad = True
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-
-    for epoch in range(10, num_epochs):
-        model.train()
-        for images, labels in train_loader:
-            images, labels = images.to(device), labels.to(device)
-
-            outputs = model(images)
-            loss = criterion(outputs, labels)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-```
-
-### Self-Supervised Pretraining
-
-```python
-class ContrastiveLearning3D(nn.Module):
-    """Contrastive learning for 3D medical images."""
-    def __init__(self, encoder, projection_dim=128):
-        super().__init__()
-        self.encoder = encoder
-        self.projection = nn.Sequential(
-            nn.Linear(512, 512),
-            nn.ReLU(),
-            nn.Linear(512, projection_dim)
-        )
-
-    def forward(self, x):
-        h = self.encoder(x)
-        z = self.projection(h)
-        return F.normalize(z, dim=1)
-
-def nt_xent_loss(z_i, z_j, temperature=0.5):
-    """NT-Xent loss for contrastive learning."""
-    batch_size = z_i.size(0)
-
-    # Concatenate representations
-    z = torch.cat([z_i, z_j], dim=0)
-
-    # Compute similarity matrix
-    sim = torch.mm(z, z.t()) / temperature
-
-    # Create labels
-    labels = torch.arange(batch_size).to(z.device)
-    labels = torch.cat([labels + batch_size, labels], dim=0)
-
-    # Mask out self-similarity
-    mask = torch.eye(2 * batch_size, dtype=torch.bool).to(z.device)
-    sim = sim.masked_fill(mask, -float('inf'))
-
-    # Compute loss
-    loss = F.cross_entropy(sim, labels)
-
-    return loss
-
-# Self-supervised pretraining loop
-def pretrain_contrastive(model, dataloader, num_epochs=100):
-    """Pretrain model with contrastive learning."""
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-
+    best_val_acc = 0.0
     for epoch in range(num_epochs):
         model.train()
-        total_loss = 0
-
-        for images in dataloader:
-            # Apply two different augmentations
-            images_i = augmentation1(images).to(device)
-            images_j = augmentation2(images).to(device)
-
-            # Get representations
-            z_i = model(images_i)
-            z_j = model(images_j)
-
-            # Compute loss
-            loss = nt_xent_loss(z_i, z_j)
+        train_loss = 0.0
+        for batch in train_loader:
+            images = batch["image"].to(device)
+            labels = batch["label"].to(device)
 
             optimizer.zero_grad()
+            outputs = model(images)
+            loss = loss_fn(outputs, labels)
             loss.backward()
             optimizer.step()
-
-            total_loss += loss.item()
-
-        print(f"Epoch {epoch+1}, Loss: {total_loss/len(dataloader):.4f}")
-```
-
-### Few-Shot Learning
-
-```python
-class PrototypicalNetwork(nn.Module):
-    """Prototypical networks for few-shot learning."""
-    def __init__(self, encoder):
-        super().__init__()
-        self.encoder = encoder
-
-    def forward(self, support_images, support_labels, query_images, n_way, k_shot):
-        """
-        support_images: (n_way * k_shot, C, D, H, W)
-        support_labels: (n_way * k_shot,)
-        query_images: (n_query, C, D, H, W)
-        """
-        # Encode support and query
-        support_features = self.encoder(support_images)
-        query_features = self.encoder(query_images)
-
-        # Compute prototypes (class centroids)
-        prototypes = []
-        for class_idx in range(n_way):
-            class_mask = support_labels == class_idx
-            class_features = support_features[class_mask]
-            prototype = class_features.mean(dim=0)
-            prototypes.append(prototype)
-
-        prototypes = torch.stack(prototypes)
-
-        # Compute distances to prototypes
-        distances = torch.cdist(query_features, prototypes)
-
-        # Convert to probabilities (negative distance)
-        logits = -distances
-
-        return logits
-
-# Few-shot training
-def train_few_shot(model, dataloader, n_way=5, k_shot=5, n_query=15):
-    """Train with few-shot episodes."""
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-    criterion = nn.CrossEntropyLoss()
-
-    for epoch in range(100):
-        model.train()
-
-        for batch in dataloader:
-            # Sample episode
-            support_images, support_labels, query_images, query_labels = sample_episode(
-                batch, n_way, k_shot, n_query
-            )
-
-            support_images = support_images.to(device)
-            support_labels = support_labels.to(device)
-            query_images = query_images.to(device)
-            query_labels = query_labels.to(device)
-
-            # Forward pass
-            logits = model(support_images, support_labels, query_images, n_way, k_shot)
-
-            # Compute loss
-            loss = criterion(logits, query_labels)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-```
-
----
-
-## Object Detection in Medical Images
-
-### 3D Anchor-Based Detection
-
-```python
-class AnchorGenerator3D:
-    """Generate 3D anchors for object detection."""
-    def __init__(self, sizes=[32, 64, 128], aspect_ratios=[0.5, 1.0, 2.0]):
-        self.sizes = sizes
-        self.aspect_ratios = aspect_ratios
-
-    def generate_anchors(self, feature_map_size, stride):
-        """Generate anchors for a feature map."""
-        fz, fy, fx = feature_map_size
-        anchors = []
-
-        for z in range(fz):
-            for y in range(fy):
-                for x in range(fx):
-                    cz = (z + 0.5) * stride
-                    cy = (y + 0.5) * stride
-                    cx = (x + 0.5) * stride
-
-                    for size in self.sizes:
-                        for ratio in self.aspect_ratios:
-                            # Compute anchor dimensions
-                            w = size
-                            h = size * ratio
-                            d = size / ratio
-
-                            # [cz, cy, cx, d, h, w]
-                            anchors.append([cz, cy, cx, d, h, w])
-
-        return torch.FloatTensor(anchors)
-
-class RetinaNet3D(nn.Module):
-    """3D RetinaNet for medical object detection."""
-    def __init__(self, num_classes=2, num_anchors=9):
-        super().__init__()
-
-        # Backbone
-        self.backbone = ResNet3D(num_classes=1, in_channels=1)
-
-        # Remove classification head
-        self.backbone = nn.Sequential(*list(self.backbone.children())[:-2])
-
-        # FPN
-        self.fpn = FeaturePyramidNetwork3D([128, 256, 512], 256)
-
-        # Classification subnet
-        self.cls_subnet = nn.Sequential(
-            *[Conv3DBlock(256, 256) for _ in range(4)],
-            nn.Conv3d(256, num_anchors * num_classes, kernel_size=3, padding=1)
-        )
-
-        # Regression subnet
-        self.reg_subnet = nn.Sequential(
-            *[Conv3DBlock(256, 256) for _ in range(4)],
-            nn.Conv3d(256, num_anchors * 6, kernel_size=3, padding=1)  # 6 for 3D bbox
-        )
-
-    def forward(self, x):
-        # Extract features
-        features = self.backbone(x)
-
-        # FPN
-        fpn_features = self.fpn(features)
-
-        # Predictions
-        cls_outputs = []
-        reg_outputs = []
-
-        for feat in fpn_features:
-            cls_outputs.append(self.cls_subnet(feat))
-            reg_outputs.append(self.reg_subnet(feat))
-
-        return cls_outputs, reg_outputs
-
-class FocalLoss3D(nn.Module):
-    """Focal loss for 3D object detection."""
-    def __init__(self, alpha=0.25, gamma=2.0):
-        super().__init__()
-        self.alpha = alpha
-        self.gamma = gamma
-
-    def forward(self, pred, target):
-        # pred: (N, C)
-        # target: (N,) class indices
-
-        ce_loss = F.cross_entropy(pred, target, reduction='none')
-        p_t = torch.exp(-ce_loss)
-
-        focal_loss = self.alpha * (1 - p_t) ** self.gamma * ce_loss
-
-        return focal_loss.mean()
-```
-
-### nnDetection Framework
-
-```python
-# nnDetection usage (similar to nnU-Net)
-"""
-# 1. Install nnDetection
-pip install git+https://github.com/MIC-DKFZ/nnDetection.git
-
-# 2. Set environment variables
-export det_data="/path/to/nnDetection_raw"
-export det_models="/path/to/nnDetection_models"
-
-# 3. Prepare data in COCO format
-# Structure:
-# nnDetection_raw/
-#   Task000_LIDC/
-#     imagesTr/
-#     labelsTr/  # JSON files with bounding boxes
-#     dataset.json
-
-# 4. Preprocess
-nndet_prep 000 -p 8
-
-# 5. Train
-nndet_train 000 RetinaUNetV0_D3V001 0
-
-# 6. Evaluate
-nndet_eval 000 RetinaUNetV0_D3V001 --fold 0
-"""
-
-# Creating dataset for nnDetection
-import json
-
-def create_nndetection_annotation(image_id, boxes, labels, image_shape):
-    """Create annotation in nnDetection format."""
-    annotation = {
-        "image_id": image_id,
-        "boxes": boxes.tolist(),  # List of [z1, y1, x1, z2, y2, x2]
-        "labels": labels.tolist(),  # List of class indices
-        "size": image_shape  # [D, H, W]
-    }
-
-    return annotation
-
-# Save as JSON
-annotations = []
-for i, (boxes, labels) in enumerate(detection_data):
-    ann = create_nndetection_annotation(
-        image_id=f"case_{i:05d}",
-        boxes=boxes,
-        labels=labels,
-        image_shape=(512, 512, 512)
-    )
-    annotations.append(ann)
-
-# with open('annotations_train.json', 'w') as f:
-#     json.dump(annotations, f)
-```
-
-### FROC Metric
-
-```python
-def compute_froc(predictions, ground_truth, iou_threshold=0.1, num_points=9):
-    """
-    Compute Free-Response ROC (FROC) for lesion detection.
-
-    FROC plots sensitivity vs. false positives per image.
-    """
-    # Sort predictions by confidence
-    pred_boxes = []
-    pred_scores = []
-    pred_image_ids = []
-
-    for img_id, preds in predictions.items():
-        for box, score in zip(preds['boxes'], preds['scores']):
-            pred_boxes.append(box)
-            pred_scores.append(score)
-            pred_image_ids.append(img_id)
-
-    # Sort by score
-    sorted_indices = np.argsort(pred_scores)[::-1]
-    pred_boxes = [pred_boxes[i] for i in sorted_indices]
-    pred_scores = [pred_scores[i] for i in sorted_indices]
-    pred_image_ids = [pred_image_ids[i] for i in sorted_indices]
-
-    # Compute metrics at different thresholds
-    sensitivities = []
-    fps_per_image = []
-
-    num_images = len(ground_truth)
-    num_lesions = sum(len(gt['boxes']) for gt in ground_truth.values())
-
-    for threshold_idx in range(num_points):
-        # Keep top predictions
-        n_preds = int(len(pred_boxes) * (threshold_idx + 1) / num_points)
-
-        tp = 0
-        fp = 0
-        matched_gts = set()
-
-        for i in range(n_preds):
-            box = pred_boxes[i]
-            img_id = pred_image_ids[i]
-
-            # Check IoU with ground truth
-            gt_boxes = ground_truth[img_id]['boxes']
-            max_iou = 0
-            best_gt_idx = -1
-
-            for gt_idx, gt_box in enumerate(gt_boxes):
-                iou = compute_iou_3d(box, gt_box)
-                if iou > max_iou:
-                    max_iou = iou
-                    best_gt_idx = gt_idx
-
-            # Check if match
-            if max_iou >= iou_threshold:
-                gt_key = (img_id, best_gt_idx)
-                if gt_key not in matched_gts:
-                    tp += 1
-                    matched_gts.add(gt_key)
-                else:
-                    fp += 1
-            else:
-                fp += 1
-
-        sensitivity = tp / num_lesions if num_lesions > 0 else 0
-        fp_per_img = fp / num_images
-
-        sensitivities.append(sensitivity)
-        fps_per_image.append(fp_per_img)
-
-    return sensitivities, fps_per_image
-
-def compute_iou_3d(box1, box2):
-    """Compute 3D IoU between two boxes."""
-    # box format: [z1, y1, x1, z2, y2, x2]
-    z1_max = max(box1[0], box2[0])
-    y1_max = max(box1[1], box2[1])
-    x1_max = max(box1[2], box2[2])
-
-    z2_min = min(box1[3], box2[3])
-    y2_min = min(box1[4], box2[4])
-    x2_min = min(box1[5], box2[5])
-
-    # Intersection
-    inter_d = max(0, z2_min - z1_max)
-    inter_h = max(0, y2_min - y1_max)
-    inter_w = max(0, x2_min - x1_max)
-    intersection = inter_d * inter_h * inter_w
-
-    # Union
-    vol1 = (box1[3] - box1[0]) * (box1[4] - box1[1]) * (box1[5] - box1[2])
-    vol2 = (box2[3] - box2[0]) * (box2[4] - box2[1]) * (box2[5] - box2[2])
-    union = vol1 + vol2 - intersection
-
-    iou = intersection / union if union > 0 else 0
-    return iou
+            train_loss += loss.item()
+
+        scheduler.step()
+
+        # Validation
+        model.eval()
+        correct, total = 0, 0
+        with torch.no_grad():
+            for batch in val_loader:
+                images = batch["image"].to(device)
+                labels = batch["label"].to(device)
+                outputs = model(images)
+                _, predicted = outputs.max(1)
+                correct += (predicted == labels).sum().item()
+                total += labels.size(0)
+
+        val_acc = correct / total
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            torch.save(model.state_dict(), "best_classifier.pth")
+
+        print(f"Epoch {epoch+1}/{num_epochs}, "
+              f"Loss: {train_loss/len(train_loader):.4f}, "
+              f"Val Acc: {val_acc:.4f}")
 ```
 
 ---
 
 ## Radiomics and Feature Extraction
 
-### Radiomic Features
+### PyRadiomics
 
-**Radiomics** extracts quantitative features from medical images for prediction tasks.
+**Radiomics** extracts quantitative features from medical images that capture shape, texture, and intensity information beyond what the human eye can discern. **PyRadiomics** is the standard open-source library for radiomics feature extraction.
 
-**Feature categories:**
-- **Shape features**: Volume, surface area, sphericity, compactness
-- **First-order features**: Mean, median, variance, skewness, kurtosis, entropy
-- **Texture features**:
-  - GLCM (Gray Level Co-occurrence Matrix)
-  - GLRLM (Gray Level Run Length Matrix)
-  - GLSZM (Gray Level Size Zone Matrix)
-  - NGTDM (Neighborhood Gray Tone Difference Matrix)
+Feature categories:
 
-### PyRadiomics Library
+1. **First-order statistics**: Mean, median, standard deviation, skewness, kurtosis, entropy, energy, uniformity (18 features).
+2. **Shape features**: Volume, surface area, sphericity, elongation, flatness, maximum 3D diameter (14 features).
+3. **Texture features (GLCM)**: Gray-Level Co-occurrence Matrix features -- contrast, correlation, energy, homogeneity, entropy (24 features).
+4. **Texture features (GLRLM)**: Gray-Level Run-Length Matrix -- short/long run emphasis, run percentage (16 features).
+5. **Texture features (GLSZM)**: Gray-Level Size Zone Matrix -- small/large area emphasis, zone percentage (16 features).
+6. **Texture features (GLDM)**: Gray-Level Dependence Matrix (14 features).
+7. **Texture features (NGTDM)**: Neighborhood Gray-Tone Difference Matrix -- coarseness, contrast, busyness (5 features).
+
+### Texture Features
+
+**GLCM** (Gray-Level Co-occurrence Matrix) captures how often pairs of voxel values occur at specified spatial offsets:
+
+- **Contrast**: Measures local intensity variation.
+- **Correlation**: Measures linear dependency between neighboring voxels.
+- **Energy** (Angular Second Moment): Measures uniformity of the distribution.
+- **Homogeneity**: Measures closeness to the diagonal (similar neighbor values).
+
+**GLRLM** (Gray-Level Run-Length Matrix) describes consecutive voxels with the same intensity in a given direction:
+
+- **Short Run Emphasis (SRE)**: Dominated by short runs (fine texture).
+- **Long Run Emphasis (LRE)**: Dominated by long runs (coarse texture).
+
+### Shape and First-Order Features
+
+**Shape features** describe the geometric properties of the segmented region:
+
+- **Volume**: Total number of voxels times voxel volume.
+- **Surface area**: Computed from the mesh of the segmentation boundary.
+- **Sphericity**: How close the shape is to a sphere. `Sphericity = (36 * pi * V^2)^(1/3) / A` where V is volume and A is surface area.
+- **Elongation**: Ratio of second-largest to largest principal axis length.
+
+**First-order features** describe the distribution of voxel intensities within the ROI without considering spatial relationships.
+
+**Radiomics extraction pipeline:**
 
 ```python
+import radiomics
 from radiomics import featureextractor
 import SimpleITK as sitk
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.pipeline import Pipeline
 
-def extract_radiomic_features(image_path, mask_path):
-    """Extract radiomic features using PyRadiomics."""
-    # Initialize extractor
-    extractor = featureextractor.RadiomicsFeatureExtractor()
 
-    # Configure
-    extractor.enableAllFeatures()
+def extract_radiomics_features(image_path, mask_path, params_path=None):
+    """
+    Extract radiomics features from an image and mask.
 
-    # Optional: specific settings
-    settings = {
-        'binWidth': 25,
-        'resampledPixelSpacing': [1, 1, 1],  # Isotropic resampling
-        'interpolator': sitk.sitkBSpline,
-        'normalize': True,
-        'normalizeScale': 100
-    }
-    extractor.settings.update(settings)
+    Args:
+        image_path: Path to the image (NIfTI or DICOM).
+        mask_path: Path to the segmentation mask.
+        params_path: Optional path to PyRadiomics parameter file (YAML).
+
+    Returns:
+        Dictionary of feature names and values.
+    """
+    if params_path:
+        extractor = featureextractor.RadiomicsFeatureExtractor(params_path)
+    else:
+        extractor = featureextractor.RadiomicsFeatureExtractor()
+        # Enable all feature classes
+        extractor.enableAllFeatures()
+        # Optional: enable specific image types
+        extractor.enableImageTypeByName("Original")
+        extractor.enableImageTypeByName("LoG", customArgs={"sigma": [1.0, 3.0, 5.0]})
+        extractor.enableImageTypeByName("Wavelet")
 
     # Extract features
     result = extractor.execute(image_path, mask_path)
 
-    # Parse results
+    # Filter out diagnostics, keep only features
     features = {}
     for key, value in result.items():
-        if not key.startswith('diagnostics'):
-            features[key] = value
+        if not key.startswith("diagnostics_"):
+            features[key] = float(value)
 
+    print(f"Extracted {len(features)} features")
     return features
 
-# Example usage
-# features = extract_radiomic_features('ct_image.nii.gz', 'tumor_mask.nii.gz')
-# print(f"Extracted {len(features)} features")
-# print("Sample features:", list(features.keys())[:5])
 
-def extract_features_batch(image_mask_pairs):
-    """Extract features for multiple cases."""
+def radiomics_ml_pipeline(image_paths, mask_paths, labels, n_top_features=20):
+    """
+    Complete radiomics + ML pipeline for clinical prediction.
+
+    Args:
+        image_paths: List of image file paths.
+        mask_paths: List of mask file paths.
+        labels: Binary labels (0 or 1).
+        n_top_features: Number of top features to select.
+    """
+    # Step 1: Extract features for all subjects
     all_features = []
-
-    for image_path, mask_path in image_mask_pairs:
-        try:
-            features = extract_radiomic_features(image_path, mask_path)
-            features['case_id'] = image_path  # Track case
-            all_features.append(features)
-        except Exception as e:
-            print(f"Error processing {image_path}: {e}")
+    for img_path, mask_path in zip(image_paths, mask_paths):
+        features = extract_radiomics_features(img_path, mask_path)
+        all_features.append(features)
 
     # Convert to DataFrame
-    import pandas as pd
-    df = pd.DataFrame(all_features)
+    df_features = pd.DataFrame(all_features)
+    print(f"Feature matrix shape: {df_features.shape}")
 
-    return df
+    # Step 2: Remove features with zero variance
+    variance = df_features.var()
+    df_features = df_features.loc[:, variance > 0]
+    print(f"After variance filter: {df_features.shape}")
 
-# Specific feature extraction
-def extract_shape_features(image_path, mask_path):
-    """Extract only shape features."""
-    extractor = featureextractor.RadiomicsFeatureExtractor()
+    # Step 3: Handle missing/infinite values
+    df_features = df_features.replace([np.inf, -np.inf], np.nan)
+    df_features = df_features.fillna(df_features.median())
 
-    # Enable only shape features
-    extractor.disableAllFeatures()
-    extractor.enableFeatureClassByName('shape')
+    # Step 4: Build ML pipeline
+    X = df_features.values
+    y = np.array(labels)
 
-    result = extractor.execute(image_path, mask_path)
+    pipeline = Pipeline([
+        ("scaler", StandardScaler()),
+        ("selector", SelectKBest(mutual_info_classif, k=n_top_features)),
+        ("classifier", RandomForestClassifier(
+            n_estimators=100, max_depth=5, random_state=42
+        )),
+    ])
 
-    shape_features = {k: v for k, v in result.items()
-                     if k.startswith('original_shape')}
+    # Step 5: Cross-validation
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    scores = cross_val_score(pipeline, X, y, cv=cv, scoring="roc_auc")
 
-    return shape_features
+    print(f"Cross-validation AUC: {scores.mean():.3f} (+/- {scores.std():.3f})")
 
-def extract_texture_features(image_path, mask_path):
-    """Extract texture features (GLCM, GLRLM, etc.)."""
-    extractor = featureextractor.RadiomicsFeatureExtractor()
+    # Step 6: Fit on all data and get selected features
+    pipeline.fit(X, y)
+    selector = pipeline.named_steps["selector"]
+    selected_mask = selector.get_support()
+    selected_features = df_features.columns[selected_mask].tolist()
+    print(f"Top {n_top_features} features: {selected_features}")
 
-    # Enable texture features
-    extractor.disableAllFeatures()
-    extractor.enableFeatureClassByName('glcm')
-    extractor.enableFeatureClassByName('glrlm')
-    extractor.enableFeatureClassByName('glszm')
-    extractor.enableFeatureClassByName('gldm')
-    extractor.enableFeatureClassByName('ngtdm')
-
-    result = extractor.execute(image_path, mask_path)
-
-    texture_features = {k: v for k, v in result.items()
-                       if not k.startswith('diagnostics')}
-
-    return texture_features
-```
-
-### Feature Selection for Radiomics
-
-```python
-from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-import pandas as pd
-import numpy as np
-
-def select_robust_features(features_df, labels, k=20):
-    """Select most informative radiomic features."""
-    # Remove non-feature columns
-    X = features_df.drop(['case_id'], axis=1, errors='ignore')
-
-    # Handle missing values
-    X = X.fillna(X.mean())
-
-    # Standardize
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    # Feature selection with ANOVA F-test
-    selector = SelectKBest(f_classif, k=k)
-    X_selected = selector.fit_transform(X_scaled, labels)
-
-    # Get selected feature names
-    selected_features = X.columns[selector.get_support()].tolist()
-
-    print(f"Selected {len(selected_features)} features:")
-    for feat in selected_features:
-        print(f"  - {feat}")
-
-    return selected_features, X_selected
-
-def remove_correlated_features(features_df, threshold=0.95):
-    """Remove highly correlated features."""
-    X = features_df.select_dtypes(include=[np.number])
-
-    # Compute correlation matrix
-    corr_matrix = X.corr().abs()
-
-    # Select upper triangle
-    upper = corr_matrix.where(
-        np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
-    )
-
-    # Find features with correlation > threshold
-    to_drop = [column for column in upper.columns
-               if any(upper[column] > threshold)]
-
-    print(f"Dropping {len(to_drop)} highly correlated features")
-
-    return features_df.drop(to_drop, axis=1)
-
-# Dimensionality reduction
-def apply_pca_to_radiomics(features_df, n_components=10):
-    """Apply PCA to radiomic features."""
-    X = features_df.select_dtypes(include=[np.number])
-    X = X.fillna(X.mean())
-
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    pca = PCA(n_components=n_components)
-    X_pca = pca.fit_transform(X_scaled)
-
-    print(f"Explained variance ratio: {pca.explained_variance_ratio_.sum():.3f}")
-
-    return X_pca, pca
-```
-
-### Combining Radiomics with Deep Learning
-
-```python
-class RadiomicsCNNFusion(nn.Module):
-    """Fusion model combining radiomics and deep features."""
-    def __init__(self, cnn_encoder, num_radiomic_features, num_classes):
-        super().__init__()
-
-        self.cnn_encoder = cnn_encoder
-
-        # Radiomics branch
-        self.radiomic_branch = nn.Sequential(
-            nn.Linear(num_radiomic_features, 128),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(128, 64),
-            nn.ReLU()
-        )
-
-        # Fusion
-        self.fusion = nn.Sequential(
-            nn.Linear(512 + 64, 256),  # CNN features + radiomic features
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(256, num_classes)
-        )
-
-    def forward(self, image, radiomic_features):
-        # CNN features
-        cnn_features = self.cnn_encoder(image)
-        cnn_features = cnn_features.view(cnn_features.size(0), -1)
-
-        # Radiomic features
-        radiomic_embed = self.radiomic_branch(radiomic_features)
-
-        # Concatenate
-        combined = torch.cat([cnn_features, radiomic_embed], dim=1)
-
-        # Final prediction
-        output = self.fusion(combined)
-
-        return output
-
-# Training with fusion model
-def train_fusion_model(model, train_loader, num_epochs=50):
-    """Train radiomics-CNN fusion model."""
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
-
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-
-    for epoch in range(num_epochs):
-        model.train()
-        total_loss = 0
-
-        for images, radiomic_feats, labels in train_loader:
-            images = images.to(device)
-            radiomic_feats = radiomic_feats.to(device)
-            labels = labels.to(device)
-
-            # Forward pass
-            outputs = model(images, radiomic_feats)
-            loss = criterion(outputs, labels)
-
-            # Backward pass
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-            total_loss += loss.item()
-
-        print(f"Epoch {epoch+1}, Loss: {total_loss/len(train_loader):.4f}")
+    return pipeline, selected_features, scores
 ```
 
 ---
 
-## Evaluation Metrics for Medical Imaging
+## Neural Radiance Fields
 
-### Dice Similarity Coefficient
+### NeRF Architecture
 
-```python
-def dice_coefficient(pred, target, smooth=1.0):
-    """
-    Compute Dice Similarity Coefficient (DSC).
+**Neural Radiance Fields (NeRF)** represent a 3D scene as a continuous function that maps a 5D input (3D position + 2D viewing direction) to color and volume density:
 
-    DSC = 2 * |X intersection Y| / (|X| + |Y|)
-    """
-    pred_flat = pred.flatten()
-    target_flat = target.flatten()
-
-    intersection = (pred_flat * target_flat).sum()
-    union = pred_flat.sum() + target_flat.sum()
-
-    dice = (2.0 * intersection + smooth) / (union + smooth)
-
-    return dice
-
-def dice_per_class(pred, target, num_classes):
-    """Compute Dice for each class."""
-    dice_scores = []
-
-    for class_idx in range(num_classes):
-        pred_class = (pred == class_idx).astype(float)
-        target_class = (target == class_idx).astype(float)
-
-        dice = dice_coefficient(pred_class, target_class)
-        dice_scores.append(dice)
-
-    return dice_scores
+```
+F: (x, y, z, theta, phi) -> (r, g, b, sigma)
 ```
 
-### Hausdorff Distance
+- **(x, y, z)**: 3D spatial position.
+- **(theta, phi)**: Viewing direction (allows view-dependent effects like specular highlights).
+- **(r, g, b)**: Emitted color.
+- **sigma**: Volume density (opacity).
 
-```python
-from scipy.spatial.distance import directed_hausdorff
-from scipy.ndimage import distance_transform_edt
+The function `F` is parameterized by an MLP (typically 8 layers, 256 channels). The density `sigma` depends only on position (view-independent), while color depends on both position and direction.
 
-def hausdorff_distance(pred, target):
-    """
-    Compute Hausdorff Distance between two segmentations.
+**Volume rendering**: To render a pixel, cast a ray from the camera through the pixel. Sample points along the ray. For each sample point, query the MLP for color and density. Accumulate color using the volume rendering integral:
 
-    HD = max(h(pred, target), h(target, pred))
-    where h(A, B) = max_{a in A} min_{b in B} ||a - b||
-    """
-    # Get surface points
-    pred_points = np.argwhere(pred > 0)
-    target_points = np.argwhere(target > 0)
-
-    if len(pred_points) == 0 or len(target_points) == 0:
-        return float('inf')
-
-    # Compute directed Hausdorff distances
-    hd1 = directed_hausdorff(pred_points, target_points)[0]
-    hd2 = directed_hausdorff(target_points, pred_points)[0]
-
-    return max(hd1, hd2)
-
-def hausdorff_distance_95(pred, target):
-    """
-    Compute 95th percentile Hausdorff Distance (more robust).
-    """
-    pred_points = np.argwhere(pred > 0)
-    target_points = np.argwhere(target > 0)
-
-    if len(pred_points) == 0 or len(target_points) == 0:
-        return float('inf')
-
-    # Compute distances from pred to target
-    distances_pred_to_target = []
-    for point in pred_points:
-        min_dist = np.min(np.linalg.norm(target_points - point, axis=1))
-        distances_pred_to_target.append(min_dist)
-
-    # Compute distances from target to pred
-    distances_target_to_pred = []
-    for point in target_points:
-        min_dist = np.min(np.linalg.norm(pred_points - point, axis=1))
-        distances_target_to_pred.append(min_dist)
-
-    # 95th percentile
-    hd95_1 = np.percentile(distances_pred_to_target, 95)
-    hd95_2 = np.percentile(distances_target_to_pred, 95)
-
-    return max(hd95_1, hd95_2)
+```
+C(r) = sum_i T_i * (1 - exp(-sigma_i * delta_i)) * c_i
 ```
 
-### Average Surface Distance
+where `T_i = exp(-sum_{j<i} sigma_j * delta_j)` is the accumulated transmittance and `delta_i` is the distance between consecutive samples.
 
-```python
-def average_surface_distance(pred, target, spacing=(1.0, 1.0, 1.0)):
-    """
-    Compute Average Surface Distance (ASD).
+### Positional Encoding
 
-    Average distance between surfaces of segmentations.
-    """
-    # Get surfaces (boundary voxels)
-    from scipy.ndimage import binary_erosion
+Raw (x, y, z) coordinates are low-dimensional and cannot represent high-frequency details. **Positional encoding** maps low-dimensional inputs to a higher-dimensional space using sinusoidal functions:
 
-    pred_border = pred ^ binary_erosion(pred)
-    target_border = target ^ binary_erosion(target)
-
-    # Get surface points
-    pred_points = np.argwhere(pred_border) * spacing
-    target_points = np.argwhere(target_border) * spacing
-
-    if len(pred_points) == 0 or len(target_points) == 0:
-        return float('inf')
-
-    # Distance transform
-    target_dt = distance_transform_edt(~target_border) * spacing[0]
-    pred_dt = distance_transform_edt(~pred_border) * spacing[0]
-
-    # Average distances
-    distances_pred_to_target = target_dt[pred_border]
-    distances_target_to_pred = pred_dt[target_border]
-
-    asd = (distances_pred_to_target.sum() + distances_target_to_pred.sum()) / \
-          (len(distances_pred_to_target) + len(distances_target_to_pred))
-
-    return asd
+```
+gamma(p) = [sin(2^0 * pi * p), cos(2^0 * pi * p),
+            sin(2^1 * pi * p), cos(2^1 * pi * p),
+            ...,
+            sin(2^(L-1) * pi * p), cos(2^(L-1) * pi * p)]
 ```
 
-### Comprehensive Evaluation
+For position coordinates, L=10 (maps 3D to 60D). For direction, L=4 (maps 2D to 24D). This enables the MLP to learn high-frequency scene details.
+
+### Instant-NGP
+
+**Instant-NGP** (Mueller et al., 2022) replaces positional encoding with a **multi-resolution hash encoding** for dramatically faster training (seconds to minutes instead of hours):
+
+- **Hash grid**: Multiple levels of 3D hash grids at different resolutions. Each grid vertex stores a learnable feature vector.
+- **Trilinear interpolation**: For a query point, interpolate features from surrounding grid vertices at each resolution level.
+- **Concatenation**: Concatenate features from all levels and pass through a small MLP.
+- **Hash collisions**: Handled implicitly -- the optimization resolves collisions through gradient-based learning.
+
+Training speedup: approximately 1000x faster than original NeRF. Can train a scene in 5-15 seconds on modern GPUs.
+
+### 3D Gaussian Splatting
+
+**3D Gaussian Splatting** (Kerbl et al., 2023) represents scenes as a set of explicit 3D Gaussians rather than an implicit neural field:
+
+- Each Gaussian has: position (mean), covariance (3x3 matrix parameterized as rotation + scale), opacity, and spherical harmonics coefficients for view-dependent color.
+- **Rendering**: Project 3D Gaussians onto the image plane (splatting), sort by depth, and alpha-blend front-to-back.
+- **Advantages over NeRF**: Real-time rendering (100+ FPS), explicit representation allows easy editing, faster training.
+- **Optimization**: Initialize from sparse SfM point cloud. Optimize all Gaussian parameters via gradient descent with differentiable splatting.
+
+Applications for both NeRF and Gaussian Splatting:
+
+- **Novel view synthesis**: Render the scene from any camera position.
+- **3D reconstruction**: Extract geometry from the learned representation.
+- **Scene editing**: Modify, add, or remove objects.
+- **Digital twins**: Create photorealistic digital copies of real environments.
+- **Medical imaging**: Reconstruct 3D anatomy from sparse 2D X-rays or limited-angle CT.
+
+---
+
+## Data Augmentation for 3D and Medical Imaging
+
+Data augmentation is critical for 3D medical imaging due to small dataset sizes. However, augmentations must be carefully chosen to preserve anatomical plausibility.
+
+**Spatial augmentations:**
+
+- **3D rotation**: Small angles (e.g., +/- 15 degrees) to avoid unrealistic anatomy. Full 360-degree rotation is appropriate for non-anatomical data like point clouds.
+- **3D elastic deformation**: Smooth random displacement fields simulate anatomical variability. Key parameters: deformation magnitude and smoothing sigma.
+- **Random cropping**: Extract random sub-volumes. Use `RandCropByPosNegLabeld` in MONAI to ensure foreground coverage.
+- **Random scaling**: Slight zoom in/out (0.9x to 1.1x) simulates size variability.
+- **Flipping**: Left-right flipping is usually safe; superior-inferior flipping is generally not appropriate for medical images.
+
+**Intensity augmentations:**
+
+- **Brightness/contrast**: Random additive offset and multiplicative scaling.
+- **Gaussian noise**: Simulate acquisition noise.
+- **Gaussian blur/sharpen**: Simulate varying acquisition quality.
+- **Gamma correction**: Non-linear intensity transformation.
+
+**Advanced augmentations:**
+
+- **MixUp for 3D**: Linear interpolation between two volumes and their labels.
+- **CutMix for 3D**: Replace a random cubic region with content from another volume.
+- **Simulation-based**: Simulate different scanner parameters, slice thicknesses, or reconstruction kernels.
+
+**3D augmentation pipeline:**
 
 ```python
-def evaluate_segmentation(pred, target, spacing=(1.0, 1.0, 1.0)):
-    """Comprehensive segmentation evaluation."""
-    metrics = {}
+import torch
+import numpy as np
+from scipy.ndimage import gaussian_filter, map_coordinates
+from monai.transforms import (
+    Compose, RandFlipd, RandRotate90d, RandAffined,
+    RandGaussianNoised, RandGaussianSmoothd,
+    RandScaleIntensityd, RandShiftIntensityd,
+    RandAdjustContrastd, RandCropByPosNegLabeld,
+    EnsureTyped,
+)
 
-    # Dice coefficient
-    metrics['dice'] = dice_coefficient(pred, target)
 
-    # Hausdorff distances
-    metrics['hausdorff'] = hausdorff_distance(pred, target)
-    metrics['hausdorff_95'] = hausdorff_distance_95(pred, target)
-
-    # Average surface distance
-    metrics['asd'] = average_surface_distance(pred, target, spacing)
-
-    # Sensitivity and Specificity
-    tp = np.sum((pred == 1) & (target == 1))
-    tn = np.sum((pred == 0) & (target == 0))
-    fp = np.sum((pred == 1) & (target == 0))
-    fn = np.sum((pred == 0) & (target == 1))
-
-    metrics['sensitivity'] = tp / (tp + fn) if (tp + fn) > 0 else 0
-    metrics['specificity'] = tn / (tn + fp) if (tn + fp) > 0 else 0
-    metrics['precision'] = tp / (tp + fp) if (tp + fp) > 0 else 0
-
-    # Volume similarity
-    vol_pred = np.sum(pred)
-    vol_target = np.sum(target)
-    metrics['volume_similarity'] = 1 - abs(vol_pred - vol_target) / (vol_pred + vol_target)
-
-    return metrics
-
-# Statistical testing
-def compare_models_statistically(results_model_a, results_model_b, metric='dice'):
-    """Compare two models using paired t-test."""
-    from scipy import stats
-
-    scores_a = [r[metric] for r in results_model_a]
-    scores_b = [r[metric] for r in results_model_b]
-
-    # Paired t-test
-    t_stat, p_value = stats.ttest_rel(scores_a, scores_b)
-
-    print(f"Model A mean {metric}: {np.mean(scores_a):.4f} +/- {np.std(scores_a):.4f}")
-    print(f"Model B mean {metric}: {np.mean(scores_b):.4f} +/- {np.std(scores_b):.4f}")
-    print(f"t-statistic: {t_stat:.4f}, p-value: {p_value:.4f}")
-
-    if p_value < 0.05:
-        if np.mean(scores_a) > np.mean(scores_b):
-            print("Model A is significantly better")
-        else:
-            print("Model B is significantly better")
-    else:
-        print("No significant difference")
-
-    return t_stat, p_value
-```
-
-### Cohen's Kappa
-
-```python
-def cohens_kappa(rater1, rater2):
+def elastic_deformation_3d(volume, alpha=15, sigma=3, random_state=None):
     """
-    Compute Cohen's Kappa for inter-rater agreement.
+    Apply random elastic deformation to a 3D volume.
 
-    Kappa = (Po - Pe) / (1 - Pe)
-    where Po is observed agreement and Pe is expected agreement by chance.
+    Args:
+        volume: 3D numpy array (D, H, W).
+        alpha: Deformation magnitude.
+        sigma: Smoothing sigma (controls smoothness).
     """
-    rater1_flat = rater1.flatten()
-    rater2_flat = rater2.flatten()
+    if random_state is None:
+        random_state = np.random.RandomState()
 
-    # Observed agreement
-    po = np.mean(rater1_flat == rater2_flat)
+    shape = volume.shape
+    # Generate random displacement fields
+    dx = gaussian_filter(random_state.randn(*shape) * alpha, sigma, mode="constant")
+    dy = gaussian_filter(random_state.randn(*shape) * alpha, sigma, mode="constant")
+    dz = gaussian_filter(random_state.randn(*shape) * alpha, sigma, mode="constant")
 
-    # Expected agreement
-    classes = np.unique(np.concatenate([rater1_flat, rater2_flat]))
-    pe = 0
-    for cls in classes:
-        p1 = np.mean(rater1_flat == cls)
-        p2 = np.mean(rater2_flat == cls)
-        pe += p1 * p2
+    # Create coordinate grids
+    z, y, x = np.meshgrid(
+        np.arange(shape[0]),
+        np.arange(shape[1]),
+        np.arange(shape[2]),
+        indexing="ij"
+    )
 
-    # Kappa
-    kappa = (po - pe) / (1 - pe) if pe < 1 else 0
+    # Apply displacement
+    indices = [
+        np.clip(z + dz, 0, shape[0] - 1),
+        np.clip(y + dy, 0, shape[1] - 1),
+        np.clip(x + dx, 0, shape[2] - 1),
+    ]
 
-    return kappa
+    return map_coordinates(volume, indices, order=1, mode="reflect")
+
+
+def mixup_3d(volume1, label1, volume2, label2, alpha=0.2):
+    """MixUp augmentation for 3D volumes."""
+    lam = np.random.beta(alpha, alpha)
+    mixed_volume = lam * volume1 + (1 - lam) * volume2
+    mixed_label = lam * label1 + (1 - lam) * label2
+    return mixed_volume, mixed_label
+
+
+def get_monai_augmentation_pipeline(patch_size=(96, 96, 96)):
+    """Comprehensive MONAI augmentation pipeline for 3D medical images."""
+    return Compose([
+        # Spatial augmentations
+        RandCropByPosNegLabeld(
+            keys=["image", "label"],
+            label_key="label",
+            spatial_size=patch_size,
+            pos=1, neg=1,
+            num_samples=4,
+        ),
+        RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=0),
+        RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=1),
+        RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=2),
+        RandRotate90d(keys=["image", "label"], prob=0.5, spatial_axes=(0, 1)),
+        RandAffined(
+            keys=["image", "label"],
+            prob=0.3,
+            rotate_range=(0.26, 0.26, 0.26),  # approximately 15 degrees
+            scale_range=(0.1, 0.1, 0.1),
+            mode=("bilinear", "nearest"),
+            padding_mode="border",
+        ),
+
+        # Intensity augmentations (image only)
+        RandGaussianNoised(keys=["image"], prob=0.2, mean=0.0, std=0.1),
+        RandGaussianSmoothd(
+            keys=["image"], prob=0.2,
+            sigma_x=(0.5, 1.5), sigma_y=(0.5, 1.5), sigma_z=(0.5, 1.5),
+        ),
+        RandScaleIntensityd(keys=["image"], factors=0.3, prob=0.3),
+        RandShiftIntensityd(keys=["image"], offsets=0.1, prob=0.3),
+        RandAdjustContrastd(keys=["image"], gamma=(0.7, 1.5), prob=0.3),
+
+        EnsureTyped(keys=["image", "label"]),
+    ])
+
+
+# Usage example
+transforms = get_monai_augmentation_pipeline(patch_size=(96, 96, 96))
 ```
 
 ---
 
 ## Regulatory and Clinical Considerations
 
-### FDA Approval Pathway
+### FDA Clearance Pathways
 
-**Three main pathways for medical device approval:**
+Medical AI products in the United States require FDA authorization before clinical use. Three main pathways:
 
-**510(k) Premarket Notification**
-- Device is "substantially equivalent" to existing device
-- Most common pathway (~90% of devices)
-- Requires: predicate device, performance testing, clinical data (sometimes)
-- Review time: ~90 days
+**510(k) Clearance:**
+- Most common pathway for medical AI.
+- Requires demonstration of **substantial equivalence** to a legally marketed predicate device.
+- Does not require clinical trials in most cases; bench testing and retrospective validation may suffice.
+- Typical timeline: 3-6 months.
+- Examples: AI-assisted detection of lung nodules, diabetic retinopathy screening.
 
-**De Novo Classification**
-- Novel device with low/moderate risk
-- No predicate device exists
-- More stringent than 510(k)
-- Creates new device category
+**De Novo Classification:**
+- For novel devices without a predicate.
+- Requires demonstration of safety and effectiveness through more rigorous evidence.
+- Creates a new regulatory classification, which becomes a predicate for future 510(k) submissions.
+- Typical timeline: 6-12 months.
 
-**Premarket Approval (PMA)**
-- High-risk devices (Class III)
-- Most rigorous pathway
-- Requires: extensive clinical trials, manufacturing data, risk analysis
-- Review time: ~180 days to years
+**PMA (Premarket Approval):**
+- Most stringent pathway for Class III (highest risk) devices.
+- Requires prospective clinical trials demonstrating safety and effectiveness.
+- Typical timeline: 1-3 years.
+- Rare for AI/ML-based devices currently.
 
-### Required Documentation
+**Predetermined Change Control Plan (PCCP):**
+- FDA framework (since 2023) allowing manufacturers to specify in advance how their AI model will be updated post-market.
+- Enables continuous learning without requiring a new submission for each model update.
+- Must define the types of changes, validation protocol, and performance guardrails.
 
-```python
-# Example validation report structure
-validation_report = {
-    "Executive Summary": {
-        "Device name": "AI-based CT Lesion Detection",
-        "Intended use": "Aid radiologists in detecting lung nodules",
-        "Classification": "Class II, 510(k) exempt"
-    },
+### EU MDR and AI Act
 
-    "Algorithm Description": {
-        "Architecture": "3D ResNet with FPN",
-        "Training data": "10,000 CT scans from 5 institutions",
-        "Preprocessing": "Resampling to 1mm, HU clipping [-1000, 400]",
-        "Performance metrics": "Sensitivity, specificity, FROC"
-    },
+**EU Medical Device Regulation (MDR 2017/745):**
+- Replaced the Medical Device Directive (MDD) in 2021.
+- AI-based medical devices classified as Class IIa or higher, requiring a **Notified Body** assessment.
+- Requires clinical evaluation, post-market surveillance, and a Quality Management System (QMS).
+- Unique Device Identification (UDI) mandatory.
 
-    "Validation Results": {
-        "Internal validation": {
-            "Dataset": "2000 cases",
-            "Sensitivity": "95% (95% CI: 93-97%)",
-            "Specificity": "90% (95% CI: 88-92%)",
-            "AUC": "0.96"
-        },
-        "External validation": {
-            "Dataset": "500 cases from different institution",
-            "Sensitivity": "92% (95% CI: 89-95%)",
-            "Specificity": "88% (95% CI: 85-91%)"
-        }
-    },
+**EU AI Act:**
+- World's first comprehensive AI regulation (entered into force 2024).
+- Medical AI is classified as **high-risk**, requiring:
+  - Risk management system.
+  - Data governance and quality requirements.
+  - Technical documentation.
+  - Human oversight provisions.
+  - Transparency and logging requirements.
+  - Accuracy, robustness, and cybersecurity requirements.
 
-    "Clinical Validation": {
-        "Study design": "Reader study with 10 radiologists",
-        "Standalone performance": "Sensitivity 92%, FP rate 0.5 per case",
-        "Reader without AI": "Sensitivity 85%, FP rate 0.8 per case",
-        "Reader with AI": "Sensitivity 94%, FP rate 0.4 per case"
-    },
+### Explainability for Clinical AI
 
-    "Bias Analysis": {
-        "Age groups": "No significant difference (p>0.05)",
-        "Gender": "No significant difference (p>0.05)",
-        "Ethnicity": "Evaluated across 4 groups, consistent performance",
-        "Scanner manufacturer": "Tested on GE, Siemens, Philips"
-    },
+Clinical adoption requires that AI decisions be interpretable to clinicians:
 
-    "Risk Analysis": {
-        "False negatives": "Missed cancer - HIGH RISK - Mitigated by dual reading",
-        "False positives": "Unnecessary follow-up - MODERATE RISK",
-        "Software bugs": "MODERATE RISK - Extensive testing, version control"
-    }
-}
-```
+- **GradCAM for 3D**: Compute class-discriminative heatmaps by weighting feature maps by their gradient importance. Extends naturally to 3D volumes.
+- **Attention maps**: Extract and visualize attention weights from Attention U-Net or Transformer architectures.
+- **Saliency maps**: Compute input gradients to identify which voxels most influence the prediction.
+- **SHAP values**: Model-agnostic feature importance for radiomics-based models.
+- **Counterfactual explanations**: Show what minimal change to the input would change the prediction.
 
-### CE Marking (EU Medical Device Regulation)
+Practical considerations:
 
-**Requirements under MDR (Medical Device Regulation):**
-- Clinical evaluation report
-- Risk management (ISO 14971)
-- Quality management system (ISO 13485)
-- Technical documentation
-- Post-market surveillance plan
+- Clinicians prefer spatial heatmaps overlaid on the original image.
+- Explanations must align with clinical knowledge to build trust.
+- Regulatory submissions increasingly require explainability documentation.
 
-### Bias and Fairness
+### Dataset Bias and Fairness
 
-```python
-def evaluate_fairness(predictions, labels, protected_attributes):
-    """
-    Evaluate model fairness across demographic groups.
+Medical AI systems can encode and amplify biases present in training data:
 
-    protected_attributes: dict with keys like 'age', 'gender', 'ethnicity'
-    """
-    from sklearn.metrics import roc_auc_score, accuracy_score
+- **Demographic bias**: Models trained predominantly on one demographic may underperform on others. For example, chest X-ray models trained mostly on adult males may fail on pediatric or female patients.
+- **Scanner bias**: Models can overfit to characteristics of specific scanner manufacturers or acquisition protocols.
+- **Label bias**: Diagnostic labels reflect the biases of the annotating clinicians and the patient population.
+- **Prevalence shift**: A model trained at a high-prevalence center may have poor positive predictive value at a low-prevalence center.
 
-    results = {}
+Mitigation strategies:
 
-    for attr_name, attr_values in protected_attributes.items():
-        group_aucs = {}
-        group_accs = {}
+- Stratified evaluation across demographic groups (age, sex, race, scanner type).
+- Multi-site training data with diverse patient populations.
+- Domain adaptation and harmonization techniques.
+- Fairness-aware training objectives.
+- Transparent reporting of model performance across subgroups (Model Cards, Datasheets for Datasets).
 
-        unique_groups = np.unique(attr_values)
+**HIPAA Compliance:**
 
-        for group in unique_groups:
-            mask = attr_values == group
-            group_preds = predictions[mask]
-            group_labels = labels[mask]
-
-            if len(np.unique(group_labels)) > 1:  # Check both classes present
-                auc = roc_auc_score(group_labels, group_preds)
-                acc = accuracy_score(group_labels, group_preds > 0.5)
-
-                group_aucs[group] = auc
-                group_accs[group] = acc
-
-        # Compute disparity
-        auc_values = list(group_aucs.values())
-        disparity = max(auc_values) - min(auc_values) if len(auc_values) > 1 else 0
-
-        results[attr_name] = {
-            'group_aucs': group_aucs,
-            'group_accuracies': group_accs,
-            'disparity': disparity
-        }
-
-        print(f"\n{attr_name.upper()} Analysis:")
-        for group, auc in group_aucs.items():
-            print(f"  {group}: AUC = {auc:.3f}, Acc = {group_accs[group]:.3f}")
-        print(f"  AUC Disparity: {disparity:.3f}")
-
-    return results
-```
-
-### Explainability
-
-```python
-class GradCAM3D:
-    """Grad-CAM for 3D medical images."""
-    def __init__(self, model, target_layer):
-        self.model = model
-        self.target_layer = target_layer
-        self.gradients = None
-        self.activations = None
-
-        # Register hooks
-        target_layer.register_forward_hook(self.save_activation)
-        target_layer.register_backward_hook(self.save_gradient)
-
-    def save_activation(self, module, input, output):
-        self.activations = output.detach()
-
-    def save_gradient(self, module, grad_input, grad_output):
-        self.gradients = grad_output[0].detach()
-
-    def __call__(self, x, class_idx=None):
-        # Forward pass
-        output = self.model(x)
-
-        if class_idx is None:
-            class_idx = output.argmax(dim=1)
-
-        # Backward pass
-        self.model.zero_grad()
-        class_score = output[:, class_idx]
-        class_score.backward()
-
-        # Compute Grad-CAM
-        gradients = self.gradients
-        activations = self.activations
-
-        # Global average pooling of gradients
-        weights = gradients.mean(dim=(2, 3, 4), keepdim=True)
-
-        # Weighted combination
-        cam = (weights * activations).sum(dim=1, keepdim=True)
-
-        # ReLU
-        cam = F.relu(cam)
-
-        # Normalize
-        cam = cam - cam.min()
-        cam = cam / (cam.max() + 1e-8)
-
-        return cam
-
-# Usage
-# model = ResNet3D(num_classes=2)
-# target_layer = model.layer4[-1]  # Last conv layer
-# grad_cam = GradCAM3D(model, target_layer)
-#
-# input_volume = torch.randn(1, 1, 64, 64, 64)
-# cam = grad_cam(input_volume)
-```
-
-### Data Privacy and De-identification
-
-```python
-def deidentify_dicom(dicom_file, output_file):
-    """Remove PHI (Protected Health Information) from DICOM."""
-    ds = pydicom.dcmread(dicom_file)
-
-    # Tags to remove/anonymize
-    tags_to_remove = [
-        'PatientName',
-        'PatientID',
-        'PatientBirthDate',
-        'PatientSex',
-        'PatientAge',
-        'InstitutionName',
-        'InstitutionAddress',
-        'ReferringPhysicianName',
-        'PerformingPhysicianName',
-        'StudyDate',
-        'StudyTime',
-        'SeriesDate',
-        'SeriesTime',
-        'AccessionNumber'
-    ]
-
-    for tag in tags_to_remove:
-        if tag in ds:
-            if tag == 'PatientID':
-                # Replace with anonymous ID
-                ds.PatientID = f"ANON_{hash(ds.PatientID) % 1000000:06d}"
-            else:
-                delattr(ds, tag)
-
-    # Save
-    ds.save_as(output_file)
-
-# HIPAA Safe Harbor method
-def check_hipaa_compliance(metadata):
-    """Check if metadata meets HIPAA Safe Harbor requirements."""
-    phi_identifiers = [
-        'names', 'geographic_subdivisions', 'dates', 'phone_numbers',
-        'fax_numbers', 'email_addresses', 'ssn', 'medical_record_numbers',
-        'health_plan_numbers', 'account_numbers', 'license_numbers',
-        'vehicle_identifiers', 'device_identifiers', 'urls', 'ip_addresses',
-        'biometric_identifiers', 'photos', 'other_unique_identifiers'
-    ]
-
-    violations = []
-    for identifier in phi_identifiers:
-        if identifier in metadata and metadata[identifier]:
-            violations.append(identifier)
-
-    if violations:
-        print(f"HIPAA violations found: {violations}")
-        return False
-    else:
-        print("HIPAA Safe Harbor compliant")
-        return True
-```
+- All patient data must be **de-identified** before use in research (Safe Harbor: remove 18 identifier types; Expert Determination).
+- Data Use Agreements (DUA) required for sharing between institutions.
+- Protected Health Information (PHI) must be stored in encrypted, access-controlled systems.
+- DICOM files contain PHI in metadata headers -- must scrub before sharing.
+- Cloud processing requires Business Associate Agreements (BAA) with cloud providers.
 
 ---
 
-## Resources and References
+## See Also
 
-### Key Libraries
-
-**Medical Imaging Processing:**
-- **MONAI** (Medical Open Network for AI): https://monai.io/
-  - Purpose-built for medical imaging deep learning
-  - Includes datasets, transforms, networks, metrics
-  - Install: `pip install monai`
-
-- **TorchIO**: https://torchio.readthedocs.io/
-  - Medical image preprocessing and augmentation
-  - Built on PyTorch
-  - Install: `pip install torchio`
-
-- **SimpleITK**: https://simpleitk.org/
-  - Medical image registration, segmentation
-  - Wraps ITK with simple Python interface
-  - Install: `pip install SimpleITK`
-
-- **PyRadiomics**: https://pyradiomics.readthedocs.io/
-  - Extract radiomic features
-  - IBSI compliant
-  - Install: `pip install pyradiomics`
-
-**DICOM/NIfTI Handling:**
-- **pydicom**: Read/write DICOM files
-- **nibabel**: Read/write NIfTI, MINC, MGH formats
-- **dcm2niix**: Convert DICOM to NIfTI (command-line)
-
-**Frameworks:**
-- **nnU-Net**: https://github.com/MIC-DKFZ/nnUNet
-  - Self-configuring segmentation
-  - State-of-the-art on many benchmarks
-
-- **nnDetection**: https://github.com/MIC-DKFZ/nnDetection
-  - Self-configuring 3D object detection
-
-**Point Cloud:**
-- **Open3D**: http://www.open3d.org/
-  - Point cloud processing, visualization
-  - Install: `pip install open3d`
-
-### Public Datasets
-
-**General Medical Imaging:**
-- **Medical Segmentation Decathlon**: 10 segmentation tasks
-  - http://medicaldecathlon.com/
-  - Liver, brain, heart, lung, pancreas, etc.
-
-- **Grand Challenge**: https://grand-challenge.org/
-  - 100+ medical imaging challenges
-  - Benchmarks for various tasks
-
-**Chest Imaging:**
-- **NIH ChestX-ray14**: 112,120 chest X-rays with 14 diseases
-  - https://nihcc.app.box.com/v/ChestXray-NIHCC
-
-- **MIMIC-CXR**: 377,110 chest X-rays with reports
-  - https://physionet.org/content/mimic-cxr/
-
-- **RSNA Pneumonia Detection**: Chest X-ray pneumonia
-  - https://www.kaggle.com/c/rsna-pneumonia-detection-challenge
-
-- **COVID-19 Image Data Collection**: CT and X-ray
-  - https://github.com/ieee8023/covid-chestxray-dataset
-
-**Brain Imaging:**
-- **BraTS** (Brain Tumor Segmentation): Annual challenge
-  - http://braintumorsegmentation.org/
-  - MRI with glioma segmentations
-
-- **OASIS** (Open Access Series of Imaging Studies): Brain MRI
-  - https://www.oasis-brains.org/
-
-- **Human Connectome Project**: High-resolution brain MRI
-  - https://www.humanconnectome.org/
-
-**Lung Imaging:**
-- **LUNA16** (Lung Nodule Analysis): CT with nodule annotations
-  - https://luna16.grand-challenge.org/
-
-- **LIDC-IDRI**: 1018 lung CT scans with annotations
-  - https://wiki.cancerimagingarchive.net/display/Public/LIDC-IDRI
-
-**Liver Imaging:**
-- **LiTS** (Liver Tumor Segmentation): CT with liver/tumor masks
-  - https://competitions.codalab.org/competitions/17094
-
-**Multi-Organ:**
-- **TCIA** (The Cancer Imaging Archive): Diverse cancer imaging
-  - https://www.cancerimagingarchive.net/
-
-- **UK Biobank**: 100,000+ participants, multiple modalities
-  - https://www.ukbiobank.ac.uk/
-
-### Key Competitions
-
-**Annual Challenges:**
-- **MICCAI**: Medical Image Computing and Computer Assisted Intervention
-  - Held every September
-  - Multiple challenges on segmentation, detection, registration
-
-- **RSNA**: Radiological Society of North America
-  - Annual Kaggle competitions
-  - Focus on clinically relevant tasks
-
-- **ISBI**: International Symposium on Biomedical Imaging
-  - Various challenges
-
-**Competition Platforms:**
-- **grand-challenge.org**: Medical imaging challenges
-- **Kaggle**: RSNA and other medical competitions
-- **CodaLab**: Academic competition hosting
-
-### Key Papers by Topic
-
-**3D CNNs:**
-- Cicek et al., "3D U-Net: Learning Dense Volumetric Segmentation from Sparse Annotation" (2016)
-- Milletari et al., "V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation" (2016)
-- Tran et al., "Learning Spatiotemporal Features with 3D Convolutional Networks" (C3D, 2015)
-
-**Medical Image Segmentation:**
-- Ronneberger et al., "U-Net: Convolutional Networks for Biomedical Image Segmentation" (2015)
-- Isensee et al., "nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation" (2021)
-- Oktay et al., "Attention U-Net: Learning Where to Look for the Pancreas" (2018)
-
-**Point Clouds:**
-- Qi et al., "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation" (2017)
-- Qi et al., "PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space" (2017)
-
-**Transfer Learning:**
-- Zhou et al., "Models Genesis: Generic Autodidactic Models for 3D Medical Image Analysis" (2019)
-- Raghu et al., "Transfusion: Understanding Transfer Learning for Medical Imaging" (2019)
-
-**Object Detection:**
-- Baumgartner et al., "nnDetection: A Self-configuring Method for Medical Object Detection" (2021)
-- Ding et al., "DeepLesion: automated mining of large-scale lesion annotations" (2018)
-
-**Radiomics:**
-- Gillies et al., "Radiomics: Images Are More than Pictures, They Are Data" (2016)
-- Lambin et al., "Radiomics: the bridge between medical imaging and personalized medicine" (2017)
-
-**Regulatory/Clinical:**
-- Topol, "High-performance medicine: the convergence of human and artificial intelligence" (2019)
-- Char et al., "Implementing Machine Learning in Health Care - Addressing Ethical Challenges" (2018)
-- FDA, "Clinical Performance Assessment: Considerations for Computer-Assisted Detection Devices" (2020)
-
-### Online Courses and Tutorials
-
-**Courses:**
-- **Coursera - AI for Medical Diagnosis** (deeplearning.ai)
-- **Fast.ai Medical Imaging** (free online course)
-- **MONAI Bootcamp** (YouTube playlist)
-
-**Tutorials:**
-- MONAI tutorials: https://github.com/Project-MONAI/tutorials
-- TorchIO examples: https://torchio.readthedocs.io/examples/
-- nnU-Net documentation: https://github.com/MIC-DKFZ/nnUNet
-
-**Books:**
-- "Deep Learning for Medical Image Analysis" (Zhou et al., 2017)
-- "Medical Image Analysis" (Deserno, 2011)
-- "Handbook of Medical Image Computing and Computer Assisted Intervention" (Zhou et al., 2020)
+- **CNN Fundamentals** (01): Convolutional layers, pooling, and basic architectures that 3D CNNs build upon.
+- **CNN Architectures** (02): ResNet, DenseNet, and SE-Net designs that are extended to 3D.
+- **Object Detection and Segmentation** (03): 2D detection and segmentation methods (YOLO, Mask R-CNN, U-Net) that precede their 3D counterparts.
+- **Transformers and Attention**: Vision Transformers (ViT), UNETR, and SwinUNETR for medical imaging.
+- **Self-Supervised Learning**: Pretraining strategies for medical imaging where labeled data is scarce (contrastive learning, masked image modeling).
+- **Generative Models**: Diffusion models for medical image synthesis and augmentation.
+- **MLOps and Deployment**: Model serving, monitoring, and updating for clinical AI systems.
 
 ---
 
-**End of 3D Vision and Medical Imaging Guide**
+## Resources
 
-This comprehensive guide covers the essential aspects of 3D vision and medical imaging, from data preprocessing and model architectures to evaluation metrics and regulatory considerations. The field continues to evolve rapidly, with new methods and datasets emerging regularly. Always validate thoroughly and consider clinical relevance when developing medical AI systems.
+**Key Papers:**
+- Cicek et al. (2016) -- "3D U-Net: Learning Dense Volumetric Segmentation from Sparse Annotation"
+- Milletari et al. (2016) -- "V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation"
+- Isensee et al. (2021) -- "nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation"
+- Qi et al. (2017) -- "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation"
+- Qi et al. (2017) -- "PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space"
+- Mildenhall et al. (2020) -- "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
+- Kerbl et al. (2023) -- "3D Gaussian Splatting for Real-Time Radiance Field Rendering"
+- Mueller et al. (2022) -- "Instant Neural Graphics Primitives with a Multiresolution Hash Encoding"
+- Carreira and Zisserman (2017) -- "Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset" (I3D)
+- Oktay et al. (2018) -- "Attention U-Net: Learning Where to Look for the Pancreas"
 
+**Libraries and Frameworks:**
+- MONAI: https://monai.io/ -- Medical imaging deep learning framework
+- nnU-Net: https://github.com/MIC-DKFZ/nnUNet -- Self-configuring segmentation
+- PyRadiomics: https://pyradiomics.readthedocs.io/ -- Radiomics feature extraction
+- pydicom: https://pydicom.github.io/ -- DICOM file handling in Python
+- nibabel: https://nipy.org/nibabel/ -- NIfTI and other neuroimaging formats
+- SimpleITK: https://simpleitk.org/ -- Medical image processing
+- MMDetection3D: https://github.com/open-mmlab/mmdetection3d -- 3D object detection toolbox
+- Open3D: https://www.open3d.org/ -- Point cloud and 3D data processing
+- ANTs: https://github.com/ANTsX/ANTs -- Advanced image registration
+- 3D Slicer: https://www.slicer.org/ -- Medical image visualization and analysis
+
+**Datasets:**
+- Medical Segmentation Decathlon: 10 segmentation tasks across organs and modalities
+- BraTS: Brain Tumor Segmentation Challenge
+- KITTI: Autonomous driving benchmark (LiDAR + camera)
+- nuScenes: Large-scale autonomous driving dataset
+- Waymo Open Dataset: Autonomous driving with LiDAR and camera
+- ModelNet: 3D CAD model classification (40 classes)
+- ShapeNet: Large-scale 3D shape repository
+- ScanNet: Indoor 3D scene understanding
+- LUNA16: Lung nodule detection in CT
+- NIH ChestX-ray14: Large-scale chest X-ray classification (2D but often used as medical AI baseline)
+- TotalSegmentator: 104 anatomical structures segmented in CT
+
+**Courses and Tutorials:**
+- Stanford CS231N: Convolutional Neural Networks for Visual Recognition
+- Stanford CS231A: Computer Vision (includes 3D vision)
+- MIT 6.S094: Deep Learning for Self-Driving Cars
+- MONAI Bootcamp tutorials and documentation
+- Medical Image Computing and Computer-Assisted Intervention (MICCAI) tutorials

@@ -33,12 +33,12 @@
 **Result:** Values between 0 and 1
 
 **When to Use:**
-✅ When you need bounded values
-✅ Neural networks (especially with sigmoid/tanh)
-✅ Image data (pixel values)
+ When you need bounded values
+ Neural networks (especially with sigmoid/tanh)
+ Image data (pixel values)
 
 **Disadvantages:**
-❌ Sensitive to outliers (they determine min/max)
+ Sensitive to outliers (they determine min/max)
 
 ```python
 from sklearn.preprocessing import MinMaxScaler
@@ -72,16 +72,16 @@ def min_max_scale(X):
 
 ### 2. Standardization (Z-score Normalization)
 
-**Formula:** X_scaled = (X - μ) / σ
+**Formula:** X_scaled = (X - mu) / sigma
 
 **Result:** Mean = 0, Standard Deviation = 1
 
 **When to Use:**
-✅ **Most common choice** (default for many algorithms)
-✅ When data follows normal distribution
-✅ Less sensitive to outliers than Min-Max
-✅ Linear regression, logistic regression, neural networks
-✅ PCA, clustering
+ **Most common choice** (default for many algorithms)
+ When data follows normal distribution
+ Less sensitive to outliers than Min-Max
+ Linear regression, logistic regression, neural networks
+ PCA, clustering
 
 ```python
 from sklearn.preprocessing import StandardScaler
@@ -114,9 +114,9 @@ X_original = scaler.inverse_transform(X_scaled)
 **Formula:** X_scaled = (X - median) / IQR
 
 **When to Use:**
-✅ **When you have outliers**
-✅ More robust than StandardScaler
-✅ Uses median and IQR instead of mean and std
+ **When you have outliers**
+ More robust than StandardScaler
+ Uses median and IQR instead of mean and std
 
 ```python
 from sklearn.preprocessing import RobustScaler
@@ -140,9 +140,9 @@ X_scaled = scaler.fit_transform(X)
 **Result:** Values between -1 and 1
 
 **When to Use:**
-✅ Sparse data (many zeros)
-✅ Data already centered at zero
-✅ Preserves sparsity (doesn't densify sparse matrices)
+ Sparse data (many zeros)
+ Data already centered at zero
+ Preserves sparsity (doesn't densify sparse matrices)
 
 ```python
 from sklearn.preprocessing import MaxAbsScaler
@@ -160,9 +160,9 @@ X_scaled = scaler.fit_transform(X_sparse)  # Works with sparse matrices
 **Result:** Each sample has unit norm (length = 1)
 
 **When to Use:**
-✅ Text data (TF-IDF vectors)
-✅ When direction matters more than magnitude
-✅ Cosine similarity computations
+ Text data (TF-IDF vectors)
+ When direction matters more than magnitude
+ Cosine similarity computations
 
 ```python
 from sklearn.preprocessing import Normalizer
@@ -184,10 +184,10 @@ X_normalized = X / np.linalg.norm(X, axis=1, keepdims=True)
 ### 6. Log Transformation (Skewed Data)
 
 **When to Use:**
-✅ **Highly skewed distributions**
-✅ Right-skewed data (long tail on right)
-✅ Make distribution more normal
-✅ Income, prices, counts
+ **Highly skewed distributions**
+ Right-skewed data (long tail on right)
+ Make distribution more normal
+ Income, prices, counts
 
 ```python
 import numpy as np
@@ -217,12 +217,12 @@ df['transformed'] = pt.fit_transform(df[['feature']])
 
 | Method | Range | Outlier Sensitive | Use Case |
 |--------|-------|-------------------|----------|
-| **Min-Max** | [0, 1] | ✅ Yes | Neural networks, bounded values |
-| **Standardization** | Mean=0, Std=1 | ⚠️ Moderate | **Default choice**, most algorithms |
-| **Robust** | Varies | ❌ No | **When outliers present** |
-| **MaxAbs** | [-1, 1] | ✅ Yes | Sparse data |
-| **Normalizer** | Unit norm | ❌ No | Text vectors, cosine similarity |
-| **Log** | > 0 | ❌ No | Skewed distributions |
+| **Min-Max** | [0, 1] |  Yes | Neural networks, bounded values |
+| **Standardization** | Mean=0, Std=1 | [WARNING] Moderate | **Default choice**, most algorithms |
+| **Robust** | Varies |  No | **When outliers present** |
+| **MaxAbs** | [-1, 1] |  Yes | Sparse data |
+| **Normalizer** | Unit norm |  No | Text vectors, cosine similarity |
+| **Log** | > 0 |  No | Skewed distributions |
 
 ---
 
@@ -263,7 +263,7 @@ education_map = {
 df['education_encoded'] = df['education'].map(education_map)
 ```
 
-**⚠️ Warning:** Don't use for nominal categories (no order) - model might assume order!
+**[WARNING] Warning:** Don't use for nominal categories (no order) - model might assume order!
 
 ---
 
@@ -300,8 +300,8 @@ df_encoded = pd.DataFrame(encoded, columns=feature_names)
 ```
 
 **Disadvantages:**
-- ❌ **High cardinality problem**: 1000 categories → 1000 columns!
-- ❌ Sparse matrices (memory intensive)
+-  **High cardinality problem**: 1000 categories --> 1000 columns!
+-  Sparse matrices (memory intensive)
 
 ---
 
@@ -330,7 +330,7 @@ df['category_freq'] = df['category'].map(freq_map)
 
 **Replace category with mean of target variable for that category**
 
-**⚠️ Caution:** Can cause overfitting! Use with cross-validation.
+**[WARNING] Caution:** Can cause overfitting! Use with cross-validation.
 
 ```python
 # Calculate mean target per category
@@ -391,7 +391,7 @@ import category_encoders as ce
 encoder = ce.BinaryEncoder(cols=['category'])
 df_encoded = encoder.fit_transform(df)
 
-# Example: 5 categories → 3 binary columns (2^3 = 8 > 5)
+# Example: 5 categories --> 3 binary columns (2^3 = 8 > 5)
 # More compact than one-hot
 ```
 
@@ -425,7 +425,7 @@ hashed = hasher.transform(df['category'].apply(lambda x: [x]))
 import torch
 import torch.nn as nn
 
-# Example: 1000 unique categories → 50-dimensional embeddings
+# Example: 1000 unique categories --> 50-dimensional embeddings
 embedding_layer = nn.Embedding(num_embeddings=1000, embedding_dim=50)
 
 # Input: category indices
@@ -442,18 +442,18 @@ print(embeddings.shape)  # torch.Size([4, 50])
 
 ```
 How many unique categories?
-│
-├─ < 10: One-Hot Encoding
-│
-├─ 10-100:
-│   ├─ Tree-based model: Label Encoding
-│   └─ Linear model: Binary Encoding or Target Encoding
-│
-└─ > 100:
-    ├─ Frequency Encoding
-    ├─ Hash Encoding
-    ├─ Target Encoding (with CV)
-    └─ Embeddings (deep learning)
+|
++--- < 10: One-Hot Encoding
+|
++--- 10-100:
+|   +--- Tree-based model: Label Encoding
+|   +--- Linear model: Binary Encoding or Target Encoding
+|
++--- > 100:
+    +--- Frequency Encoding
+    +--- Hash Encoding
+    +--- Target Encoding (with CV)
+    +--- Embeddings (deep learning)
 ```
 
 ---
@@ -546,14 +546,14 @@ predictions = full_pipeline.predict(X_test)
 ### 1. Always Split First, Then Scale
 
 ```python
-# ✅ CORRECT
+#  CORRECT
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)  # Fit on train
 X_test_scaled = scaler.transform(X_test)        # Transform test
 
-# ❌ WRONG (data leakage!)
+#  WRONG (data leakage!)
 X_scaled = scaler.fit_transform(X)  # Information from test leaks to train!
 X_train, X_test = train_test_split(X_scaled)
 ```
@@ -613,7 +613,7 @@ X_test_encoded = ohe.transform(X_test[['category']])
 - [ ] Save scaler for production
 
 **After Scaling:**
-- [ ] Verify mean ≈ 0, std ≈ 1 (for StandardScaler)
+- [ ] Verify mean ~= 0, std ~= 1 (for StandardScaler)
 - [ ] Check no data leakage occurred
 - [ ] Document which scaler used
 

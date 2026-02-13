@@ -103,7 +103,7 @@ class SeasonalityBasis(nn.Module):
         self.forecast_size = forecast_size
 
     def forward(self, theta, target_size):
-        # Fourier basis: [sin(2πt), cos(2πt), sin(4πt), ...]
+        # Fourier basis: [sin(2pit), cos(2pit), sin(4pit), ...]
         t = torch.arange(0, target_size, dtype=torch.float32) / target_size
 
         S = []
@@ -302,7 +302,7 @@ forecast = model.predict(future)
 ### Lagged Regressors (Past Events)
 
 ```python
-# Events that affect future (e.g., website visits → sales)
+# Events that affect future (e.g., website visits --> sales)
 df['website_visits'] = np.random.poisson(100, size=len(df))
 
 model = NeuralProphet(n_lags=7)
@@ -533,9 +533,9 @@ model.plot_interpretation(interpretation)
 
 ### Informer (AAAI 2021 Best Paper)
 
-**Problem:** Standard Transformers are O(L²) for sequence length L.
+**Problem:** Standard Transformers are O(L^2) for sequence length L.
 
-**Solution:** ProbSparse self-attention → O(L log L)
+**Solution:** ProbSparse self-attention --> O(L log L)
 
 ```python
 class ProbSparseSelfAttention(nn.Module):
@@ -831,7 +831,7 @@ class TimeSeriesPipeline:
         stat, pvalue = ks_2samp(self.training_data, recent_data)
 
         if pvalue < 0.05:
-            print("⚠️ Distribution drift detected! Consider retraining.")
+            print("[WARNING] Distribution drift detected! Consider retraining.")
 
         return {'drift_detected': pvalue < 0.05, 'p_value': pvalue}
 ```

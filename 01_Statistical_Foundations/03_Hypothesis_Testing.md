@@ -4,31 +4,31 @@
 
 ### Components
 
-**Null Hypothesis (H₀):** Default assumption (e.g., no effect, no difference)
+**Null Hypothesis (H_0):** Default assumption (e.g., no effect, no difference)
 
-**Alternative Hypothesis (H₁ or Hₐ):** What we want to prove
+**Alternative Hypothesis (H_1 or H_a):** What we want to prove
 
 **Test Statistic:** Calculated from data
 
-**P-value:** Probability of observing data as extreme as observed, assuming H₀ is true
+**P-value:** Probability of observing data as extreme as observed, assuming H_0 is true
 
-**Significance Level (α):** Threshold for rejecting H₀ (commonly 0.05)
+**Significance Level (alpha):** Threshold for rejecting H_0 (commonly 0.05)
 
 ### Decision Rules
 
-- **Reject H₀** if p-value < α
-- **Fail to reject H₀** if p-value ≥ α
+- **Reject H_0** if p-value < alpha
+- **Fail to reject H_0** if p-value >= alpha
 
 ### Type I and Type II Errors
 
-**Type I Error (False Positive):** Reject H₀ when it's true
-- P(Type I) = α
+**Type I Error (False Positive):** Reject H_0 when it's true
+- P(Type I) = alpha
 
-**Type II Error (False Negative):** Fail to reject H₀ when it's false
-- P(Type II) = β
+**Type II Error (False Negative):** Fail to reject H_0 when it's false
+- P(Type II) = beta
 
-**Statistical Power:** 1 - β
-- Probability of correctly rejecting false H₀
+**Statistical Power:** 1 - beta
+- Probability of correctly rejecting false H_0
 - Typical target: 80%
 
 ```python
@@ -38,15 +38,15 @@ from scipy import stats
 # Illustrate Type I and Type II errors
 np.random.seed(42)
 
-# Scenario 1: H₀ is true (μ=10)
+# Scenario 1: H_0 is true (mu=10)
 null_true_data = np.random.normal(loc=10, scale=2, size=100)
 t_stat, p_value = stats.ttest_1samp(null_true_data, 10)
-print(f"H₀ true, p-value: {p_value:.4f}, Reject H₀: {p_value < 0.05}")
+print(f"H_0 true, p-value: {p_value:.4f}, Reject H_0: {p_value < 0.05}")
 
-# Scenario 2: H₁ is true (μ=11, but we test against 10)
+# Scenario 2: H_1 is true (mu=11, but we test against 10)
 alternative_true_data = np.random.normal(loc=11, scale=2, size=100)
 t_stat, p_value = stats.ttest_1samp(alternative_true_data, 10)
-print(f"H₁ true, p-value: {p_value:.4f}, Reject H₀: {p_value < 0.05}")
+print(f"H_1 true, p-value: {p_value:.4f}, Reject H_0: {p_value < 0.05}")
 ```
 
 ---
@@ -60,12 +60,12 @@ print(f"H₁ true, p-value: {p_value:.4f}, Reject H₀: {p_value < 0.05}")
 Compare sample mean to known value.
 
 **Hypotheses:**
-- H₀: μ = μ₀
-- H₁: μ ≠ μ₀ (two-tailed)
+- H_0: mu = mu_0
+- H_1: mu != mu_0 (two-tailed)
 
 **Test statistic:**
 ```
-t = (x̄ - μ₀) / (s/√n)
+t = (x_bar - mu_0) / (s/sqrtn)
 ```
 
 **Degrees of freedom:** n-1
@@ -84,7 +84,7 @@ t_stat, p_value = stats.ttest_1samp(heights, 170)
 print(f"Sample mean: {np.mean(heights):.2f}")
 print(f"t-statistic: {t_stat:.3f}")
 print(f"p-value: {p_value:.4f}")
-print(f"Reject H₀ (μ=170) at α=0.05: {p_value < 0.05}")
+print(f"Reject H_0 (mu=170) at alpha=0.05: {p_value < 0.05}")
 ```
 
 ---
@@ -94,8 +94,8 @@ print(f"Reject H₀ (μ=170) at α=0.05: {p_value < 0.05}")
 Compare means of two groups.
 
 **Hypotheses:**
-- H₀: μ₁ = μ₂
-- H₁: μ₁ ≠ μ₂
+- H_0: mu_1 = mu_2
+- H_1: mu_1 != mu_2
 
 **Assumptions:**
 - Independence
@@ -136,8 +136,8 @@ print(f"Cohen's d: {cohens_d:.3f}")
 Compare means of related samples.
 
 **Hypotheses:**
-- H₀: μ_diff = 0
-- H₁: μ_diff ≠ 0
+- H_0: mu_diff = 0
+- H_1: mu_diff != 0
 
 **Use Cases:**
 - Before/after measurements
@@ -172,12 +172,12 @@ print(f"Treatment effective: {p_value < 0.05}")
 Does data match expected distribution?
 
 **Hypotheses:**
-- H₀: Data follows specified distribution
-- H₁: Data does not follow specified distribution
+- H_0: Data follows specified distribution
+- H_1: Data does not follow specified distribution
 
 **Test statistic:**
 ```
-χ² = Σ((Observed - Expected)² / Expected)
+chi^2 = sum((Observed - Expected)^2 / Expected)
 ```
 
 ```python
@@ -199,7 +199,7 @@ chi2_stat, p_value = stats.chisquare(observed, expected)
 
 print(f"Observed: {observed}")
 print(f"Expected: {expected}")
-print(f"χ² statistic: {chi2_stat:.3f}")
+print(f"chi^2 statistic: {chi2_stat:.3f}")
 print(f"p-value: {p_value:.4f}")
 print(f"Die is biased: {p_value < 0.05}")
 ```
@@ -211,8 +211,8 @@ print(f"Die is biased: {p_value < 0.05}")
 Are two categorical variables independent?
 
 **Hypotheses:**
-- H₀: Variables are independent
-- H₁: Variables are dependent
+- H_0: Variables are independent
+- H_1: Variables are dependent
 
 ```python
 import numpy as np
@@ -233,7 +233,7 @@ print("Observed:")
 print(contingency_table)
 print("\nExpected:")
 print(expected)
-print(f"\nχ² statistic: {chi2_stat:.3f}")
+print(f"\nchi^2 statistic: {chi2_stat:.3f}")
 print(f"p-value: {p_value:.4f}")
 print(f"Gender and preference are dependent: {p_value < 0.05}")
 ```
@@ -247,8 +247,8 @@ print(f"Gender and preference are dependent: {p_value < 0.05}")
 Compare means of 3+ groups.
 
 **Hypotheses:**
-- H₀: μ₁ = μ₂ = ... = μₖ
-- H₁: At least one mean differs
+- H_0: mu_1 = mu_2 = ... = mu_k
+- H_1: At least one mean differs
 
 **F-statistic:**
 ```
@@ -296,10 +296,10 @@ print(result)
 print(f"\nPairwise p-values:\n{result.pvalue}")
 
 # Bonferroni correction (alternative)
-# For k comparisons, use α/k
+# For k comparisons, use alpha/k
 k_comparisons = 3  # A vs B, A vs C, B vs C
 bonferroni_alpha = 0.05 / k_comparisons
-print(f"\nBonferroni-corrected α: {bonferroni_alpha:.4f}")
+print(f"\nBonferroni-corrected alpha: {bonferroni_alpha:.4f}")
 ```
 
 ---
@@ -386,14 +386,14 @@ print(f"At least one group differs: {p_value < 0.05}")
 
 Testing multiple hypotheses increases false discovery rate.
 
-If α = 0.05 and we run 100 independent tests:
+If alpha = 0.05 and we run 100 independent tests:
 ```
-Expected false positives = 100 × 0.05 = 5
+Expected false positives = 100 x 0.05 = 5
 ```
 
 ### Bonferroni Correction
 
-**Adjusted α:** α/k for k tests
+**Adjusted alpha:** alpha/k for k tests
 
 **Conservative:** Controls family-wise error rate (FWER)
 
@@ -418,8 +418,8 @@ print(np.round(p_values, 4))
 alpha = 0.05
 bonferroni_alpha = alpha / len(p_values)
 
-print(f"\nBonferroni α: {bonferroni_alpha:.4f}")
-print(f"Significant (original α=0.05): {np.sum(np.array(p_values) < alpha)}")
+print(f"\nBonferroni alpha: {bonferroni_alpha:.4f}")
+print(f"Significant (original alpha=0.05): {np.sum(np.array(p_values) < alpha)}")
 print(f"Significant (Bonferroni): {np.sum(np.array(p_values) < bonferroni_alpha)}")
 ```
 
@@ -459,7 +459,7 @@ P-value tells if effect exists; effect size tells how large.
 Standardized mean difference.
 
 ```
-d = (μ₁ - μ₂) / σ_pooled
+d = (mu_1 - mu_2) / sigma_pooled
 ```
 
 **Interpretation:**
@@ -495,7 +495,7 @@ Calculate required sample size to detect effect.
 ```python
 from statsmodels.stats.power import ttest_power, tt_solve_power
 
-# Given: effect size, α, desired power → find n
+# Given: effect size, alpha, desired power --> find n
 effect_size = 0.5  # Cohen's d
 alpha = 0.05
 power = 0.80
@@ -504,7 +504,7 @@ n = tt_solve_power(effect_size=effect_size, alpha=alpha, power=power, alternativ
 
 print(f"Required sample size per group: {int(np.ceil(n))}")
 
-# Given: n, effect size, α → find power
+# Given: n, effect size, alpha --> find power
 power_achieved = ttest_power(effect_size=effect_size, nobs=50, alpha=alpha, alternative='two-sided')
 print(f"Power with n=50: {power_achieved:.3f}")
 ```

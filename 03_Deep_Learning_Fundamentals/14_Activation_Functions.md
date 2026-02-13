@@ -25,7 +25,7 @@ f(W_L(...W_2(W_1 x + b_1) + b_2...) + b_L) = W_total x + b_total
 
 With non-linear activations:
 ```
-f(W_L φ(...φ(W_2 φ(W_1 x + b_1) + b_2)...) + b_L) ≠ Linear function
+f(W_L phi(...phi(W_2 phi(W_1 x + b_1) + b_2)...) + b_L) != Linear function
 ```
 
 ---
@@ -43,10 +43,10 @@ f(W_L φ(...φ(W_2 φ(W_1 x + b_1) + b_2)...) + b_L) ≠ Linear function
 Activation functions determine how gradients flow during backpropagation:
 
 ```
-∂L/∂z^[l] = ∂L/∂a^[l] ⊙ φ'(z^[l])
+dL/dz^[l] = dL/da^[l] (o) phi'(z^[l])
 ```
 
-If φ'(z) → 0 (vanishing gradient) or φ'(z) → ∞ (exploding gradient), training fails.
+If phi'(z) --> 0 (vanishing gradient) or phi'(z) --> inf (exploding gradient), training fails.
 
 ### Computational Efficiency
 
@@ -64,32 +64,32 @@ Modern activations are designed for:
 
 **Definition:**
 ```
-σ(z) = 1 / (1 + e^(-z))
+sigma(z) = 1 / (1 + e^(-z))
 ```
 
 **Derivative:**
 ```
-σ'(z) = σ(z)(1 - σ(z))
+sigma'(z) = sigma(z)(1 - sigma(z))
 ```
 
 **Properties:**
 - **Range:** (0, 1)
 - **Output interpretation:** Probability
-- **Gradient:** Maximum at z=0 (σ'(0) = 0.25)
-- **Saturation:** For |z| > 4, gradient ≈ 0
+- **Gradient:** Maximum at z=0 (sigma'(0) = 0.25)
+- **Saturation:** For |z| > 4, gradient ~= 0
 
 **Mathematical Analysis:**
 
 Limits:
 ```
-lim_{z→∞} σ(z) = 1
-lim_{z→-∞} σ(z) = 0
-σ(0) = 0.5
+lim_{z-->inf} sigma(z) = 1
+lim_{z-->-inf} sigma(z) = 0
+sigma(0) = 0.5
 ```
 
 Taylor expansion around z=0:
 ```
-σ(z) ≈ 0.5 + 0.25z - 0.0416z^3 + ...
+sigma(z) ~= 0.5 + 0.25z - 0.0416z^3 + ...
 ```
 
 **Advantages:**
@@ -98,7 +98,7 @@ Taylor expansion around z=0:
 - Historically important
 
 **Disadvantages:**
-- **Vanishing gradient problem:** For large |z|, σ'(z) ≈ 0
+- **Vanishing gradient problem:** For large |z|, sigma'(z) ~= 0
 - **Not zero-centered:** Output always positive (causes zig-zagging in gradient descent)
 - **Expensive computation:** Exponential function
 
@@ -111,7 +111,7 @@ Taylor expansion around z=0:
 
 **Definition:**
 ```
-tanh(z) = (e^z - e^(-z)) / (e^z + e^(-z)) = 2σ(2z) - 1
+tanh(z) = (e^z - e^(-z)) / (e^z + e^(-z)) = 2sigma(2z) - 1
 ```
 
 **Derivative:**
@@ -121,20 +121,20 @@ tanh'(z) = 1 - tanh^2(z)
 
 **Properties:**
 - **Range:** (-1, 1)
-- **Zero-centered:** Output has mean ≈ 0
+- **Zero-centered:** Output has mean ~= 0
 - **Gradient:** Maximum at z=0 (tanh'(0) = 1)
-- **Saturation:** For |z| > 2, gradient ≈ 0
+- **Saturation:** For |z| > 2, gradient ~= 0
 
 **Mathematical Analysis:**
 
 Relationship to sigmoid:
 ```
-tanh(z) = 2σ(2z) - 1
+tanh(z) = 2sigma(2z) - 1
 ```
 
 Taylor expansion:
 ```
-tanh(z) ≈ z - z^3/3 + 2z^5/15 - ...
+tanh(z) ~= z - z^3/3 + 2z^5/15 - ...
 ```
 
 **Advantages:**
@@ -154,22 +154,22 @@ tanh(z) ≈ z - z^3/3 + 2z^5/15 - ...
 
 ### Softmax Function
 
-**Definition (for vector z ∈ ℝ^K):**
+**Definition (for vector z in R^K):**
 ```
-softmax(z)_i = e^(z_i) / Σ_j e^(z_j)
+softmax(z)_i = e^(z_i) / sum_j e^(z_j)
 ```
 
 **Properties:**
 - **Range:** (0, 1) for each component
-- **Sum:** Σ_i softmax(z)_i = 1
+- **Sum:** sum_i softmax(z)_i = 1
 - **Interpretation:** Probability distribution
 
 **Derivative (Jacobian):**
 ```
-∂softmax(z)_i / ∂z_j = softmax(z)_i (δ_ij - softmax(z)_j)
+dsoftmax(z)_i / dz_j = softmax(z)_i (delta_ij - softmax(z)_j)
 ```
 
-Where δ_ij is the Kronecker delta.
+Where delta_ij is the Kronecker delta.
 
 **Numerical Stability:**
 
@@ -180,9 +180,9 @@ softmax(z) = softmax(z - max(z))  # Shift for stability
 
 **Proof of equivalence:**
 ```
-softmax(z - c)_i = e^(z_i - c) / Σ_j e^(z_j - c)
-                 = e^z_i * e^(-c) / (Σ_j e^z_j * e^(-c))
-                 = e^z_i / Σ_j e^z_j
+softmax(z - c)_i = e^(z_i - c) / sum_j e^(z_j - c)
+                 = e^z_i * e^(-c) / (sum_j e^z_j * e^(-c))
+                 = e^z_i / sum_j e^z_j
                  = softmax(z)_i
 ```
 
@@ -200,20 +200,20 @@ softmax(z - c)_i = e^(z_i - c) / Σ_j e^(z_j - c)
 **Definition:**
 ```
 ReLU(z) = max(0, z) = {z if z > 0
-                      {0 if z ≤ 0
+                      {0 if z <= 0
 ```
 
 **Derivative:**
 ```
 ReLU'(z) = {1 if z > 0
-           {0 if z ≤ 0
+           {0 if z <= 0
            {undefined at z = 0
 ```
 
 In practice, define ReLU'(0) = 0 or 1 (doesn't matter much).
 
 **Properties:**
-- **Range:** [0, ∞)
+- **Range:** [0, inf)
 - **Non-saturating:** No vanishing gradient for z > 0
 - **Sparse activation:** ~50% of neurons are 0
 - **Computational efficiency:** Simple max operation
@@ -247,10 +247,10 @@ z = w^T x + b < 0  for all x
 Then:
 ```
 ReLU(z) = 0
-∂ReLU(z)/∂z = 0
-→ No gradient flow
-→ Weights never update
-→ Neuron is "dead"
+dReLU(z)/dz = 0
+--> No gradient flow
+--> Weights never update
+--> Neuron is "dead"
 ```
 
 **Causes:**
@@ -268,15 +268,15 @@ ReLU(z) = 0
 **Definition:**
 ```
 LeakyReLU(z) = {z      if z > 0
-               {αz     if z ≤ 0
+               {alphaz     if z <= 0
 ```
 
-Where α ∈ (0, 1), typically α = 0.01 or 0.2.
+Where alpha in (0, 1), typically alpha = 0.01 or 0.2.
 
 **Derivative:**
 ```
 LeakyReLU'(z) = {1   if z > 0
-                {α   if z ≤ 0
+                {alpha   if z <= 0
 ```
 
 **Advantages over ReLU:**
@@ -284,7 +284,7 @@ LeakyReLU'(z) = {1   if z > 0
 - Small negative slope allows negative values
 
 **Disadvantages:**
-- Introduces hyperparameter α
+- Introduces hyperparameter alpha
 - Not always better than ReLU empirically
 
 **When to use:**
@@ -296,19 +296,19 @@ LeakyReLU'(z) = {1   if z > 0
 **Definition:**
 ```
 PReLU(z) = {z   if z > 0
-           {αz  if z ≤ 0
+           {alphaz  if z <= 0
 ```
 
-Where α is a **learnable parameter** (updated via backpropagation).
+Where alpha is a **learnable parameter** (updated via backpropagation).
 
-**Gradient with respect to α:**
+**Gradient with respect to alpha:**
 ```
-∂L/∂α = Σ_{z<0} ∂L/∂PReLU(z) * z
+dL/dalpha = sum_{z<0} dL/dPReLU(z) * z
 ```
 
 **Advantages:**
-- Automatically learns best α
-- Can have different α for each channel/neuron
+- Automatically learns best alpha
+- Can have different alpha for each channel/neuron
 - Often outperforms fixed ReLU/Leaky ReLU
 
 **Disadvantages:**
@@ -316,30 +316,30 @@ Where α is a **learnable parameter** (updated via backpropagation).
 - Risk of overfitting with too many parameters
 
 **Variants:**
-- **Channel-wise PReLU:** One α per channel
-- **Element-wise PReLU:** One α per neuron
+- **Channel-wise PReLU:** One alpha per channel
+- **Element-wise PReLU:** One alpha per neuron
 
 ### Exponential Linear Unit (ELU)
 
 **Definition:**
 ```
 ELU(z) = {z              if z > 0
-         {α(e^z - 1)     if z ≤ 0
+         {alpha(e^z - 1)     if z <= 0
 ```
 
-Where α > 0 (typically α = 1).
+Where alpha > 0 (typically alpha = 1).
 
 **Derivative:**
 ```
 ELU'(z) = {1              if z > 0
-          {ELU(z) + α     if z ≤ 0
-          {α e^z          if z ≤ 0
+          {ELU(z) + alpha     if z <= 0
+          {alpha e^z          if z <= 0
 ```
 
 **Properties:**
 - **Smooth:** No kink at z = 0 (unlike ReLU)
 - **Negative values:** Pushes mean activation toward zero
-- **Saturation:** For large negative z, approaches -α
+- **Saturation:** For large negative z, approaches -alpha
 
 **Advantages:**
 - No dying ReLU problem
@@ -354,11 +354,11 @@ ELU'(z) = {1              if z > 0
 
 **Definition:**
 ```
-SELU(z) = λ * {z              if z > 0
-              {α(e^z - 1)     if z ≤ 0
+SELU(z) = lambda * {z              if z > 0
+              {alpha(e^z - 1)     if z <= 0
 ```
 
-Where λ ≈ 1.0507 and α ≈ 1.6733 (specifically chosen values).
+Where lambda ~= 1.0507 and alpha ~= 1.6733 (specifically chosen values).
 
 **Special property:** Self-normalizing (activations converge to mean 0, variance 1) under specific conditions:
 - Weights initialized with LeCun normal
@@ -373,13 +373,13 @@ Where λ ≈ 1.0507 and α ≈ 1.6733 (specifically chosen values).
 
 **Definition:**
 ```
-GELU(z) = z * Φ(z)
+GELU(z) = z * Phi(z)
 ```
 
-Where Φ(z) is the CDF of standard normal distribution:
+Where Phi(z) is the CDF of standard normal distribution:
 ```
-Φ(z) = P(Z ≤ z) where Z ~ N(0, 1)
-     = (1/2)[1 + erf(z/√2)]
+Phi(z) = P(Z <= z) where Z ~ N(0, 1)
+     = (1/2)[1 + erf(z/sqrt2)]
 ```
 
 **Intuition:** Stochastically gates the input based on its value. Larger inputs are more likely to be "passed through."
@@ -388,20 +388,20 @@ Where Φ(z) is the CDF of standard normal distribution:
 
 **Hyperbolic tangent approximation (fast):**
 ```
-GELU(z) ≈ 0.5z(1 + tanh[√(2/π)(z + 0.044715z^3)])
+GELU(z) ~= 0.5z(1 + tanh[sqrt(2/pi)(z + 0.044715z^3)])
 ```
 
 **Sigmoid approximation:**
 ```
-GELU(z) ≈ z σ(1.702z)
+GELU(z) ~= z sigma(1.702z)
 ```
 
 **Derivative:**
 ```
-GELU'(z) = Φ(z) + z φ(z)
+GELU'(z) = Phi(z) + z phi(z)
 ```
 
-Where φ(z) is the PDF of standard normal.
+Where phi(z) is the PDF of standard normal.
 
 **Properties:**
 - **Smooth:** Infinitely differentiable
@@ -426,22 +426,22 @@ Where φ(z) is the PDF of standard normal.
 
 **Definition:**
 ```
-Swish(z) = z * σ(z) = z / (1 + e^(-z))
+Swish(z) = z * sigma(z) = z / (1 + e^(-z))
 ```
 
 Also called SiLU (Sigmoid Linear Unit) or Swish-1.
 
 **Parametric version:**
 ```
-Swish_β(z) = z * σ(βz)
+Swish_beta(z) = z * sigma(betaz)
 ```
 
-Where β is a learnable or fixed parameter (β = 1 for standard Swish).
+Where beta is a learnable or fixed parameter (beta = 1 for standard Swish).
 
 **Derivative:**
 ```
-Swish'(z) = σ(z) + z σ(z)(1 - σ(z))
-           = σ(z)(1 + z(1 - σ(z)))
+Swish'(z) = sigma(z) + z sigma(z)(1 - sigma(z))
+           = sigma(z)(1 + z(1 - sigma(z)))
 ```
 
 **Properties:**
@@ -473,7 +473,7 @@ Mish(z) = z * tanh(softplus(z))
 
 **Derivative:**
 ```
-Mish'(z) = sech^2(softplus(z)) + z * σ(z) * sech^2(softplus(z))
+Mish'(z) = sech^2(softplus(z)) + z * sigma(z) * sech^2(softplus(z))
 ```
 
 Where sech(z) = 1/cosh(z).
@@ -518,25 +518,25 @@ Where sech(z) = 1/cosh(z).
 
 For a network with L layers:
 ```
-∂L/∂W^[1] = ∂L/∂z^[L] * ∏_{l=2}^L (W^[l])^T * φ'(z^[l-1])
+dL/dW^[1] = dL/dz^[L] * prod_{l=2}^L (W^[l])^T * phi'(z^[l-1])
 ```
 
-If |φ'(z)| < 1 for most z (e.g., sigmoid), then:
+If |phi'(z)| < 1 for most z (e.g., sigmoid), then:
 ```
-|∂L/∂W^[1]| ≈ |∂L/∂z^[L]| * ∏_{l=2}^L |W^[l]| * |φ'(z^[l-1])|
+|dL/dW^[1]| ~= |dL/dz^[L]| * prod_{l=2}^L |W^[l]| * |phi'(z^[l-1])|
 ```
 
 As L increases, this product can become very small.
 
 **Example (sigmoid):**
 ```
-max(σ'(z)) = 0.25
+max(sigma'(z)) = 0.25
 
-After 10 layers: 0.25^10 ≈ 10^(-6)
+After 10 layers: 0.25^10 ~= 10^(-6)
 ```
 
 **Solutions:**
-- Use ReLU (φ'(z) = 1 for z > 0)
+- Use ReLU (phi'(z) = 1 for z > 0)
 - Batch normalization
 - Residual connections (skip connections)
 - Proper initialization
@@ -583,26 +583,26 @@ In practice, 20-40% of neurons can die with poor initialization or large learnin
 
 ```
 Task Type?
-│
-├─ Transformers / NLP
-│  └─ Use GELU (standard for BERT, GPT)
-│
-├─ Computer Vision (CNNs)
-│  ├─ Default: ReLU (fast and reliable)
-│  ├─ Better performance: Swish or Mish
-│  └─ Mobile/Efficient: Swish (EfficientNet)
-│
-├─ Recurrent Networks (RNNs, LSTMs)
-│  └─ Use tanh (for gates), sigmoid (for gates)
-│
-├─ GANs
-│  ├─ Generator: ReLU or Leaky ReLU
-│  └─ Discriminator: Leaky ReLU
-│
-└─ Output Layer
-   ├─ Binary Classification: Sigmoid
-   ├─ Multi-class Classification: Softmax
-   └─ Regression: Linear (no activation)
+|
++--- Transformers / NLP
+|  +--- Use GELU (standard for BERT, GPT)
+|
++--- Computer Vision (CNNs)
+|  +--- Default: ReLU (fast and reliable)
+|  +--- Better performance: Swish or Mish
+|  +--- Mobile/Efficient: Swish (EfficientNet)
+|
++--- Recurrent Networks (RNNs, LSTMs)
+|  +--- Use tanh (for gates), sigmoid (for gates)
+|
++--- GANs
+|  +--- Generator: ReLU or Leaky ReLU
+|  +--- Discriminator: Leaky ReLU
+|
++--- Output Layer
+   +--- Binary Classification: Sigmoid
+   +--- Multi-class Classification: Softmax
+   +--- Regression: Linear (no activation)
 ```
 
 ### Hidden Layer Recommendations
@@ -660,12 +660,12 @@ class ActivationFunctions:
 
     @staticmethod
     def sigmoid(z: torch.Tensor) -> torch.Tensor:
-        """Sigmoid: σ(z) = 1 / (1 + e^(-z))"""
+        """Sigmoid: sigma(z) = 1 / (1 + e^(-z))"""
         return torch.sigmoid(z)
 
     @staticmethod
     def sigmoid_derivative(z: torch.Tensor) -> torch.Tensor:
-        """Derivative: σ'(z) = σ(z)(1 - σ(z))"""
+        """Derivative: sigma'(z) = sigma(z)(1 - sigma(z))"""
         s = torch.sigmoid(z)
         return s * (1 - s)
 
@@ -685,7 +685,7 @@ class ActivationFunctions:
         """
         Numerically stable softmax.
 
-        softmax(z)_i = e^z_i / Σ_j e^z_j
+        softmax(z)_i = e^z_i / sum_j e^z_j
         """
         # Subtract max for numerical stability
         z_shifted = z - torch.max(z, dim=dim, keepdim=True)[0]
@@ -706,30 +706,30 @@ class ActivationFunctions:
 
     @staticmethod
     def leaky_relu(z: torch.Tensor, alpha: float = 0.01) -> torch.Tensor:
-        """Leaky ReLU: max(αz, z)"""
+        """Leaky ReLU: max(alphaz, z)"""
         return F.leaky_relu(z, negative_slope=alpha)
 
     @staticmethod
     def leaky_relu_derivative(z: torch.Tensor, alpha: float = 0.01) -> torch.Tensor:
-        """Derivative: 1 if z > 0, else α"""
+        """Derivative: 1 if z > 0, else alpha"""
         return torch.where(z > 0, torch.ones_like(z), torch.full_like(z, alpha))
 
     @staticmethod
     def elu(z: torch.Tensor, alpha: float = 1.0) -> torch.Tensor:
-        """ELU: z if z > 0, else α(e^z - 1)"""
+        """ELU: z if z > 0, else alpha(e^z - 1)"""
         return F.elu(z, alpha=alpha)
 
     @staticmethod
     def elu_derivative(z: torch.Tensor, alpha: float = 1.0) -> torch.Tensor:
-        """Derivative: 1 if z > 0, else α*e^z"""
+        """Derivative: 1 if z > 0, else alpha*e^z"""
         return torch.where(z > 0, torch.ones_like(z), alpha * torch.exp(z))
 
     @staticmethod
     def selu(z: torch.Tensor) -> torch.Tensor:
         """
-        Scaled ELU: λ * [z if z > 0, else α(e^z - 1)]
+        Scaled ELU: lambda * [z if z > 0, else alpha(e^z - 1)]
 
-        λ ≈ 1.0507, α ≈ 1.6733 (specifically chosen for self-normalization)
+        lambda ~= 1.0507, alpha ~= 1.6733 (specifically chosen for self-normalization)
         """
         return F.selu(z)
 
@@ -738,23 +738,23 @@ class ActivationFunctions:
     @staticmethod
     def gelu(z: torch.Tensor, approximate: bool = False) -> torch.Tensor:
         """
-        GELU: z * Φ(z) where Φ is the CDF of N(0,1)
+        GELU: z * Phi(z) where Phi is the CDF of N(0,1)
 
         Args:
             approximate: Use tanh approximation (faster)
         """
         if approximate:
-            # Approximation: 0.5 * z * (1 + tanh(√(2/π) * (z + 0.044715 * z^3)))
+            # Approximation: 0.5 * z * (1 + tanh(sqrt(2/pi) * (z + 0.044715 * z^3)))
             return 0.5 * z * (1 + torch.tanh(
                 np.sqrt(2 / np.pi) * (z + 0.044715 * torch.pow(z, 3))
             ))
         else:
-            # Exact: z * Φ(z)
+            # Exact: z * Phi(z)
             return z * 0.5 * (1.0 + torch.erf(z / np.sqrt(2.0)))
 
     @staticmethod
     def gelu_derivative(z: torch.Tensor) -> torch.Tensor:
-        """Derivative: Φ(z) + z * φ(z)"""
+        """Derivative: Phi(z) + z * phi(z)"""
         cdf = 0.5 * (1.0 + torch.erf(z / np.sqrt(2.0)))
         pdf = torch.exp(-0.5 * z ** 2) / np.sqrt(2 * np.pi)
         return cdf + z * pdf
@@ -762,16 +762,16 @@ class ActivationFunctions:
     @staticmethod
     def swish(z: torch.Tensor, beta: float = 1.0) -> torch.Tensor:
         """
-        Swish/SiLU: z * σ(βz)
+        Swish/SiLU: z * sigma(betaz)
 
         Args:
-            beta: Scaling parameter (β = 1 for standard Swish)
+            beta: Scaling parameter (beta = 1 for standard Swish)
         """
         return z * torch.sigmoid(beta * z)
 
     @staticmethod
     def swish_derivative(z: torch.Tensor, beta: float = 1.0) -> torch.Tensor:
-        """Derivative: σ(βz) + βz*σ(βz)*(1 - σ(βz))"""
+        """Derivative: sigma(betaz) + betaz*sigma(betaz)*(1 - sigma(betaz))"""
         sigmoid_z = torch.sigmoid(beta * z)
         return sigmoid_z + beta * z * sigmoid_z * (1 - sigmoid_z)
 
@@ -799,8 +799,8 @@ class PReLU(nn.Module):
     Parametric ReLU with learnable negative slope.
 
     Args:
-        num_parameters: Number of α parameters (1 for shared, num_channels for channel-wise)
-        init: Initial value of α
+        num_parameters: Number of alpha parameters (1 for shared, num_channels for channel-wise)
+        init: Initial value of alpha
     """
 
     def __init__(self, num_parameters: int = 1, init: float = 0.25):
@@ -842,7 +842,7 @@ def plot_activations():
         axes[idx].grid(True, alpha=0.3)
         axes[idx].set_title(name, fontsize=12, fontweight='bold')
         axes[idx].set_xlabel('z')
-        axes[idx].set_ylabel('φ(z)')
+        axes[idx].set_ylabel('phi(z)')
 
     plt.tight_layout()
     plt.savefig('activation_functions.png', dpi=300, bbox_inches='tight')
@@ -878,7 +878,7 @@ def plot_derivatives():
         axes[idx].grid(True, alpha=0.3)
         axes[idx].set_title(f"{name} Derivative", fontsize=12, fontweight='bold')
         axes[idx].set_xlabel('z')
-        axes[idx].set_ylabel("φ'(z)")
+        axes[idx].set_ylabel("phi'(z)")
 
     plt.tight_layout()
     plt.savefig('activation_derivatives.png', dpi=300, bbox_inches='tight')
@@ -1311,13 +1311,13 @@ Different activations may require different learning rates:
 
 | Activation | Recommended LR (relative) | Notes |
 |------------|---------------------------|-------|
-| ReLU       | 1.0× (baseline)           | Standard |
-| Leaky ReLU | 1.0×                      | Similar to ReLU |
-| ELU        | 1.0-1.5×                  | Can handle higher LR |
-| GELU       | 0.8-1.0×                  | Slightly lower |
-| Swish      | 0.8-1.0×                  | Similar to GELU |
-| Sigmoid    | 0.5×                      | Much lower (rarely used) |
-| Tanh       | 0.7×                      | Lower than ReLU |
+| ReLU       | 1.0x (baseline)           | Standard |
+| Leaky ReLU | 1.0x                      | Similar to ReLU |
+| ELU        | 1.0-1.5x                  | Can handle higher LR |
+| GELU       | 0.8-1.0x                  | Slightly lower |
+| Swish      | 0.8-1.0x                  | Similar to GELU |
+| Sigmoid    | 0.5x                      | Much lower (rarely used) |
+| Tanh       | 0.7x                      | Lower than ReLU |
 
 ---
 

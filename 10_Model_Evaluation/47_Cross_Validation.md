@@ -45,7 +45,7 @@ score = model.score(X_test, y_test)
 print(f"Test accuracy: {score:.4f}")
 
 # Problem: This score depends heavily on the random split!
-# Different random_state → different score
+# Different random_state --> different score
 ```
 
 **Issues:**
@@ -62,7 +62,7 @@ from sklearn.model_selection import cross_val_score
 scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
 
 print(f"Cross-validation scores: {scores}")
-print(f"Mean accuracy: {scores.mean():.4f} ± {scores.std():.4f}")
+print(f"Mean accuracy: {scores.mean():.4f} +/- {scores.std():.4f}")
 ```
 
 **Benefits:**
@@ -149,7 +149,7 @@ def kfold_cross_validation(model, X, y, k=5, scoring='accuracy', random_state=42
     train_test_gap = train_scores.mean() - test_scores.mean()
     print(f"\nTrain-Test Gap: {train_test_gap:.4f}")
     if train_test_gap > 0.1:
-        print("⚠️  Warning: Potential overfitting detected!")
+        print("[WARNING]  Warning: Potential overfitting detected!")
 
     # Visualize
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -261,7 +261,7 @@ def stratified_kfold_cv(model, X, y, k=5):
     print("\n" + "=" * 70)
     print("STRATIFIED K-FOLD RESULTS")
     print("=" * 70)
-    print(f"Mean accuracy: {scores.mean():.4f} ± {scores.std():.4f}")
+    print(f"Mean accuracy: {scores.mean():.4f} +/- {scores.std():.4f}")
 
     return scores
 
@@ -357,7 +357,7 @@ def time_series_cv(model, X, y, n_splits=5):
 
     scores = np.array(scores)
     print("\n" + "=" * 70)
-    print(f"Mean Score: {scores.mean():.4f} ± {scores.std():.4f}")
+    print(f"Mean Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
     return scores
 
@@ -422,7 +422,7 @@ def rolling_window_cv(X, y, train_size, test_size, step=1):
 
     scores = np.array(scores)
     print("\n" + "=" * 70)
-    print(f"Mean Score: {scores.mean():.4f} ± {scores.std():.4f}")
+    print(f"Mean Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
     return scores
 
@@ -477,7 +477,7 @@ def walk_forward_validation(X, y, initial_train_size, test_size):
 
     scores = np.array(scores)
     print("\n" + "=" * 70)
-    print(f"Mean Score: {scores.mean():.4f} ± {scores.std():.4f}")
+    print(f"Mean Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
     return scores
 
@@ -636,7 +636,7 @@ def nested_cross_validation(X, y, param_grid, outer_cv=5, inner_cv=3):
     print("NESTED CV RESULTS")
     print("=" * 70)
     print(f"Outer CV Scores: {outer_scores}")
-    print(f"Mean Score: {outer_scores.mean():.4f} ± {outer_scores.std():.4f}")
+    print(f"Mean Score: {outer_scores.mean():.4f} +/- {outer_scores.std():.4f}")
 
     print("\n" + "=" * 70)
     print("BEST PARAMETERS PER FOLD")
@@ -666,16 +666,16 @@ nested_scores, best_params = nested_cross_validation(
 **Structure:**
 ```
 Outer CV (Performance Evaluation)
-├── Fold 1
-│   └── Inner CV (Hyperparameter Tuning)
-│       ├── Fold 1
-│       ├── Fold 2
-│       └── Fold 3
-├── Fold 2
-│   └── Inner CV
-│       ├── Fold 1
-│       ├── Fold 2
-│       └── Fold 3
++---- Fold 1
+|   +---- Inner CV (Hyperparameter Tuning)
+|       +---- Fold 1
+|       +---- Fold 2
+|       +---- Fold 3
++---- Fold 2
+|   +---- Inner CV
+|       +---- Fold 1
+|       +---- Fold 2
+|       +---- Fold 3
 ...
 ```
 
@@ -728,7 +728,7 @@ def group_kfold_cv(X, y, groups, n_splits=5):
 
     scores = np.array(scores)
     print("\n" + "=" * 70)
-    print(f"Mean Score: {scores.mean():.4f} ± {scores.std():.4f}")
+    print(f"Mean Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 
     return scores
 
@@ -816,7 +816,7 @@ class StratifiedGroupKFold(BaseCrossValidator):
 sgkf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
 
 scores = cross_val_score(model, X_grouped, y_grouped, cv=sgkf, groups=groups)
-print(f"Stratified Group K-Fold Score: {scores.mean():.4f} ± {scores.std():.4f}")
+print(f"Stratified Group K-Fold Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 ```
 
 ### Custom Time Series CV with Gaps
@@ -859,7 +859,7 @@ class TimeSeriesGapCV:
 tsgap_cv = TimeSeriesGapCV(n_splits=5, gap=20)
 
 scores = cross_val_score(model_ts, X_ts, y_ts, cv=tsgap_cv)
-print(f"Time Series Gap CV Score: {scores.mean():.4f} ± {scores.std():.4f}")
+print(f"Time Series Gap CV Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 ```
 
 ---
@@ -890,21 +890,21 @@ def compare_models_ttest(model1, model2, X, y, cv=5):
     print("=" * 70)
     print("PAIRED T-TEST: MODEL COMPARISON")
     print("=" * 70)
-    print(f"Model 1 mean: {scores1.mean():.4f} ± {scores1.std():.4f}")
-    print(f"Model 2 mean: {scores2.mean():.4f} ± {scores2.std():.4f}")
+    print(f"Model 1 mean: {scores1.mean():.4f} +/- {scores1.std():.4f}")
+    print(f"Model 2 mean: {scores2.mean():.4f} +/- {scores2.std():.4f}")
     print(f"\nDifference: {(scores1.mean() - scores2.mean()):.4f}")
     print(f"t-statistic: {t_stat:.4f}")
     print(f"p-value: {p_value:.4f}")
 
     alpha = 0.05
     if p_value < alpha:
-        print(f"\n✓ Significant difference (p < {alpha})")
+        print(f"\n[x] Significant difference (p < {alpha})")
         if scores1.mean() > scores2.mean():
             print("  Model 1 is significantly better")
         else:
             print("  Model 2 is significantly better")
     else:
-        print(f"\n✗ No significant difference (p >= {alpha})")
+        print(f"\n[ ] No significant difference (p >= {alpha})")
 
     return t_stat, p_value, scores1, scores2
 
@@ -959,9 +959,9 @@ def mcnemar_test(y_true, y_pred1, y_pred2):
 
     alpha = 0.05
     if result.pvalue < alpha:
-        print(f"\n✓ Significant difference (p < {alpha})")
+        print(f"\n[x] Significant difference (p < {alpha})")
     else:
-        print(f"\n✗ No significant difference (p >= {alpha})")
+        print(f"\n[ ] No significant difference (p >= {alpha})")
 
     return result
 
@@ -1000,17 +1000,17 @@ def friedman_test(*model_scores_list):
     print("=" * 70)
 
     for i, scores in enumerate(model_scores_list, 1):
-        print(f"Model {i}: {scores.mean():.4f} ± {scores.std():.4f}")
+        print(f"Model {i}: {scores.mean():.4f} +/- {scores.std():.4f}")
 
     print(f"\nFriedman statistic: {stat:.4f}")
     print(f"p-value: {p_value:.4f}")
 
     alpha = 0.05
     if p_value < alpha:
-        print(f"\n✓ Significant difference among models (p < {alpha})")
+        print(f"\n[x] Significant difference among models (p < {alpha})")
         print("Proceed with post-hoc tests (e.g., Nemenyi)")
     else:
-        print(f"\n✗ No significant difference (p >= {alpha})")
+        print(f"\n[ ] No significant difference (p >= {alpha})")
 
     return stat, p_value
 
@@ -1035,20 +1035,20 @@ friedman_result = friedman_test(scores_rf, scores_lr, scores_svm)
 ### 1. Always Use Cross-Validation
 
 ```python
-# ❌ WRONG: Single train/test split
+#  WRONG: Single train/test split
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 model.fit(X_train, y_train)
 score = model.score(X_test, y_test)  # High variance!
 
-# ✅ CORRECT: Cross-validation
+#  CORRECT: Cross-validation
 scores = cross_val_score(model, X, y, cv=5)
-print(f"Score: {scores.mean():.4f} ± {scores.std():.4f}")
+print(f"Score: {scores.mean():.4f} +/- {scores.std():.4f}")
 ```
 
 ### 2. Stratify for Classification
 
 ```python
-# ✅ CORRECT: Stratified for classification
+#  CORRECT: Stratified for classification
 skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 scores = cross_val_score(model, X, y, cv=skf)
 ```
@@ -1056,10 +1056,10 @@ scores = cross_val_score(model, X, y, cv=skf)
 ### 3. Respect Temporal Order for Time Series
 
 ```python
-# ❌ WRONG: Shuffling time series
+#  WRONG: Shuffling time series
 kfold = KFold(n_splits=5, shuffle=True)  # NO!
 
-# ✅ CORRECT: Time series split
+#  CORRECT: Time series split
 tscv = TimeSeriesSplit(n_splits=5)
 scores = cross_val_score(model, X_ts, y_ts, cv=tscv)
 ```
@@ -1067,19 +1067,19 @@ scores = cross_val_score(model, X_ts, y_ts, cv=tscv)
 ### 4. Use Nested CV for Hyperparameter Tuning
 
 ```python
-# ❌ WRONG: Tuning on same data used for evaluation
+#  WRONG: Tuning on same data used for evaluation
 grid_search = GridSearchCV(model, param_grid, cv=5)
 grid_search.fit(X, y)
 score = grid_search.best_score_  # Optimistically biased!
 
-# ✅ CORRECT: Nested CV
+#  CORRECT: Nested CV
 outer_scores = nested_cross_validation(X, y, param_grid)
 ```
 
 ### 5. Use Groups When Data Has Structure
 
 ```python
-# ✅ CORRECT: Group K-fold for hierarchical data
+#  CORRECT: Group K-fold for hierarchical data
 gkf = GroupKFold(n_splits=5)
 scores = cross_val_score(model, X, y, cv=gkf, groups=groups)
 ```
@@ -1111,21 +1111,21 @@ mean, ci = report_with_ci(scores)
 | Dataset Size | Recommended K | Reasoning |
 |--------------|---------------|-----------|
 | n < 100 | LOO or 5-fold | Maximize training data |
-| 100 ≤ n < 1000 | 5-10 fold | Good balance |
-| n ≥ 1000 | 5 fold | Efficient, low variance |
+| 100 <= n < 1000 | 5-10 fold | Good balance |
+| n >= 1000 | 5 fold | Efficient, low variance |
 | Very large | 3 fold | Computational efficiency |
 
 ### 8. Avoid Data Leakage
 
 ```python
-# ❌ WRONG: Preprocessing before split
+#  WRONG: Preprocessing before split
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)  # Leakage!
 scores = cross_val_score(model, X_scaled, y, cv=5)
 
-# ✅ CORRECT: Preprocessing within CV
+#  CORRECT: Preprocessing within CV
 from sklearn.pipeline import Pipeline
 
 pipeline = Pipeline([
@@ -1159,7 +1159,7 @@ scores = cross_val_score(pipeline, X, y, cv=5)
 4. **Use nested CV** - for unbiased hyperparameter tuning
 5. **Consider groups** - when data has hierarchical structure
 6. **Test significance** - compare models statistically
-7. **Report uncertainty** - mean ± std or confidence intervals
+7. **Report uncertainty** - mean +/- std or confidence intervals
 8. **Avoid leakage** - preprocess within CV folds
 
 ---

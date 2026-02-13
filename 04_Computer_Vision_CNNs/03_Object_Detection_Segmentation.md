@@ -61,7 +61,7 @@
 
 ### Task Definition
 
-**Input**: Image I of size H × W × 3
+**Input**: Image I of size H x W x 3
 **Output**: Set of detections {(b_i, c_i, s_i)}
 
 Where:
@@ -101,11 +101,11 @@ Where:
 **Architecture**:
 ```
 Image
-→ Selective Search (~2k region proposals)
-→ Warp each region to 224×224
-→ CNN feature extraction (AlexNet)
-→ SVM classifier per class
-→ Bounding box regression
+--> Selective Search (~2k region proposals)
+--> Warp each region to 224x224
+--> CNN feature extraction (AlexNet)
+--> SVM classifier per class
+--> Bounding box regression
 ```
 
 **Drawbacks**:
@@ -120,11 +120,11 @@ Image
 **Architecture**:
 ```
 Image
-→ CNN (entire image) → Feature map
-→ Selective Search proposals
-→ RoI Pooling (extract fixed-size features)
-→ FC layers
-→ Softmax classifier + Bbox regressor
+--> CNN (entire image) --> Feature map
+--> Selective Search proposals
+--> RoI Pooling (extract fixed-size features)
+--> FC layers
+--> Softmax classifier + Bbox regressor
 ```
 
 **RoI Pooling**: Convert variable-size RoI to fixed-size feature map
@@ -170,10 +170,10 @@ class RoIPooling(nn.Module):
 **Architecture**:
 ```
 Image
-→ Backbone CNN → Feature map
-→ RPN (generates proposals)
-→ RoI Pooling
-→ Classification + Bbox Regression
+--> Backbone CNN --> Feature map
+--> RPN (generates proposals)
+--> RoI Pooling
+--> Classification + Bbox Regression
 ```
 
 **Region Proposal Network (RPN)**:
@@ -191,7 +191,7 @@ class RegionProposalNetwork(nn.Module):
     def __init__(self, in_channels, num_anchors=9):
         super().__init__()
 
-        # 3×3 conv for feature transformation
+        # 3x3 conv for feature transformation
         self.conv = nn.Conv2d(in_channels, 512, kernel_size=3, padding=1)
         self.relu = nn.ReLU(inplace=True)
 
@@ -246,7 +246,7 @@ def generate_anchors(base_size=16, scales=[8, 16, 32], ratios=[0.5, 1, 2]):
 
     return torch.tensor(anchors)
 
-# Example: Generate 9 anchors (3 scales × 3 ratios)
+# Example: Generate 9 anchors (3 scales x 3 ratios)
 anchors = generate_anchors()
 print(f"Anchors shape: {anchors.shape}")  # [9, 4]
 ```
@@ -365,31 +365,31 @@ print(predictions[0].keys())  # dict_keys(['boxes', 'labels', 'scores'])
 
 **Architecture**:
 ```
-Image (448×448)
-→ CNN (24 conv layers + 2 FC)
-→ Reshape to 7×7×30
-→ Each cell: 2 boxes × (5 coords + conf) + 20 class probs
+Image (448x448)
+--> CNN (24 conv layers + 2 FC)
+--> Reshape to 7x7x30
+--> Each cell: 2 boxes x (5 coords + conf) + 20 class probs
 ```
 
 **Loss Function**:
 ```
-L = λ_coord Σ (x,y errors)
-  + λ_coord Σ (w,h errors)
-  + Σ (confidence errors for boxes with objects)
-  + λ_noobj Σ (confidence errors for boxes without objects)
-  + Σ (class probability errors)
+L = lambda_coord sum (x,y errors)
+  + lambda_coord sum (w,h errors)
+  + sum (confidence errors for boxes with objects)
+  + lambda_noobj sum (confidence errors for boxes without objects)
+  + sum (class probability errors)
 ```
 
 **Limitations**:
 - Struggles with small objects
-- Limited by grid size (7×7 = max 49 objects)
+- Limited by grid size (7x7 = max 49 objects)
 - Low recall compared to Faster R-CNN
 
 ### YOLO v2 / YOLO9000 (2016)
 
 **Improvements**:
 - Batch normalization
-- High-resolution classifier (448×448)
+- High-resolution classifier (448x448)
 - Anchor boxes (from Faster R-CNN)
 - Dimension clusters (k-means on training boxes)
 - Multi-scale training
@@ -410,9 +410,9 @@ class YOLOv3(nn.Module):
     YOLOv3 architecture (simplified).
 
     Multi-scale detection at 3 different scales:
-    - Small objects: 52×52 grid
-    - Medium objects: 26×26 grid
-    - Large objects: 13×13 grid
+    - Small objects: 52x52 grid
+    - Medium objects: 26x26 grid
+    - Large objects: 13x13 grid
     """
     def __init__(self, num_classes=80):
         super().__init__()
@@ -424,9 +424,9 @@ class YOLOv3(nn.Module):
         self.backbone = self._make_darknet53()
 
         # Detection heads at 3 scales
-        self.head_large = self._make_detection_head(1024, num_classes)   # 13×13
-        self.head_medium = self._make_detection_head(512, num_classes)   # 26×26
-        self.head_small = self._make_detection_head(256, num_classes)    # 52×52
+        self.head_large = self._make_detection_head(1024, num_classes)   # 13x13
+        self.head_medium = self._make_detection_head(512, num_classes)   # 26x26
+        self.head_small = self._make_detection_head(256, num_classes)    # 52x52
 
     def _make_darknet53(self):
         # Simplified: Use ResNet-like structure
@@ -456,9 +456,9 @@ class YOLOv3(nn.Module):
         feat_small, feat_medium, feat_large = features
 
         # Predictions at each scale
-        pred_large = self.head_large(feat_large)    # 13×13
-        pred_medium = self.head_medium(feat_medium)  # 26×26
-        pred_small = self.head_small(feat_small)    # 52×52
+        pred_large = self.head_large(feat_large)    # 13x13
+        pred_medium = self.head_medium(feat_medium)  # 26x26
+        pred_small = self.head_small(feat_small)    # 52x52
 
         return pred_large, pred_medium, pred_small
 
@@ -658,18 +658,18 @@ model.export(format='engine')  # TensorRT for production
 
 **Architecture**:
 ```
-Image → VGG-16 (base network)
-        ↓
-        Conv4_3 → Detection (38×38)
-        Conv7 → Detection (19×19)
-        Conv8_2 → Detection (10×10)
-        Conv9_2 → Detection (5×5)
-        Conv10_2 → Detection (3×3)
-        Conv11_2 → Detection (1×1)
+Image --> VGG-16 (base network)
+        v
+        Conv4_3 --> Detection (38x38)
+        Conv7 --> Detection (19x19)
+        Conv8_2 --> Detection (10x10)
+        Conv9_2 --> Detection (5x5)
+        Conv10_2 --> Detection (3x3)
+        Conv11_2 --> Detection (1x1)
 ```
 
 **Advantages**:
-- Fast (59 FPS on 300×300 images)
+- Fast (59 FPS on 300x300 images)
 - Good accuracy (74.3% mAP on VOC 2007)
 
 **Disadvantages**:
@@ -689,12 +689,12 @@ Image → VGG-16 (base network)
 
 **Solution**: Focal Loss
 ```
-FL(p_t) = -α_t (1 - p_t)^γ log(p_t)
+FL(p_t) = -alpha_t (1 - p_t)^gamma log(p_t)
 
 Where:
 - p_t: predicted probability for true class
-- α_t: balancing factor (0.25 typical)
-- γ: focusing parameter (2 typical)
+- alpha_t: balancing factor (0.25 typical)
+- gamma: focusing parameter (2 typical)
 ```
 
 **Effect**: Down-weight easy examples, focus on hard negatives
@@ -704,7 +704,7 @@ class FocalLoss(nn.Module):
     """
     Focal Loss for dense object detection.
 
-    FL(p_t) = -α_t (1 - p_t)^γ log(p_t)
+    FL(p_t) = -alpha_t (1 - p_t)^gamma log(p_t)
 
     Args:
         alpha: Balancing factor (default: 0.25)
@@ -753,11 +753,11 @@ class RetinaNet(nn.Module):
         from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
         self.backbone = resnet_fpn_backbone('resnet50', pretrained=True)
 
-        # Classification subnet (4 × 3×3 conv + 1 × 3×3 conv)
+        # Classification subnet (4 x 3x3 conv + 1 x 3x3 conv)
         self.cls_subnet = self._make_head(256, num_classes * 9)  # 9 anchors per location
 
-        # Regression subnet (4 × 3×3 conv + 1 × 3×3 conv)
-        self.box_subnet = self._make_head(256, 4 * 9)  # 4 coords × 9 anchors
+        # Regression subnet (4 x 3x3 conv + 1 x 3x3 conv)
+        self.box_subnet = self._make_head(256, 4 * 9)  # 4 coords x 9 anchors
 
         # Focal loss
         self.focal_loss = FocalLoss(alpha=0.25, gamma=2.0)
@@ -829,11 +829,11 @@ predictions = model(images)
 **Architecture**:
 ```
 Image
-→ CNN Backbone (ResNet) → Feature map
-→ Flatten + Positional Encoding
-→ Transformer Encoder
-→ Transformer Decoder (with learnable object queries)
-→ Set Prediction (class + bbox)
+--> CNN Backbone (ResNet) --> Feature map
+--> Flatten + Positional Encoding
+--> Transformer Encoder
+--> Transformer Decoder (with learnable object queries)
+--> Set Prediction (class + bbox)
 ```
 
 **Object Queries**: Learnable embeddings (e.g., 100 queries for 100 objects)
@@ -1048,7 +1048,7 @@ def generalized_iou(box1, box2):
     """
     Generalized IoU (GIoU).
 
-    GIoU = IoU - |C \ (A ∪ B)| / |C|
+    GIoU = IoU - |C \ (A U B)| / |C|
 
     Where C is smallest enclosing box.
     """
@@ -1085,9 +1085,9 @@ def generalized_iou(box1, box2):
 - **AP / mAP**: Average over IoU thresholds [0.5:0.95:0.05]
 - **AP50**: AP at IoU=0.5
 - **AP75**: AP at IoU=0.75
-- **AP_S**: AP for small objects (area < 32²)
-- **AP_M**: AP for medium objects (32² < area < 96²)
-- **AP_L**: AP for large objects (area > 96²)
+- **AP_S**: AP for small objects (area < 32^2)
+- **AP_M**: AP for medium objects (32^2 < area < 96^2)
+- **AP_L**: AP for large objects (area > 96^2)
 
 ```python
 def compute_ap(precisions, recalls):
@@ -1246,11 +1246,11 @@ print(keep)  # tensor([2, 0])
 **Architecture**:
 ```
 Image
-→ CNN Encoder (VGG-16)
-→ 1×1 Convolutions (replace FC layers)
-→ Upsampling (transposed convolutions)
-→ Skip connections from encoder
-→ Pixel-wise prediction
+--> CNN Encoder (VGG-16)
+--> 1x1 Convolutions (replace FC layers)
+--> Upsampling (transposed convolutions)
+--> Skip connections from encoder
+--> Pixel-wise prediction
 ```
 
 ```python
@@ -1272,7 +1272,7 @@ class FCN(nn.Module):
         self.enc4 = nn.Sequential(*features[17:24]) # Pool4
         self.enc5 = nn.Sequential(*features[24:])   # Pool5
 
-        # 1×1 convolutions (replace FC)
+        # 1x1 convolutions (replace FC)
         self.conv6 = nn.Conv2d(512, 4096, 1)
         self.relu6 = nn.ReLU(inplace=True)
         self.drop6 = nn.Dropout2d()
@@ -1367,7 +1367,7 @@ class UNet(nn.Module):
         self.pool = nn.MaxPool2d(2, 2)
 
     def _block(self, in_channels, out_channels):
-        """Convolutional block: Conv → ReLU → Conv → ReLU"""
+        """Convolutional block: Conv --> ReLU --> Conv --> ReLU"""
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, padding=1),
             nn.ReLU(inplace=True),
@@ -1429,28 +1429,28 @@ class ASPP(nn.Module):
     def __init__(self, in_channels, out_channels=256):
         super().__init__()
 
-        # 1×1 conv
+        # 1x1 conv
         self.conv1x1 = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 1, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
 
-        # 3×3 atrous conv, rate=6
+        # 3x3 atrous conv, rate=6
         self.conv3x3_1 = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, padding=6, dilation=6, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
 
-        # 3×3 atrous conv, rate=12
+        # 3x3 atrous conv, rate=12
         self.conv3x3_2 = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, padding=12, dilation=12, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
 
-        # 3×3 atrous conv, rate=18
+        # 3x3 atrous conv, rate=18
         self.conv3x3_3 = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, padding=18, dilation=18, bias=False),
             nn.BatchNorm2d(out_channels),
@@ -1516,9 +1516,9 @@ class ASPP(nn.Module):
 **Architecture**:
 ```
 Faster R-CNN
-├─ Classification branch (class scores)
-├─ Bounding box regression branch (bbox coords)
-└─ Mask prediction branch (binary mask) ← NEW
++--- Classification branch (class scores)
++--- Bounding box regression branch (bbox coords)
++--- Mask prediction branch (binary mask) <-- NEW
 ```
 
 ```python
@@ -1579,7 +1579,7 @@ cv2.imwrite('result.jpg', image)
 **Approach**:
 - Generate prototype masks (full image resolution)
 - Predict mask coefficients per instance
-- Linear combination: mask = Σ coefficients × prototypes
+- Linear combination: mask = sum coefficients x prototypes
 
 ### SOLOv2 (2020)
 
@@ -1637,9 +1637,9 @@ cv2.imwrite('result.jpg', image)
 **Architecture**:
 ```
 Image Encoder (ViT-H)
-→ Prompt Encoder (points, boxes, masks)
-→ Mask Decoder (lightweight)
-→ Multiple mask predictions (ambiguous cases)
+--> Prompt Encoder (points, boxes, masks)
+--> Mask Decoder (lightweight)
+--> Multiple mask predictions (ambiguous cases)
 ```
 
 **Production Usage**:

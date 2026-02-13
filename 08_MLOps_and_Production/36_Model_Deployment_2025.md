@@ -1320,15 +1320,15 @@ class CanaryMonitor:
 
         # Decision criteria
         if canary_metrics.error_rate > self.error_threshold:
-            print(f"\n❌ ROLLBACK: Error rate {canary_metrics.error_rate:.2%} exceeds threshold")
+            print(f"\n ROLLBACK: Error rate {canary_metrics.error_rate:.2%} exceeds threshold")
             return False
 
         latency_ratio = canary_metrics.latency_p95 / stable_metrics.latency_p95
         if latency_ratio > self.latency_threshold:
-            print(f"\n❌ ROLLBACK: Latency increased by {latency_ratio:.1f}x")
+            print(f"\n ROLLBACK: Latency increased by {latency_ratio:.1f}x")
             return False
 
-        print(f"\n✅ PROMOTE: Canary metrics within acceptable range")
+        print(f"\n PROMOTE: Canary metrics within acceptable range")
         return True
 
 # Usage
@@ -1452,7 +1452,7 @@ class BlueGreenDeployment:
             body=service
         )
 
-        print(f"✅ Traffic switched to {target_slot} slot")
+        print(f" Traffic switched to {target_slot} slot")
 
     def deploy_to_inactive_slot(self, new_image: str) -> str:
         """Deploy new version to inactive slot."""
@@ -1482,7 +1482,7 @@ class BlueGreenDeployment:
         print("Waiting for rollout to complete...")
         time.sleep(30)  # In production, properly wait for ready status
 
-        print(f"✅ Deployment to {inactive} slot complete")
+        print(f" Deployment to {inactive} slot complete")
         return inactive
 
     def rollback(self) -> None:
@@ -1571,7 +1571,7 @@ class ModelRegistry:
 
             run_id = mlflow.active_run().info.run_id
 
-        print(f"✅ Model registered with run_id: {run_id}")
+        print(f" Model registered with run_id: {run_id}")
         return run_id
 
     def promote_model(
@@ -1588,7 +1588,7 @@ class ModelRegistry:
             archive_existing_versions=True  # Archive previous production
         )
 
-        print(f"✅ Model {model_name} v{version} promoted to {stage}")
+        print(f" Model {model_name} v{version} promoted to {stage}")
 
     def get_production_model(self, model_name: str) -> str:
         """Get current production model URI."""
@@ -1693,7 +1693,7 @@ class ModelArtifacts:
         with open(output_path / "requirements.txt", 'w') as f:
             f.write("\n".join(requirements))
 
-        print(f"✅ Deployment package saved to {output_dir}")
+        print(f" Deployment package saved to {output_dir}")
 ```
 
 ### 2. Configuration Management

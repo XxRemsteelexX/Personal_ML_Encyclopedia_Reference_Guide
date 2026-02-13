@@ -5,7 +5,7 @@
 ### Formula
 
 ```
-P(H|E) = P(E|H) × P(H) / P(E)
+P(H|E) = P(E|H) x P(H) / P(E)
 ```
 
 **Components:**
@@ -17,7 +17,7 @@ P(H|E) = P(E|H) × P(H) / P(E)
 ### Expanded Form
 
 ```
-P(H|E) = P(E|H) × P(H) / [P(E|H) × P(H) + P(E|¬H) × P(¬H)]
+P(H|E) = P(E|H) x P(H) / [P(E|H) x P(H) + P(E|notH) x P(notH)]
 ```
 
 ### Example: Medical Diagnosis
@@ -54,7 +54,7 @@ print(f"\nEven with 99% accurate test, only {P_disease_given_pos*100:.1f}% chanc
 
 ### Geometric Interpretation
 
-Think of a 1×1 square representing all possibilities:
+Think of a 1x1 square representing all possibilities:
 - Hypothesis occupies left portion with width P(H)
 - Evidence restricts the space horizontally
 - Posterior is the proportion of hypothesis in the restricted space
@@ -77,9 +77,9 @@ Prior and posterior have same distributional form.
 
 **Application:** Estimating success probability
 
-**Prior:** Beta(α, β)
+**Prior:** Beta(alpha, beta)
 **Likelihood:** Binomial
-**Posterior:** Beta(α + successes, β + failures)
+**Posterior:** Beta(alpha + successes, beta + failures)
 
 ```python
 import numpy as np
@@ -109,7 +109,7 @@ plt.axvline(successes/(successes+failures), color='red', linestyle=':',
             label=f'MLE = {successes/(successes+failures):.2f}')
 plt.xlabel('Probability p')
 plt.ylabel('Density')
-plt.title('Bayesian Updating: Prior → Posterior')
+plt.title('Bayesian Updating: Prior --> Posterior')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.show()
@@ -129,19 +129,19 @@ print(f"95% Credible Interval: [{credible_interval[0]:.3f}, {credible_interval[1
 
 **Application:** Estimating mean with known variance
 
-**Prior:** N(μ₀, σ₀²)
-**Likelihood:** N(μ, σ²) with known σ²
+**Prior:** N(mu_0, sigma_0^2)
+**Likelihood:** N(mu, sigma^2) with known sigma^2
 **Posterior:** Normal
 
 ```python
 import numpy as np
 from scipy import stats
 
-# Prior belief: μ ~ N(170, 5²)
+# Prior belief: mu ~ N(170, 5^2)
 prior_mean = 170
 prior_std = 5
 
-# Data: 20 observations, known σ=10
+# Data: 20 observations, known sigma=10
 data = np.array([172, 168, 175, 171, 169, 173, 170, 174, 172, 171,
                  170, 169, 172, 173, 168, 171, 170, 174, 172, 171])
 known_std = 10
@@ -156,9 +156,9 @@ post_mean = (precision_prior * prior_mean + precision_data * data_mean) / (preci
 post_var = 1 / (precision_prior + precision_data)
 post_std = np.sqrt(post_var)
 
-print(f"Prior: N({prior_mean}, {prior_std:.2f}²)")
+print(f"Prior: N({prior_mean}, {prior_std:.2f}^2)")
 print(f"Data mean: {data_mean:.2f}")
-print(f"Posterior: N({post_mean:.2f}, {post_std:.2f}²)")
+print(f"Posterior: N({post_mean:.2f}, {post_std:.2f}^2)")
 print(f"\nPosterior is weighted average of prior and data")
 ```
 
@@ -180,7 +180,7 @@ def metropolis_hastings(log_posterior, initial, n_samples, proposal_std=1.0):
     Metropolis-Hastings MCMC sampler
 
     Args:
-        log_posterior: Function computing log P(θ|data)
+        log_posterior: Function computing log P(theta|data)
         initial: Starting value
         n_samples: Number of samples
         proposal_std: Std dev of proposal distribution
@@ -207,7 +207,7 @@ def metropolis_hastings(log_posterior, initial, n_samples, proposal_std=1.0):
     return np.array(samples), acceptance_rate
 
 # Example: Sample from posterior of mean
-# Prior: N(0, 10²), Likelihood: N(μ, 1²), Data: [1, 2, 3, 2, 1]
+# Prior: N(0, 10^2), Likelihood: N(mu, 1^2), Data: [1, 2, 3, 2, 1]
 data = np.array([1, 2, 3, 2, 1])
 prior_mean, prior_std = 0, 10
 likelihood_std = 1
@@ -234,12 +234,12 @@ plt.figure(figsize=(12, 4))
 plt.subplot(1, 2, 1)
 plt.plot(samples)
 plt.xlabel('Iteration')
-plt.ylabel('μ')
+plt.ylabel('mu')
 plt.title('MCMC Trace')
 
 plt.subplot(1, 2, 2)
 plt.hist(samples[1000:], bins=50, density=True, alpha=0.7)
-plt.xlabel('μ')
+plt.xlabel('mu')
 plt.ylabel('Density')
 plt.title('Posterior Distribution')
 plt.tight_layout()

@@ -28,17 +28,17 @@ Linear regression is the foundation of supervised learning, modeling the relatio
 Linear regression assumes a linear relationship between features X and target y:
 
 ```
-y = β₀ + β₁x₁ + β₂x₂ + ... + βₚxₚ + ε
+y = beta_0 + beta_1x_1 + beta_2x_2 + ... + beta_px_p + epsilon
 ```
 
 Where:
 - y: target variable (continuous)
-- β₀: intercept (bias term)
-- βⱼ: coefficient for feature j
-- xⱼ: feature j
-- ε: random error term (irreducible error)
+- beta_0: intercept (bias term)
+- beta_j: coefficient for feature j
+- x_j: feature j
+- epsilon: random error term (irreducible error)
 
-**Goal**: Find coefficients β that minimize prediction error on training data while generalizing to new data.
+**Goal**: Find coefficients beta that minimize prediction error on training data while generalizing to new data.
 
 ## Simple Linear Regression
 
@@ -47,7 +47,7 @@ Where:
 For one feature x and target y:
 
 ```
-y = β₀ + β₁x + ε
+y = beta_0 + beta_1x + epsilon
 ```
 
 ### Ordinary Least Squares (OLS) Solution
@@ -55,29 +55,29 @@ y = β₀ + β₁x + ε
 **Objective**: Minimize sum of squared residuals (RSS):
 
 ```
-RSS(β₀, β₁) = Σᵢ(yᵢ - ŷᵢ)² = Σᵢ(yᵢ - β₀ - β₁xᵢ)²
+RSS(beta_0, beta_1) = sum_i(y_i - y_hat_i)^2 = sum_i(y_i - beta_0 - beta_1x_i)^2
 ```
 
-**Analytical Solution** (derived by setting ∂RSS/∂β = 0):
+**Analytical Solution** (derived by setting dRSS/dbeta = 0):
 
 ```
-β₁ = Σ(xᵢ - x̄)(yᵢ - ȳ) / Σ(xᵢ - x̄)²
+beta_1 = sum(x_i - x_bar)(y_i - y_bar) / sum(x_i - x_bar)^2
    = Cov(X, Y) / Var(X)
-   = r · (σy / σx)
+   = r * (sigmay / sigmax)
 
-β₀ = ȳ - β₁x̄
+beta_0 = y_bar - beta_1x_bar
 ```
 
 Where:
-- x̄, ȳ: sample means
+- x_bar, y_bar: sample means
 - r: Pearson correlation coefficient
-- σx, σy: standard deviations
+- sigmax, sigmay: standard deviations
 
 ### Geometric Interpretation
 
-- β₁: Slope - change in y per unit change in x
-- β₀: Intercept - predicted y when x = 0
-- Regression line: y = β₀ + β₁x minimizes vertical distances to points
+- beta_1: Slope - change in y per unit change in x
+- beta_0: Intercept - predicted y when x = 0
+- Regression line: y = beta_0 + beta_1x minimizes vertical distances to points
 
 ### Implementation
 
@@ -181,54 +181,54 @@ model.summary(X, y)
 For p features:
 
 ```
-y = β₀ + β₁x₁ + β₂x₂ + ... + βₚxₚ + ε
+y = beta_0 + beta_1x_1 + beta_2x_2 + ... + beta_px_p + epsilon
 ```
 
 **Matrix Form**:
 
 ```
-Y = Xβ + ε
+Y = Xbeta + epsilon
 
 Where:
-- Y: n×1 vector of targets
-- X: n×(p+1) design matrix (includes intercept column)
-- β: (p+1)×1 coefficient vector
-- ε: n×1 error vector
+- Y: nx1 vector of targets
+- X: nx(p+1) design matrix (includes intercept column)
+- beta: (p+1)x1 coefficient vector
+- epsilon: nx1 error vector
 ```
 
 ### OLS Solution (Matrix Form)
 
-**Objective**: Minimize RSS = ||Y - Xβ||²
+**Objective**: Minimize RSS = ||Y - Xbeta||^2
 
 **Normal Equations**:
 
 ```
-X^T X β = X^T Y
+X^T X beta = X^T Y
 ```
 
 **Closed-Form Solution**:
 
 ```
-β̂ = (X^T X)^(-1) X^T Y
+beta_hat = (X^T X)^(-1) X^T Y
 ```
 
 **Properties**:
 - Unique solution if X^T X is invertible (requires p < n and no perfect multicollinearity)
-- Unbiased: E[β̂] = β
+- Unbiased: E[beta_hat] = beta
 - Minimum variance among linear unbiased estimators (Gauss-Markov Theorem)
 
 ### Derivation
 
-To minimize RSS(β) = (Y - Xβ)^T(Y - Xβ):
+To minimize RSS(beta) = (Y - Xbeta)^T(Y - Xbeta):
 
 ```
-RSS(β) = Y^T Y - 2β^T X^T Y + β^T X^T X β
+RSS(beta) = Y^T Y - 2beta^T X^T Y + beta^T X^T X beta
 
-∂RSS/∂β = -2X^T Y + 2X^T X β = 0
+dRSS/dbeta = -2X^T Y + 2X^T X beta = 0
 
-X^T X β = X^T Y
+X^T X beta = X^T Y
 
-β̂ = (X^T X)^(-1) X^T Y
+beta_hat = (X^T X)^(-1) X^T Y
 ```
 
 ### Implementation with sklearn
@@ -267,16 +267,16 @@ print("Multiple Linear Regression Results")
 print("=" * 60)
 print("\nCoefficients:")
 for i, coef in enumerate(model.coef_):
-    print(f"  β{i+1} = {coef:.4f} (true: {true_coef[i]:.4f})")
-print(f"  β0 (intercept) = {model.intercept_:.4f}")
+    print(f"  beta{i+1} = {coef:.4f} (true: {true_coef[i]:.4f})")
+print(f"  beta0 (intercept) = {model.intercept_:.4f}")
 
 print("\nTraining Metrics:")
-print(f"  R² = {r2_score(y_train, y_train_pred):.4f}")
+print(f"  R^2 = {r2_score(y_train, y_train_pred):.4f}")
 print(f"  RMSE = {np.sqrt(mean_squared_error(y_train, y_train_pred)):.4f}")
 print(f"  MAE = {mean_absolute_error(y_train, y_train_pred):.4f}")
 
 print("\nTest Metrics:")
-print(f"  R² = {r2_score(y_test, y_test_pred):.4f}")
+print(f"  R^2 = {r2_score(y_test, y_test_pred):.4f}")
 print(f"  RMSE = {np.sqrt(mean_squared_error(y_test, y_test_pred)):.4f}")
 print(f"  MAE = {mean_absolute_error(y_test, y_test_pred):.4f}")
 ```
@@ -392,7 +392,7 @@ def check_homoscedasticity(model, X, y):
     plt.figure(figsize=(10, 6))
     plt.scatter(y_pred, np.sqrt(np.abs(residuals)), alpha=0.5)
     plt.xlabel('Fitted values')
-    plt.ylabel('√|Residuals|')
+    plt.ylabel('sqrt|Residuals|')
     plt.title('Scale-Location Plot')
     plt.show()
 ```
@@ -401,30 +401,30 @@ def check_homoscedasticity(model, X, y):
 
 ## Evaluation Metrics
 
-### R-Squared (R²)
+### R-Squared (R^2)
 
 **Definition**: Proportion of variance in y explained by the model.
 
 ```
-R² = 1 - (SS_res / SS_tot)
+R^2 = 1 - (SS_res / SS_tot)
 
 Where:
-- SS_res = Σ(yᵢ - ŷᵢ)²  (residual sum of squares)
-- SS_tot = Σ(yᵢ - ȳ)²    (total sum of squares)
+- SS_res = sum(y_i - y_hat_i)^2  (residual sum of squares)
+- SS_tot = sum(y_i - y_bar)^2    (total sum of squares)
 ```
 
 **Properties**:
 - Range: [0, 1] (can be negative for bad models)
-- R² = 1: Perfect fit
-- R² = 0: Model no better than mean
+- R^2 = 1: Perfect fit
+- R^2 = 0: Model no better than mean
 - Always increases when adding features (even irrelevant ones)
 
 ### Adjusted R-Squared
 
-**Definition**: R² penalized for number of features.
+**Definition**: R^2 penalized for number of features.
 
 ```
-R²_adj = 1 - [(1 - R²) · (n - 1) / (n - p - 1)]
+R^2_adj = 1 - [(1 - R^2) * (n - 1) / (n - p - 1)]
 
 Where:
 - n: number of samples
@@ -438,7 +438,7 @@ Where:
 **Definition**: Square root of average squared error.
 
 ```
-RMSE = √[Σ(yᵢ - ŷᵢ)² / n]
+RMSE = sqrt[sum(y_i - y_hat_i)^2 / n]
 ```
 
 **Properties**:
@@ -451,7 +451,7 @@ RMSE = √[Σ(yᵢ - ŷᵢ)² / n]
 **Definition**: Average absolute error.
 
 ```
-MAE = Σ|yᵢ - ŷᵢ| / n
+MAE = sum|y_i - y_hat_i| / n
 ```
 
 **Properties**:
@@ -475,8 +475,8 @@ def evaluate_regression(y_true, y_pred, X):
     mae = mean_absolute_error(y_true, y_pred)
 
     print("Regression Metrics:")
-    print(f"  R² = {r2:.4f}")
-    print(f"  Adjusted R² = {adj_r2:.4f}")
+    print(f"  R^2 = {r2:.4f}")
+    print(f"  Adjusted R^2 = {adj_r2:.4f}")
     print(f"  RMSE = {rmse:.4f}")
     print(f"  MAE = {mae:.4f}")
 
@@ -502,12 +502,12 @@ Multicollinearity occurs when features are highly correlated, making it difficul
 
 ### Detection: Variance Inflation Factor (VIF)
 
-**Definition**: Measures how much variance of β̂ⱼ is inflated due to correlation with other features.
+**Definition**: Measures how much variance of beta_hat_j is inflated due to correlation with other features.
 
 ```
-VIF_j = 1 / (1 - R²_j)
+VIF_j = 1 / (1 - R^2_j)
 
-Where R²_j is from regressing x_j on all other features
+Where R^2_j is from regressing x_j on all other features
 ```
 
 **Interpretation**:
@@ -578,12 +578,12 @@ Model non-linear relationships using polynomial features while maintaining linea
 
 **Degree 2 (Quadratic)**:
 ```
-y = β₀ + β₁x + β₂x² + ε
+y = beta_0 + beta_1x + beta_2x^2 + epsilon
 ```
 
 **Degree d**:
 ```
-y = β₀ + β₁x + β₂x² + ... + βₐx^d + ε
+y = beta_0 + beta_1x + beta_2x^2 + ... + beta_ax^d + epsilon
 ```
 
 ### Implementation
@@ -622,7 +622,7 @@ for i, degree in enumerate(degrees, 1):
     plt.plot(X_plot, y_plot, 'r-', label=f'Degree {degree}')
     plt.xlabel('X')
     plt.ylabel('y')
-    plt.title(f'Polynomial Degree {degree}\nR² = {poly_model.score(X, y):.4f}')
+    plt.title(f'Polynomial Degree {degree}\nR^2 = {poly_model.score(X, y):.4f}')
     plt.legend()
     plt.grid(True, alpha=0.3)
 
@@ -637,7 +637,7 @@ for degree in degrees:
     ])
     poly_model.fit(X, y)
     train_score = poly_model.score(X, y)
-    print(f"  Degree {degree:2d}: R² = {train_score:.4f}")
+    print(f"  Degree {degree:2d}: R^2 = {train_score:.4f}")
 ```
 
 ### Choosing Polynomial Degree
@@ -692,7 +692,7 @@ def select_polynomial_degree(X, y, max_degree=10, cv=5):
 ## Regularization
 
 Regularization adds penalty terms to prevent overfitting, especially crucial for:
-- High-dimensional data (p ≈ n or p > n)
+- High-dimensional data (p ~= n or p > n)
 - Multicollinear features
 - Polynomial regression with high degrees
 
@@ -701,13 +701,13 @@ Regularization adds penalty terms to prevent overfitting, especially crucial for
 **Objective**: Minimize RSS + L2 penalty
 
 ```
-L(β) = ||Y - Xβ||² + λ||β||²
-     = Σ(yᵢ - ŷᵢ)² + λΣβⱼ²
+L(beta) = ||Y - Xbeta||^2 + lambda||beta||^2
+     = sum(y_i - y_hat_i)^2 + lambdasumbeta_j^2
 ```
 
 **Solution**:
 ```
-β̂_ridge = (X^T X + λI)^(-1) X^T Y
+beta_hat_ridge = (X^T X + lambdaI)^(-1) X^T Y
 ```
 
 **Properties**:
@@ -716,9 +716,9 @@ L(β) = ||Y - Xβ||² + λ||β||²
 - Handles multicollinearity by stabilizing (X^T X)^(-1)
 - All features retained
 
-**Hyperparameter λ**:
-- λ = 0: Standard OLS
-- λ → ∞: β → 0
+**Hyperparameter lambda**:
+- lambda = 0: Standard OLS
+- lambda --> inf: beta --> 0
 - Choose via cross-validation
 
 ### Lasso Regression (L1 Regularization)
@@ -726,8 +726,8 @@ L(β) = ||Y - Xβ||² + λ||β||²
 **Objective**: Minimize RSS + L1 penalty
 
 ```
-L(β) = ||Y - Xβ||² + λ||β||₁
-     = Σ(yᵢ - ŷᵢ)² + λΣ|βⱼ|
+L(beta) = ||Y - Xbeta||^2 + lambda||beta||_1
+     = sum(y_i - y_hat_i)^2 + lambdasum|beta_j|
 ```
 
 **Properties**:
@@ -743,14 +743,14 @@ L(β) = ||Y - Xβ||² + λ||β||₁
 **Objective**: Combine Ridge and Lasso
 
 ```
-L(β) = ||Y - Xβ||² + λ₁||β||₁ + λ₂||β||²
-     = Σ(yᵢ - ŷᵢ)² + α·λ·Σ|βⱼ| + (1-α)·λ·Σβⱼ²
+L(beta) = ||Y - Xbeta||^2 + lambda_1||beta||_1 + lambda_2||beta||^2
+     = sum(y_i - y_hat_i)^2 + alpha*lambda*sum|beta_j| + (1-alpha)*lambda*sumbeta_j^2
 ```
 
-Where α ∈ [0, 1] controls the mix:
-- α = 0: Pure Ridge
-- α = 1: Pure Lasso
-- α = 0.5: Equal mix
+Where alpha in [0, 1] controls the mix:
+- alpha = 0: Pure Ridge
+- alpha = 1: Pure Lasso
+- alpha = 0.5: Equal mix
 
 **Properties**:
 - Combines benefits of Ridge and Lasso
@@ -837,8 +837,8 @@ for name, model in models.items():
     print(f"  Best alpha: {model.alpha if hasattr(model, 'alpha') else 'N/A':.4f}")
     if name == 'Elastic Net':
         print(f"  L1 ratio: {model.l1_ratio:.2f}")
-    print(f"  Train R²: {train_score:.4f}")
-    print(f"  Test R²: {test_score:.4f}")
+    print(f"  Train R^2: {train_score:.4f}")
+    print(f"  Test R^2: {test_score:.4f}")
     print(f"  Non-zero coefficients: {n_nonzero}/{n_features}")
     print(f"  Top 5 coefficients: {np.abs(model.coef_).argsort()[-5:][::-1]}")
 
@@ -959,7 +959,7 @@ def regression_diagnostics(model, X, y, feature_names=None):
     ax3 = plt.subplot(2, 3, 3)
     ax3.scatter(y_pred, np.sqrt(np.abs(residuals_std)), alpha=0.5)
     ax3.set_xlabel('Fitted values')
-    ax3.set_ylabel('√|Standardized Residuals|')
+    ax3.set_ylabel('sqrt|Standardized Residuals|')
     ax3.set_title('Scale-Location')
     ax3.grid(True, alpha=0.3)
 
@@ -1006,8 +1006,8 @@ def regression_diagnostics(model, X, y, feature_names=None):
     shapiro_stat, shapiro_p = stats.shapiro(residuals)
     print(f"\nNormality (Shapiro-Wilk test):")
     print(f"  Statistic: {shapiro_stat:.4f}, p-value: {shapiro_p:.4f}")
-    print(f"  {'✓' if shapiro_p > 0.05 else '✗'} Residuals appear normal" if shapiro_p > 0.05
-          else "  ✗ Residuals may not be normal")
+    print(f"  {'[x]' if shapiro_p > 0.05 else '[ ]'} Residuals appear normal" if shapiro_p > 0.05
+          else "  [ ] Residuals may not be normal")
 
     # Influential points
     influential = np.where(cooks_d > 4/n)[0]

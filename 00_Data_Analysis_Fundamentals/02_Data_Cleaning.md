@@ -10,15 +10,15 @@
 
 ## 2.1 The Data Cleaning Process
 
-### EDA → Clean → Validate Loop
+### EDA --> Clean --> Validate Loop
 
 ```
 1. Exploratory Data Analysis (identify issues)
-   ↓
+   v
 2. Data Cleaning (fix issues)
-   ↓
+   v
 3. Validation (confirm fixes worked)
-   ↓
+   v
 4. Repeat if needed
 ```
 
@@ -397,7 +397,7 @@ print(f"Invalid customer_ids: {len(invalid)}")
 ### Check Business Rules
 
 ```python
-# Revenue = price × quantity
+# Revenue = price x quantity
 df['calculated_revenue'] = df['price'] * df['quantity']
 discrepancy = df['revenue'] != df['calculated_revenue']
 print(f"Revenue discrepancies: {discrepancy.sum()}")
@@ -606,7 +606,7 @@ clf_setup = setup(
 
 ## 2.12 Common Mistakes to Avoid
 
-### ❌ Don't Do This:
+###  Don't Do This:
 
 1. **Clean without understanding**
    ```python
@@ -628,7 +628,7 @@ clf_setup = setup(
    # No comments, no log, can't reproduce
    ```
 
-### ✅ Do This Instead:
+###  Do This Instead:
 
 1. **Understand before cleaning**
 2. **Use domain knowledge**

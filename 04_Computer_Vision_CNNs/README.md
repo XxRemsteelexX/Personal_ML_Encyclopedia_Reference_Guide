@@ -120,10 +120,10 @@ After completing this section, you will understand:
 
 ```
 04_Computer_Vision_CNNs/
-├── README.md (this file)
-├── 01_CNN_Fundamentals.md
-├── 02_CNN_Architectures.md
-└── 03_Object_Detection_Segmentation.md
++---- README.md (this file)
++---- 01_CNN_Fundamentals.md
++---- 02_CNN_Architectures.md
++---- 03_Object_Detection_Segmentation.md
 ```
 
 ---

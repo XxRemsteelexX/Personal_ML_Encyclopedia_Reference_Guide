@@ -11,19 +11,19 @@
 ## 1.1 Why EDA Matters (2025 Perspective)
 
 ### Business Impact of Poor Data Quality:
-- ❌ Incorrect decision-making
-- ❌ Business inefficiencies
-- ❌ Decreased customer satisfaction
-- ❌ Financial losses
-- ❌ Damaged credibility of BI reports
+-  Incorrect decision-making
+-  Business inefficiencies
+-  Decreased customer satisfaction
+-  Financial losses
+-  Damaged credibility of BI reports
 
 ### EDA Benefits:
-✅ Understand data structure and distributions
-✅ Identify data quality issues early
-✅ Discover unexpected patterns
-✅ Inform modeling decisions
-✅ Validate assumptions
-✅ Generate hypotheses
+ Understand data structure and distributions
+ Identify data quality issues early
+ Discover unexpected patterns
+ Inform modeling decisions
+ Validate assumptions
+ Generate hypotheses
 
 ---
 
@@ -436,9 +436,9 @@ def test_stationarity(timeseries):
         print(f'   {key}: {value}')
 
     if result[1] < 0.05:
-        print("✓ Series is stationary")
+        print("[x] Series is stationary")
     else:
-        print("✗ Series is non-stationary")
+        print("[ ] Series is non-stationary")
 
 test_stationarity(df['value'])
 ```
@@ -473,7 +473,7 @@ timestamp = pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')
 df.to_csv(f'data_processed_{timestamp}.csv', index=False)
 
 # Save EDA notebook with version
-# Jupyter: File → Save As → notebook_eda_v1.ipynb
+# Jupyter: File --> Save As --> notebook_eda_v1.ipynb
 ```
 
 ---
@@ -522,7 +522,7 @@ def validate_cleaning(df_before, df_after):
         pct_change = ((mean_after - mean_before) / mean_before) * 100
 
         if abs(pct_change) > 10:
-            print(f"⚠️ {col} mean changed by {pct_change:.1f}%")
+            print(f"[WARNING] {col} mean changed by {pct_change:.1f}%")
 ```
 
 ---

@@ -13,9 +13,9 @@ Linear models are the foundation of machine learning. They're interpretable, fas
 - Support Vector Machines (SVMs)
 
 **Key Difference from Tree Models:**
-- ✅ Linear models NEED feature scaling
-- ✅ Linear models NEED one-hot encoding for categoricals
-- ✅ Linear models assume linear relationships
+-  Linear models NEED feature scaling
+-  Linear models NEED one-hot encoding for categoricals
+-  Linear models assume linear relationships
 
 ---
 
@@ -24,7 +24,7 @@ Linear models are the foundation of machine learning. They're interpretable, fas
 ### What It Is
 Predicts continuous outcomes by fitting a line (or hyperplane) through data points. Minimizes squared error between predictions and actual values.
 
-### ✅ When to Use Linear Regression
+###  When to Use Linear Regression
 
 1. **Linear relationship exists**
    - Features have linear relationship with target
@@ -51,7 +51,7 @@ Predicts continuous outcomes by fitting a line (or hyperplane) through data poin
    - Use Lasso to identify important features
    - Coefficients shrink irrelevant features to zero
 
-### ❌ When NOT to Use Linear Regression
+###  When NOT to Use Linear Regression
 
 1. **Non-linear relationships**
    - Curved, exponential, or complex patterns
@@ -84,7 +84,7 @@ Predicts continuous outcomes by fitting a line (or hyperplane) through data poin
 ### What It Is
 Classification algorithm that predicts probability of binary outcomes using sigmoid function. Outputs values between 0 and 1.
 
-### ✅ When to Use Logistic Regression
+###  When to Use Logistic Regression
 
 1. **Binary classification**
    - Two-class problems (yes/no, fraud/not fraud)
@@ -114,7 +114,7 @@ Classification algorithm that predicts probability of binary outcomes using sigm
    - Better calibrated than Random Forest or SVM
    - Important for decision-making (e.g., medical diagnosis)
 
-### ❌ When NOT to Use Logistic Regression
+###  When NOT to Use Logistic Regression
 
 1. **Non-linear decision boundary**
    - Classes not linearly separable
@@ -141,9 +141,9 @@ Classification algorithm that predicts probability of binary outcomes using sigm
 ## 8.3 Ridge Regression (L2 Regularization)
 
 ### What It Is
-Linear regression with L2 penalty: minimizes `RSS + λ * Σ(β²)`. Shrinks coefficients but never exactly to zero.
+Linear regression with L2 penalty: minimizes `RSS + lambda * sum(beta^2)`. Shrinks coefficients but never exactly to zero.
 
-### ✅ When to Use Ridge
+###  When to Use Ridge
 
 1. **Multicollinearity present**
    - Highly correlated features
@@ -165,7 +165,7 @@ Linear regression with L2 penalty: minimizes `RSS + λ * Σ(β²)`. Shrinks coef
    - Need all features for interpretability
    - Don't want automatic feature selection
 
-### ❌ When NOT to Use Ridge
+###  When NOT to Use Ridge
 
 1. **Need feature selection**
    - Ridge doesn't zero out coefficients
@@ -184,9 +184,9 @@ Linear regression with L2 penalty: minimizes `RSS + λ * Σ(β²)`. Shrinks coef
 ## 8.4 Lasso Regression (L1 Regularization)
 
 ### What It Is
-Linear regression with L1 penalty: minimizes `RSS + λ * Σ|β|`. Shrinks some coefficients exactly to zero (feature selection).
+Linear regression with L1 penalty: minimizes `RSS + lambda * sum|beta|`. Shrinks some coefficients exactly to zero (feature selection).
 
-### ✅ When to Use Lasso
+###  When to Use Lasso
 
 1. **Need automatic feature selection**
    - Many irrelevant features
@@ -208,7 +208,7 @@ Linear regression with L1 penalty: minimizes `RSS + λ * Σ|β|`. Shrinks some c
    - Identify which features actually matter
    - Use Lasso path to see feature selection order
 
-### ❌ When NOT to Use Lasso
+###  When NOT to Use Lasso
 
 1. **Grouped correlated features**
    - Lasso picks one, zeros out others randomly
@@ -232,9 +232,9 @@ Linear regression with L1 penalty: minimizes `RSS + λ * Σ|β|`. Shrinks some c
 ## 8.5 ElasticNet (L1 + L2)
 
 ### What It Is
-Combines Ridge (L2) and Lasso (L1): minimizes `RSS + λ₁ * Σ|β| + λ₂ * Σ(β²)`. Gets best of both worlds.
+Combines Ridge (L2) and Lasso (L1): minimizes `RSS + lambda_1 * sum|beta| + lambda_2 * sum(beta^2)`. Gets best of both worlds.
 
-### ✅ When to Use ElasticNet
+###  When to Use ElasticNet
 
 1. **Grouped correlated features**
    - ElasticNet tends to select groups together
@@ -256,10 +256,10 @@ Combines Ridge (L2) and Lasso (L1): minimizes `RSS + λ₁ * Σ|β| + λ₂ * Σ
    - 50-500 features with multicollinearity
    - ElasticNet handles both issues
 
-### ❌ When NOT to Use ElasticNet
+###  When NOT to Use ElasticNet
 
 1. **Two hyperparameters to tune**
-   - `alpha` (L1 ratio) and `λ` (penalty strength)
+   - `alpha` (L1 ratio) and `lambda` (penalty strength)
    - Takes longer to optimize
    - **Alternative:** Use Ridge or Lasso if clear which is better
 
@@ -269,7 +269,7 @@ Combines Ridge (L2) and Lasso (L1): minimizes `RSS + λ₁ * Σ|β| + λ₂ * Σ
 
 3. **Very small dataset**
    - Risk of overfitting hyperparameters
-   - **Better alternative:** Ridge with fixed λ
+   - **Better alternative:** Ridge with fixed lambda
 
 ---
 
@@ -278,7 +278,7 @@ Combines Ridge (L2) and Lasso (L1): minimizes `RSS + λ₁ * Σ|β| + λ₂ * Σ
 ### What It Is
 Finds optimal hyperplane to separate classes with maximum margin. Can handle non-linear boundaries via kernel trick.
 
-### ✅ When to Use SVM
+###  When to Use SVM
 
 1. **Clear margin of separation**
    - Classes are well-separated
@@ -304,10 +304,10 @@ Finds optimal hyperplane to separate classes with maximum margin. Can handle non
    - SVM naturally designed for two-class problems
    - Can extend to multiclass (one-vs-one, one-vs-rest)
 
-### ❌ When NOT to Use SVM
+###  When NOT to Use SVM
 
 1. **Large datasets (100K+ samples)**
-   - Training complexity: O(n²) to O(n³)
+   - Training complexity: O(n^2) to O(n^3)
    - Very slow on large data
    - **Better alternative:** Logistic regression, XGBoost
 
@@ -335,7 +335,7 @@ Finds optimal hyperplane to separate classes with maximum margin. Can handle non
    - **Better alternative:** Linear SVM, logistic regression
 
 7. **Multiclass with many classes**
-   - One-vs-one: O(k²) classifiers for k classes
+   - One-vs-one: O(k^2) classifiers for k classes
    - Becomes unwieldy with 10+ classes
    - **Better alternative:** Multiclass logistic, tree models
 
@@ -358,20 +358,20 @@ Finds optimal hyperplane to separate classes with maximum margin. Can handle non
 Start simple, work up:
 
 1. Try LINEAR kernel first
-   ├─ If accuracy good → DONE (use linear)
-   ├─ If p >> n → DEFINITELY use linear
-   └─ If poor → Continue to step 2
+   +--- If accuracy good --> DONE (use linear)
+   +--- If p >> n --> DEFINITELY use linear
+   +--- If poor --> Continue to step 2
 
 2. Try RBF kernel
-   ├─ Default choice for non-linear
-   ├─ Works well in most cases
-   └─ Tune C and gamma with GridSearch
+   +--- Default choice for non-linear
+   +--- Works well in most cases
+   +--- Tune C and gamma with GridSearch
 
 3. Try Polynomial (rare)
-   └─ Only if you know relationship is polynomial
+   +--- Only if you know relationship is polynomial
 
 4. Avoid Sigmoid
-   └─ Rarely used, neural nets are better
+   +--- Rarely used, neural nets are better
 ```
 
 ### Hyperparameter Guidelines
@@ -382,7 +382,7 @@ from sklearn.svm import SVC
 
 svm = SVC(
     kernel='linear',
-    C=1.0,           # ↑ = less regularization, more complex
+    C=1.0,           # ^ = less regularization, more complex
     class_weight='balanced'  # For imbalanced data
 )
 ```
@@ -391,9 +391,9 @@ svm = SVC(
 ```python
 svm = SVC(
     kernel='rbf',
-    C=1.0,           # ↑ = less regularization
-    gamma='scale',   # ↓ = wider influence (smoother)
-                     # ↑ = narrow influence (more complex)
+    C=1.0,           # ^ = less regularization
+    gamma='scale',   # v = wider influence (smoother)
+                     # ^ = narrow influence (more complex)
     class_weight='balanced'
 )
 ```
@@ -426,17 +426,17 @@ print(f"Best: {grid.best_params_}")
 
 ## 8.8 CRITICAL: Preprocessing for Linear Models
 
-### ⚠️ Linear Models ≠ Tree Models
+### [WARNING] Linear Models != Tree Models
 
 Linear models require different preprocessing than tree-based models!
 
 | Preprocessing | Linear Models | Tree Models |
 |---------------|---------------|-------------|
-| **Feature Scaling** | ✅ REQUIRED | ❌ Not needed |
-| **One-Hot Encoding** | ✅ REQUIRED | ❌ Avoid (use label/target) |
-| **Handle Missing** | ✅ REQUIRED | ⚠️ XGBoost can handle |
-| **Outlier Handling** | ✅ Important | ⚠️ Less sensitive |
-| **Feature Engineering** | ✅ Critical | ⚠️ Trees find interactions |
+| **Feature Scaling** |  REQUIRED |  Not needed |
+| **One-Hot Encoding** |  REQUIRED |  Avoid (use label/target) |
+| **Handle Missing** |  REQUIRED | [WARNING] XGBoost can handle |
+| **Outlier Handling** |  Important | [WARNING] Less sensitive |
+| **Feature Engineering** |  Critical | [WARNING] Trees find interactions |
 
 ---
 
@@ -465,13 +465,13 @@ X_test_scaled = scaler.transform(X_test)
 
 **CRITICAL:** Always fit on training data only, then transform test data!
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # This leaks information!
 scaler.fit(X_train_and_test)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Fit on train, transform both
 scaler.fit(X_train)
@@ -499,7 +499,7 @@ X_encoded = encoder.fit_transform(X[['category_col']])
 **drop_first=True**: Avoids multicollinearity (dummy variable trap)
 
 **High cardinality problem:**
-- 100 categories → 99 dummy variables
+- 100 categories --> 99 dummy variables
 - Solution: Group rare categories, use target encoding with regularization, or try tree models
 
 ---
@@ -578,7 +578,7 @@ predictions = model.predict(X_test)
 
 ## 8.9 Regularization Parameter Selection
 
-### Lambda (α) Selection Strategy
+### Lambda (alpha) Selection Strategy
 
 ```python
 from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
@@ -612,13 +612,13 @@ elastic.fit(X_train, y_train)
 
 ### Pitfall 1: Forgetting to Scale
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 model = LogisticRegression()
 model.fit(X_train, y_train)  # Features have different scales!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
@@ -630,14 +630,14 @@ model.fit(X_train_scaled, y_train)
 
 ### Pitfall 2: Using Label Encoding for Linear Models
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Creates false ordering: Red=0, Blue=1, Green=2
 df['color'] = LabelEncoder().fit_transform(df['color'])
 # Linear model thinks Green > Blue > Red!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # One-hot encoding
 df = pd.get_dummies(df, columns=['color'], drop_first=True)
@@ -668,23 +668,23 @@ print(vif_data)
 **Decision tree:**
 ```
 Need feature selection?
-├─ Yes → Lasso or ElasticNet
-└─ No → Ridge
++--- Yes --> Lasso or ElasticNet
++--- No --> Ridge
 
 Correlated features?
-├─ Yes → ElasticNet or Ridge
-└─ No → Lasso (if need selection) or Ridge
++--- Yes --> ElasticNet or Ridge
++--- No --> Lasso (if need selection) or Ridge
 ```
 
 ### Pitfall 5: Overfitting with SVM RBF
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 svm = SVC(kernel='rbf', C=1000, gamma=10)  # Very complex!
 svm.fit(X_train, y_train)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Start with defaults and tune
 svm = SVC(kernel='rbf', C=1.0, gamma='scale')
@@ -698,24 +698,24 @@ svm = SVC(kernel='rbf', C=1.0, gamma='scale')
 ```
 What's your problem?
 
-├─ Continuous target?
-│  ├─ Linear relationship? → Linear Regression
-│  ├─ Need regularization?
-│  │  ├─ Feature selection needed? → Lasso
-│  │  ├─ All features important? → Ridge
-│  │  └─ Unsure? → ElasticNet
-│  └─ Non-linear? → Use tree models or polynomial features
-│
-├─ Binary classification?
-│  ├─ Linear boundary? → Logistic Regression
-│  ├─ Non-linear boundary?
-│  │  ├─ High-dimensional? → Linear SVM first
-│  │  ├─ Then try → SVM with RBF kernel
-│  │  └─ Large data? → Tree models (faster)
-│  └─ Need probabilities? → Logistic (NOT SVM)
-│
-└─ Need interpretability?
-   └─ Linear/Logistic Regression (NOT SVM with kernel)
++--- Continuous target?
+|  +--- Linear relationship? --> Linear Regression
+|  +--- Need regularization?
+|  |  +--- Feature selection needed? --> Lasso
+|  |  +--- All features important? --> Ridge
+|  |  +--- Unsure? --> ElasticNet
+|  +--- Non-linear? --> Use tree models or polynomial features
+|
++--- Binary classification?
+|  +--- Linear boundary? --> Logistic Regression
+|  +--- Non-linear boundary?
+|  |  +--- High-dimensional? --> Linear SVM first
+|  |  +--- Then try --> SVM with RBF kernel
+|  |  +--- Large data? --> Tree models (faster)
+|  +--- Need probabilities? --> Logistic (NOT SVM)
+|
++--- Need interpretability?
+   +--- Linear/Logistic Regression (NOT SVM with kernel)
 ```
 
 ---

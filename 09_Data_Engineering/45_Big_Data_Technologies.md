@@ -64,14 +64,14 @@ Modern machine learning requires processing datasets that don't fit in memory. B
 
 ```
 NameNode (Master)
-├── Manages file system metadata
-├── Tracks block locations
-└── Handles client requests
++---- Manages file system metadata
++---- Tracks block locations
++---- Handles client requests
 
 DataNodes (Workers)
-├── Store actual data blocks
-├── Report to NameNode (heartbeats)
-└── Handle read/write operations
++---- Store actual data blocks
++---- Report to NameNode (heartbeats)
++---- Handle read/write operations
 ```
 
 #### Working with HDFS
@@ -244,16 +244,16 @@ if __name__ == '__main__':
 ### When to Use Hadoop
 
 **Pros:**
-- ✅ Mature ecosystem (15+ years)
-- ✅ Fault tolerance and reliability
-- ✅ Handles petabyte-scale data
-- ✅ Cheap storage (commodity hardware)
+-  Mature ecosystem (15+ years)
+-  Fault tolerance and reliability
+-  Handles petabyte-scale data
+-  Cheap storage (commodity hardware)
 
 **Cons:**
-- ❌ Slow (disk-based, writes intermediate results)
-- ❌ Not suitable for iterative algorithms (ML)
-- ❌ High latency
-- ❌ Complex setup and maintenance
+-  Slow (disk-based, writes intermediate results)
+-  Not suitable for iterative algorithms (ML)
+-  High latency
+-  Complex setup and maintenance
 
 **Use Cases:**
 - Massive batch processing (ETL pipelines)
@@ -275,19 +275,19 @@ if __name__ == '__main__':
 
 ```
 Driver Program
-├── SparkContext (entry point)
-├── DAG Scheduler (optimize execution)
-└── Task Scheduler (assign tasks)
++---- SparkContext (entry point)
++---- DAG Scheduler (optimize execution)
++---- Task Scheduler (assign tasks)
 
 Cluster Manager (YARN, Mesos, or Standalone)
-├── Resource allocation
-└── Worker node management
++---- Resource allocation
++---- Worker node management
 
 Worker Nodes
-├── Executor (JVM process)
-│   ├── Cache (in-memory storage)
-│   └── Tasks (parallel operations)
-└── Multiple per node
++---- Executor (JVM process)
+|   +---- Cache (in-memory storage)
+|   +---- Tasks (parallel operations)
++---- Multiple per node
 ```
 
 ### Spark Components
@@ -493,17 +493,17 @@ df_filtered.coalesce(10).write.parquet('output.parquet')
 ### When to Use Spark
 
 **Pros:**
-- ✅ 10-100x faster than Hadoop MapReduce
-- ✅ In-memory processing
-- ✅ Unified framework (batch, streaming, ML, graph)
-- ✅ Supports SQL, Python, Scala, Java, R
-- ✅ Mature ML library (MLlib)
+-  10-100x faster than Hadoop MapReduce
+-  In-memory processing
+-  Unified framework (batch, streaming, ML, graph)
+-  Supports SQL, Python, Scala, Java, R
+-  Mature ML library (MLlib)
 
 **Cons:**
-- ❌ Requires significant memory
-- ❌ Complex setup and tuning
-- ❌ JVM overhead for Python (PySpark)
-- ❌ Slower than Dask for Python-native workflows
+-  Requires significant memory
+-  Complex setup and tuning
+-  JVM overhead for Python (PySpark)
+-  Slower than Dask for Python-native workflows
 
 **Use Cases:**
 - Large-scale ETL and data processing
@@ -525,12 +525,12 @@ df_filtered.coalesce(10).write.parquet('output.parquet')
 ### Why Dask?
 
 **Advantages over Spark:**
-- ✅ **Python-native** (no JVM overhead)
-- ✅ **50% faster** on Python ML workloads
-- ✅ **Seamless pandas/numpy/scikit-learn integration**
-- ✅ **Lightweight** (easy setup)
-- ✅ **Dynamic task scheduling** (better for irregular workloads)
-- ✅ **Lower latency**
+-  **Python-native** (no JVM overhead)
+-  **50% faster** on Python ML workloads
+-  **Seamless pandas/numpy/scikit-learn integration**
+-  **Lightweight** (easy setup)
+-  **Dynamic task scheduling** (better for irregular workloads)
+-  **Lower latency**
 
 **When to use Dask over Spark:**
 - Python-centric ML workflows
@@ -842,16 +842,16 @@ with dask.config.set(scheduler='threads'):
 ### When to Use Dask
 
 **Pros:**
-- ✅ **50% faster than Spark** (2025 benchmark)
-- ✅ Python-native (no JVM)
-- ✅ Familiar pandas/numpy/scikit-learn API
-- ✅ Lightweight and easy setup
-- ✅ Scales XGBoost, LightGBM seamlessly
+-  **50% faster than Spark** (2025 benchmark)
+-  Python-native (no JVM)
+-  Familiar pandas/numpy/scikit-learn API
+-  Lightweight and easy setup
+-  Scales XGBoost, LightGBM seamlessly
 
 **Cons:**
-- ❌ Less mature than Spark
-- ❌ Smaller ecosystem
-- ❌ Not ideal for streaming (use Spark Streaming)
+-  Less mature than Spark
+-  Smaller ecosystem
+-  Not ideal for streaming (use Spark Streaming)
 
 **Use Cases:**
 - Python ML workflows on medium-to-large data
@@ -1413,26 +1413,26 @@ cluster.scale(10)
 
 ```
 Data size < 10 GB?
-├─ Yes → Use pandas (single machine)
-└─ No → Data size < 1 TB?
-    ├─ Yes → Python-centric ML workflow?
-    │   ├─ Yes → Use Dask (50% faster than Spark for Python)
-    │   └─ No → Use Spark (mature ecosystem)
-    └─ No → Data size > 1 TB?
-        ├─ Use cloud-native (BigQuery, Snowflake, Databricks)
-        └─ Or Spark with cloud storage (S3, GCS, ADLS)
++--- Yes --> Use pandas (single machine)
++--- No --> Data size < 1 TB?
+    +--- Yes --> Python-centric ML workflow?
+    |   +--- Yes --> Use Dask (50% faster than Spark for Python)
+    |   +--- No --> Use Spark (mature ecosystem)
+    +--- No --> Data size > 1 TB?
+        +--- Use cloud-native (BigQuery, Snowflake, Databricks)
+        +--- Or Spark with cloud storage (S3, GCS, ADLS)
 
 Streaming data?
-└─ Use Spark Structured Streaming or Apache Flink
++--- Use Spark Structured Streaming or Apache Flink
 
 Deep learning at scale?
-└─ Use Horovod (multi-GPU/multi-node)
++--- Use Horovod (multi-GPU/multi-node)
 
 General distributed computing?
-└─ Use Ray (reinforcement learning, hyperparameter tuning)
++--- Use Ray (reinforcement learning, hyperparameter tuning)
 
 Batch ETL on budget?
-└─ Use Hadoop MapReduce (slow but cheap storage)
++--- Use Hadoop MapReduce (slow but cheap storage)
 ```
 
 ### Technology Comparison Table

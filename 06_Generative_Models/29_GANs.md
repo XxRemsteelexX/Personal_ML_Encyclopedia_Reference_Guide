@@ -282,7 +282,7 @@ d_loss = -torch.mean(D(real)) + torch.mean(D(fake)) + lambda_gp * gradient_penal
 - Mapping network for latent codes
 
 **Key Features:**
-- 1024×1024 resolution
+- 1024x1024 resolution
 - Fine control over styles
 - State-of-art 2019-2020
 
@@ -307,9 +307,9 @@ g_loss = loss_GAN_XY + loss_GAN_YX + lambda_cycle * (loss_cycle_X + loss_cycle_Y
 ```
 
 **Applications:**
-- Photo → Painting (Monet, Van Gogh)
-- Horse → Zebra
-- Summer → Winter
+- Photo --> Painting (Monet, Van Gogh)
+- Horse --> Zebra
+- Summer --> Winter
 
 ---
 
@@ -326,7 +326,7 @@ g_loss = loss_GAN_XY + loss_GAN_YX + lambda_cycle * (loss_cycle_X + loss_cycle_Y
 
 ### Vanishing Gradients
 
-**Problem:** Discriminator too good → no gradient for generator
+**Problem:** Discriminator too good --> no gradient for generator
 
 **Solutions:**
 - Wasserstein GAN
@@ -336,10 +336,10 @@ g_loss = loss_GAN_XY + loss_GAN_YX + lambda_cycle * (loss_cycle_X + loss_cycle_Y
 ### Unstable Training
 
 **Tips:**
-- Use Adam optimizer (β1=0.5)
+- Use Adam optimizer (beta1=0.5)
 - Learning rate: 0.0001 - 0.0002
 - Batch normalization
-- LeakyReLU (α=0.2)
+- LeakyReLU (alpha=0.2)
 - Avoid sparse gradients (ReLU, MaxPool)
 
 ---
@@ -366,7 +366,7 @@ def inception_score(images, num_splits=10):
 
 **Higher is better** (measures quality and diversity)
 
-### Fréchet Inception Distance (FID)
+### Frechet Inception Distance (FID)
 
 ```python
 def calculate_fid(real_images, generated_images):
@@ -396,14 +396,14 @@ def calculate_fid(real_images, generated_images):
 
 ```python
 # SRGAN, ESRGAN
-# Low-res → High-res with perceptual loss
+# Low-res --> High-res with perceptual loss
 ```
 
 ### 2. Style Transfer
 
 ```python
 # Neural style transfer
-# Content image + Style image → Stylized output
+# Content image + Style image --> Stylized output
 ```
 
 ### 3. Data Augmentation

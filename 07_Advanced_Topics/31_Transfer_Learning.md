@@ -26,23 +26,23 @@ Transfer learning leverages knowledge gained from solving one task (source) to i
 - **Task**: T = {Y, f(.)} where Y is label space and f(.) is objective function
 
 **Types of Transfer**:
-1. **Inductive Transfer**: Different tasks (TS ≠ TT), source data available
-2. **Transductive Transfer**: Same task (TS = TT), different domains (DS ≠ DT)
+1. **Inductive Transfer**: Different tasks (TS != TT), source data available
+2. **Transductive Transfer**: Same task (TS = TT), different domains (DS != DT)
 3. **Unsupervised Transfer**: No labeled data in source or target
 
 ### Transfer Learning Taxonomy
 
 ```
 Transfer Learning
-├── Feature Extraction (Frozen pretrained features)
-├── Fine-Tuning (Update pretrained weights)
-│   ├── Full fine-tuning (all parameters)
-│   ├── Partial fine-tuning (selected layers)
-│   └── Parameter-efficient fine-tuning (LoRA, adapters)
-├── Domain Adaptation (Align distributions)
-│   ├── Feature-based (MMD, CORAL)
-│   └── Adversarial (DANN, ADDA)
-└── Multi-task Learning (Joint training)
++---- Feature Extraction (Frozen pretrained features)
++---- Fine-Tuning (Update pretrained weights)
+|   +---- Full fine-tuning (all parameters)
+|   +---- Partial fine-tuning (selected layers)
+|   +---- Parameter-efficient fine-tuning (LoRA, adapters)
++---- Domain Adaptation (Align distributions)
+|   +---- Feature-based (MMD, CORAL)
+|   +---- Adversarial (DANN, ADDA)
++---- Multi-task Learning (Joint training)
 ```
 
 ### Mathematical Foundation: Inductive Bias Transfer
@@ -60,7 +60,7 @@ Where d(.,.) is distance in hypothesis space. Starting from h*_S requires less o
 **Generalization Bound**: For target domain with n samples:
 
 ```
-Error_T(h) ≤ Error_S(h) + d(DS, DT) + O(√(1/n))
+Error_T(h) <= Error_S(h) + d(DS, DT) + O(sqrt(1/n))
 ```
 
 Where d(DS, DT) is distribution discrepancy (e.g., H-divergence).
@@ -324,13 +324,13 @@ def train_step(model, batch, optimizer):
 
 #### LoRA (Low-Rank Adaptation)
 
-**Idea**: Instead of updating full weight matrix W ∈ R^(d×k), learn low-rank decomposition:
+**Idea**: Instead of updating full weight matrix W in R^(dxk), learn low-rank decomposition:
 
 ```
-W' = W + ΔW = W + BA
+W' = W + DeltaW = W + BA
 ```
 
-Where B ∈ R^(d×r), A ∈ R^(r×k), and r << min(d, k).
+Where B in R^(dxr), A in R^(rxk), and r << min(d, k).
 
 **Mathematical Derivation**:
 
@@ -342,9 +342,9 @@ h = Wx + BAx = Wx + B(Ax)
 ```
 
 Number of trainable parameters:
-- Original: d × k
-- LoRA: (d + k) × r
-- Reduction factor: (d × k) / ((d + k) × r) ≈ k/r for d ≈ k
+- Original: d x k
+- LoRA: (d + k) x r
+- Reduction factor: (d x k) / ((d + k) x r) ~= k/r for d ~= k
 
 For r = 8, d = k = 4096: Reduction = 512x fewer parameters!
 
@@ -592,7 +592,7 @@ outputs = model(inputs_embeds=embeddings_with_prompt)
 
 ## Domain Adaptation {#domain-adaptation}
 
-**Problem**: Source and target domains have different distributions: P_S(X) ≠ P_T(X).
+**Problem**: Source and target domains have different distributions: P_S(X) != P_T(X).
 
 **Goal**: Learn representations that work well on target domain using labeled source data and unlabeled target data.
 
@@ -603,18 +603,18 @@ outputs = model(inputs_embeds=embeddings_with_prompt)
 **Mathematical Formulation**:
 
 ```
-MMD²(P_S, P_T) = ||E_S[φ(x)] - E_T[φ(x)]||²_H
+MMD^2(P_S, P_T) = ||E_S[phi(x)] - E_T[phi(x)]||^2_H
 ```
 
-Where φ(.) maps to reproducing kernel Hilbert space (RKHS), and ||.||_H is RKHS norm.
+Where phi(.) maps to reproducing kernel Hilbert space (RKHS), and ||.||_H is RKHS norm.
 
 **Empirical Estimator** (using Gaussian kernel):
 
 ```
-MMD²(S, T) = (1/n_s²) ∑∑ k(x_i, x_j) + (1/n_t²) ∑∑ k(x'_i, x'_j) - (2/n_s n_t) ∑∑ k(x_i, x'_j)
+MMD^2(S, T) = (1/n_s^2) sumsum k(x_i, x_j) + (1/n_t^2) sumsum k(x'_i, x'_j) - (2/n_s n_t) sumsum k(x_i, x'_j)
 ```
 
-Where k(x, y) = exp(-||x - y||²/(2σ²)) is RBF kernel.
+Where k(x, y) = exp(-||x - y||^2/(2sigma^2)) is RBF kernel.
 
 ```python
 def mmd_loss(source_features, target_features, kernel='rbf', gamma=1.0):
@@ -647,7 +647,7 @@ def mmd_loss(source_features, target_features, kernel='rbf', gamma=1.0):
         K_tt = target_features @ target_features.T
         K_st = source_features @ target_features.T
 
-    # MMD² = E_ss + E_tt - 2*E_st
+    # MMD^2 = E_ss + E_tt - 2*E_st
     mmd_squared = (K_ss.sum() / (n_s ** 2) +
                    K_tt.sum() / (n_t ** 2) -
                    2 * K_st.sum() / (n_s * n_t))
@@ -685,7 +685,7 @@ def train_with_mmd(model, source_loader, target_loader, mmd_weight=0.1):
 
 **Loss**:
 ```
-L_CORAL = (1/4d²) ||C_S - C_T||²_F
+L_CORAL = (1/4d^2) ||C_S - C_T||^2_F
 ```
 
 Where C_S, C_T are covariance matrices and ||.||_F is Frobenius norm.
@@ -723,8 +723,8 @@ def coral_loss(source_features, target_features):
 
 **Architecture**:
 ```
-Input → Feature Extractor → Task Classifier (maximize task accuracy)
-                         ↘ Domain Classifier (maximize domain confusion)
+Input --> Feature Extractor --> Task Classifier (maximize task accuracy)
+                         \ Domain Classifier (maximize domain confusion)
 ```
 
 **Gradient Reversal Layer** (GRL): Reverses gradients during backpropagation.
@@ -842,9 +842,9 @@ def train_dann(model, source_loader, target_loader, num_epochs=100):
 **Idea**: Represent each class by prototype (mean of support examples) in embedding space. Classify query points by nearest prototype.
 
 **Algorithm**:
-1. Embed support set: {f_θ(x_i)}
-2. Compute class prototypes: c_k = (1/K) ∑_{i∈S_k} f_θ(x_i)
-3. Classify query by distance to prototypes: y = argmin_k d(f_θ(x_q), c_k)
+1. Embed support set: {f_theta(x_i)}
+2. Compute class prototypes: c_k = (1/K) sum_{iinS_k} f_theta(x_i)
+3. Classify query by distance to prototypes: y = argmin_k d(f_theta(x_q), c_k)
 
 ```python
 class PrototypicalNetwork(nn.Module):
@@ -947,7 +947,7 @@ def train_episode(model, data_loader, n_way=5, k_shot=5, n_query=15):
 
 **Classifier**:
 ```
-P(y=k | x_q, S) = ∑_{i=1}^{|S|} a(x_q, x_i) · y_i
+P(y=k | x_q, S) = sum_{i=1}^{|S|} a(x_q, x_i) * y_i
 ```
 
 Where a(x_q, x_i) is attention weight (cosine similarity).
@@ -1069,8 +1069,8 @@ def contrastive_loss(similarity, label, margin=1.0):
 
 **Architecture**:
 ```
-Image Encoder (Vision Transformer) → Image Embedding
-Text Encoder (Transformer)          → Text Embedding
+Image Encoder (Vision Transformer) --> Image Embedding
+Text Encoder (Transformer)          --> Text Embedding
 
 Loss: Contrastive (match paired image-text, separate unpaired)
 ```
@@ -1079,10 +1079,10 @@ Loss: Contrastive (match paired image-text, separate unpaired)
 
 Contrastive loss (InfoNCE):
 ```
-L = -log(exp(sim(I_i, T_i) / τ) / ∑_j exp(sim(I_i, T_j) / τ))
+L = -log(exp(sim(I_i, T_i) / tau) / sum_j exp(sim(I_i, T_j) / tau))
 ```
 
-Where sim(I, T) = cosine(f_I(I), f_T(T)) and τ is temperature.
+Where sim(I, T) = cosine(f_I(I), f_T(T)) and tau is temperature.
 
 ```python
 import torch
@@ -1492,7 +1492,7 @@ class ProductionFineTuner:
 **Use Domain Adaptation When:**
 1. **Distribution shift** between source and target
 2. **Unlabeled target data** available
-3. **Related but different domains** (e.g., synthetic → real images)
+3. **Related but different domains** (e.g., synthetic --> real images)
 
 **Use Few-Shot Learning When:**
 1. **Very limited data** (1-20 examples per class)

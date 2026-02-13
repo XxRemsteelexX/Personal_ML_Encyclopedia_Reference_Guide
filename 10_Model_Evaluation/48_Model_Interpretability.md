@@ -78,8 +78,8 @@ sample_applicant = X_df.iloc[0:1]
 prediction = model.predict(sample_applicant)[0]
 
 print(f"Loan Decision: {'APPROVED' if prediction == 1 else 'DENIED'}")
-print("\nWithout explanation → Customer dissatisfaction, regulatory risk")
-print("With explanation → Customer understanding, compliance, trust")
+print("\nWithout explanation --> Customer dissatisfaction, regulatory risk")
+print("With explanation --> Customer understanding, compliance, trust")
 ```
 
 ### 3. Model Debugging
@@ -107,14 +107,14 @@ def debug_model_with_interpretability(model, X, y, feature_names):
         print(f"{i+1}. {feature_names[indices[i]]:<25} {importances[indices[i]]:.4f}")
 
     # Check for suspicious patterns
-    print("\n⚠️  Debugging Checks:")
+    print("\n[WARNING]  Debugging Checks:")
     if importances[indices[0]] > 0.5:
         print(f"  - Feature '{feature_names[indices[0]]}' dominates (>50% importance)")
-        print("    → Possible data leakage or overfitting")
+        print("    --> Possible data leakage or overfitting")
 
     if importances[indices[-1]] < 0.001:
         print(f"  - Many features have near-zero importance")
-        print("    → Consider feature selection")
+        print("    --> Consider feature selection")
 
 debug_model_with_interpretability(model, X_df, y, feature_names)
 ```
@@ -174,12 +174,12 @@ def interpret_linear_model(X, y, feature_names):
             print(f"\n{feature}:")
             print(f"  Coefficient: +{coef:.4f}")
             print(f"  Odds ratio: {odds_ratio:.4f}")
-            print(f"  → 1 std increase → {(odds_ratio - 1) * 100:.1f}% higher odds of approval")
+            print(f"  --> 1 std increase --> {(odds_ratio - 1) * 100:.1f}% higher odds of approval")
         else:
             print(f"\n{feature}:")
             print(f"  Coefficient: {coef:.4f}")
             print(f"  Odds ratio: {odds_ratio:.4f}")
-            print(f"  → 1 std increase → {(1 - odds_ratio) * 100:.1f}% lower odds of approval")
+            print(f"  --> 1 std increase --> {(1 - odds_ratio) * 100:.1f}% lower odds of approval")
 
     return log_reg, coef_df
 
@@ -288,7 +288,7 @@ tree, rules = interpret_decision_tree(X_df, y, feature_names, max_depth=3)
 **Limitations:**
 - Can become complex with depth
 - May overfit with deep trees
-- Unstable (small data changes → different tree)
+- Unstable (small data changes --> different tree)
 
 ### 3. Rule-Based Models (RuleFit)
 
@@ -508,9 +508,9 @@ def explain_prediction_shap(model, X, feature_names, sample_idx=0):
         shap_val = row['SHAP']
 
         if shap_val > 0:
-            print(f"✓ {feature} = {value:.2f} increases approval probability by {shap_val:.4f}")
+            print(f"[x] {feature} = {value:.2f} increases approval probability by {shap_val:.4f}")
         else:
-            print(f"✗ {feature} = {value:.2f} decreases approval probability by {abs(shap_val):.4f}")
+            print(f"[ ] {feature} = {value:.2f} decreases approval probability by {abs(shap_val):.4f}")
 
     return shap_values_sample, contributions
 
@@ -705,17 +705,17 @@ def compare_lime_shap(model, X_train, X_test, feature_names, sample_idx=0):
     print("KEY DIFFERENCES")
     print("=" * 70)
     print("SHAP:")
-    print("  ✓ Theoretically grounded (Shapley values)")
-    print("  ✓ Consistent and accurate")
-    print("  ✓ Fast for tree models (TreeExplainer)")
-    print("  ✗ Can be slow for other models")
+    print("  [x] Theoretically grounded (Shapley values)")
+    print("  [x] Consistent and accurate")
+    print("  [x] Fast for tree models (TreeExplainer)")
+    print("  [ ] Can be slow for other models")
 
     print("\nLIME:")
-    print("  ✓ Model-agnostic")
-    print("  ✓ Intuitive (local linear approximation)")
-    print("  ✓ Fast")
-    print("  ✗ Can be unstable (different perturbations → different explanations)")
-    print("  ✗ No theoretical guarantees")
+    print("  [x] Model-agnostic")
+    print("  [x] Intuitive (local linear approximation)")
+    print("  [x] Fast")
+    print("  [ ] Can be unstable (different perturbations --> different explanations)")
+    print("  [ ] No theoretical guarantees")
 
     return comparison
 
@@ -999,8 +999,8 @@ def plot_ice(model, X, feature_names, feature_idx=0, n_samples=50):
     print("=" * 70)
     print("Blue lines: Individual predictions (ICE)")
     print("Red line: Average effect (PDP)")
-    print("\nIf blue lines are parallel → homogeneous effect")
-    print("If blue lines diverge → heterogeneous effect (interactions)")
+    print("\nIf blue lines are parallel --> homogeneous effect")
+    print("If blue lines diverge --> heterogeneous effect (interactions)")
 
 # Example
 plot_ice(model, X_df.values, feature_names, feature_idx=0)
@@ -1257,26 +1257,26 @@ def generate_gdpr_explanation(model, sample, feature_names, threshold=0.5):
         direction = "increased" if impact > 0 else "decreased"
         magnitude = "significantly" if abs(impact) > 0.1 else "moderately"
 
-        report.append(f"  • {row['Factor']}: {row['Your Value']:.2f}")
+        report.append(f"  * {row['Factor']}: {row['Your Value']:.2f}")
         report.append(f"    This {magnitude} {direction} your approval probability")
         report.append("")
 
     # Consequences
     report.append("Consequences:")
     if decision == "DENIED":
-        report.append("  • Your application has been denied")
-        report.append("  • You may reapply after addressing the factors above")
-        report.append("  • You have the right to contest this decision")
+        report.append("  * Your application has been denied")
+        report.append("  * You may reapply after addressing the factors above")
+        report.append("  * You have the right to contest this decision")
     else:
-        report.append("  • Your application has been approved")
-        report.append("  • Proceed to next steps as outlined in communication")
+        report.append("  * Your application has been approved")
+        report.append("  * Proceed to next steps as outlined in communication")
 
     report.append("")
     report.append("Right to Contest:")
     report.append("You have the right to:")
-    report.append("  • Obtain human intervention")
-    report.append("  • Express your point of view")
-    report.append("  • Contest the decision")
+    report.append("  * Obtain human intervention")
+    report.append("  * Express your point of view")
+    report.append("  * Contest the decision")
     report.append("")
     report.append("Contact: compliance@example.com")
     report.append("=" * 70)
@@ -1399,16 +1399,16 @@ ai_act_docs = generate_ai_act_documentation(model, X_df.values, y, feature_names
 
 | Method | Type | Speed | Accuracy | When to Use |
 |--------|------|-------|----------|-------------|
-| **Linear Coefficients** | Global | ⚡⚡⚡ | ✓✓✓ | Linear models only |
-| **Decision Tree Rules** | Global | ⚡⚡⚡ | ✓✓✓ | Trees only (max_depth ≤ 5) |
-| **SHAP (Tree)** | Both | ⚡⚡⚡ | ✓✓✓ | Tree-based models (recommended) |
-| **SHAP (Kernel)** | Both | ⚡ | ✓✓✓ | Any model (slow) |
-| **LIME** | Local | ⚡⚡ | ✓✓ | Any model, quick local explanation |
-| **Permutation Importance** | Global | ⚡⚡ | ✓✓✓ | Any model, feature ranking |
-| **Partial Dependence** | Global | ⚡⚡ | ✓✓ | Marginal effects |
-| **ICE** | Local | ⚡⚡ | ✓✓ | Individual effects |
-| **Grad-CAM** | Local | ⚡⚡ | ✓✓✓ | CNNs only |
-| **Attention Viz** | Local | ⚡⚡ | ✓✓✓ | Transformers only |
+| **Linear Coefficients** | Global |  | [x][x][x] | Linear models only |
+| **Decision Tree Rules** | Global |  | [x][x][x] | Trees only (max_depth <= 5) |
+| **SHAP (Tree)** | Both |  | [x][x][x] | Tree-based models (recommended) |
+| **SHAP (Kernel)** | Both |  | [x][x][x] | Any model (slow) |
+| **LIME** | Local |  | [x][x] | Any model, quick local explanation |
+| **Permutation Importance** | Global |  | [x][x][x] | Any model, feature ranking |
+| **Partial Dependence** | Global |  | [x][x] | Marginal effects |
+| **ICE** | Local |  | [x][x] | Individual effects |
+| **Grad-CAM** | Local |  | [x][x][x] | CNNs only |
+| **Attention Viz** | Local |  | [x][x][x] | Transformers only |
 
 ### Best Practices (2025)
 
@@ -1421,12 +1421,12 @@ ai_act_docs = generate_ai_act_documentation(model, X_df.values, y, feature_names
 
 ### Key Takeaways
 
-- ✅ Interpretability is mandatory for regulated industries (2025)
-- ✅ SHAP provides theoretically sound explanations
-- ✅ Use permutation importance over MDI for feature importance
-- ✅ Combine global and local explanations
-- ✅ Generate GDPR/AI Act compliant documentation
-- ✅ Validate explanations with domain experts
+-  Interpretability is mandatory for regulated industries (2025)
+-  SHAP provides theoretically sound explanations
+-  Use permutation importance over MDI for feature importance
+-  Combine global and local explanations
+-  Generate GDPR/AI Act compliant documentation
+-  Validate explanations with domain experts
 
 ---
 

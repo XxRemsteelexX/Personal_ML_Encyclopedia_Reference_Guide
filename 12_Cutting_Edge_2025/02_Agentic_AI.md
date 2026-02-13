@@ -69,7 +69,7 @@ AI: [Internally]
   2. Parse response
   3. Format for user
 
-AI: "It's currently 72°F and partly cloudy in New York. High today will be 78°F."
+AI: "It's currently 72 degreesF and partly cloudy in New York. High today will be 78 degreesF."
 ```
 
 ---
@@ -224,7 +224,7 @@ def calculate(expression):
 def get_weather(location):
     """Get current weather for a location"""
     # In production, use weather API
-    return f"Weather in {location}: 72°F, Partly Cloudy"
+    return f"Weather in {location}: 72 degreesF, Partly Cloudy"
 
 # Usage
 agent = ReActAgent(
@@ -247,15 +247,15 @@ Task: "What's the weather in New York and is it warmer than Los Angeles?"
 Thought: I need to get the weather for both cities and compare temperatures.
 Action: get_weather
 Action Input: New York
-Observation: Weather in New York: 72°F, Partly Cloudy
+Observation: Weather in New York: 72 degreesF, Partly Cloudy
 
 Thought: Now I need the weather for Los Angeles
 Action: get_weather
 Action Input: Los Angeles
-Observation: Weather in Los Angeles: 68°F, Sunny
+Observation: Weather in Los Angeles: 68 degreesF, Sunny
 
 Thought: I now have both temperatures and can compare them
-Final Answer: The weather in New York is 72°F (partly cloudy), and Los Angeles is 68°F (sunny). New York is warmer by 4 degrees.
+Final Answer: The weather in New York is 72 degreesF (partly cloudy), and Los Angeles is 68 degreesF (sunny). New York is warmer by 4 degrees.
 ```
 
 ---
@@ -266,7 +266,7 @@ Final Answer: The weather in New York is 72°F (partly cloudy), and Los Angeles 
 
 **Architecture**:
 ```
-User Goal → Plan Generation → Plan Execution → Result
+User Goal --> Plan Generation --> Plan Execution --> Result
 ```
 
 **Implementation**:
@@ -438,10 +438,10 @@ system = MultiAgentSystem()
 result = system.run("Build a web scraper for real estate listings")
 
 # Manager decomposes:
-# 1. Research web scraping libraries (→ researcher)
-# 2. Implement scraper code (→ coder)
-# 3. Review code for bugs (→ reviewer)
-# 4. Document usage (→ researcher)
+# 1. Research web scraping libraries (--> researcher)
+# 2. Implement scraper code (--> coder)
+# 3. Review code for bugs (--> reviewer)
+# 4. Document usage (--> researcher)
 ```
 
 ---
@@ -1423,34 +1423,34 @@ else:
 **Production-Grade Agent System**:
 
 ```
-┌─────────────────────────────────────────────┐
-│           API Gateway / Load Balancer        │
-└────────────────┬────────────────────────────┘
-                 │
-┌────────────────▼────────────────────────────┐
-│          Agent Orchestrator                  │
-│  - Request routing                           │
-│  - Rate limiting                             │
-│  - Authentication                            │
-└────────────────┬────────────────────────────┘
-                 │
-    ┌────────────┼────────────┐
-    │            │            │
-┌───▼────┐  ┌───▼────┐  ┌───▼────┐
-│Agent 1 │  │Agent 2 │  │Agent N │
-│(ReAct) │  │(Plan)  │  │(Multi) │
-└───┬────┘  └───┬────┘  └───┬────┘
-    │           │            │
-    └───────────┼────────────┘
-                │
-┌───────────────▼──────────────────────┐
-│         Shared Services               │
-│  - LLM Gateway (OpenAI, Anthropic)   │
-│  - Vector DB (Pinecone, Weaviate)    │
-│  - Tool Registry                      │
-│  - Memory Store (Redis)               │
-│  - Monitoring (Prometheus)            │
-└──────────────────────────────────────┘
++-------------------------------------------------+
+|           API Gateway / Load Balancer        |
++------------------+------------------------------+
+                 |
++------------------v------------------------------+
+|          Agent Orchestrator                  |
+|  - Request routing                           |
+|  - Rate limiting                             |
+|  - Authentication                            |
++------------------+------------------------------+
+                 |
+    +--------------+--------------+
+    |            |            |
++-----v------+  +-----v------+  +-----v------+
+|Agent 1 |  |Agent 2 |  |Agent N |
+|(ReAct) |  |(Plan)  |  |(Multi) |
++-----+------+  +-----+------+  +-----+------+
+    |           |            |
+    +-------------+--------------+
+                |
++-----------------v------------------------+
+|         Shared Services               |
+|  - LLM Gateway (OpenAI, Anthropic)   |
+|  - Vector DB (Pinecone, Weaviate)    |
+|  - Tool Registry                      |
+|  - Memory Store (Redis)               |
+|  - Monitoring (Prometheus)            |
++------------------------------------------+
 ```
 
 **Implementation**:
@@ -1619,10 +1619,10 @@ class MonitoredAgent:
 ### 1. Start Simple, Scale Complexity
 
 **Progression**:
-1. **Single-turn LLM** → Validate use case
-2. **Simple ReAct agent** → Add tool use
-3. **Planning agent** → Improve efficiency
-4. **Multi-agent** → Handle complexity
+1. **Single-turn LLM** --> Validate use case
+2. **Simple ReAct agent** --> Add tool use
+3. **Planning agent** --> Improve efficiency
+4. **Multi-agent** --> Handle complexity
 
 ### 2. Human-in-the-Loop
 
@@ -1665,7 +1665,7 @@ def test_agent_suite():
 
 **Feedback loop**:
 ```
-User interactions → Logs → Analysis → Prompt refinement → Improved agent
+User interactions --> Logs --> Analysis --> Prompt refinement --> Improved agent
 ```
 
 ---

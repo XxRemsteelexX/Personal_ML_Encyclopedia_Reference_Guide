@@ -234,7 +234,7 @@ class SimpleExperimentTracker:
             with open(exp_dir / 'experiment.json', 'w') as f:
                 json.dump(self.current_experiment.to_dict(), f, indent=2)
 
-            print(f"✅ Experiment {self.current_experiment.run_id} completed")
+            print(f" Experiment {self.current_experiment.run_id} completed")
             self.current_experiment = None
 
     def list_experiments(self, limit: int = 10) -> List[dict]:
@@ -393,7 +393,7 @@ with mlflow.start_run(run_name="rf_baseline"):
         "author": "data_science_team"
     })
 
-    print(f"✅ Run ID: {mlflow.active_run().info.run_id}")
+    print(f" Run ID: {mlflow.active_run().info.run_id}")
     print(f"   Accuracy: {accuracy:.4f}")
     print(f"   AUC: {auc:.4f}")
 ```
@@ -459,7 +459,7 @@ with mlflow.start_run(run_name="grid_search") as parent_run:
     mlflow.log_params({f"best_{k}": v for k, v in best_params.items()})
     mlflow.log_metric("best_cv_auc", best_score)
 
-    print(f"✅ Best parameters: {best_params}")
+    print(f" Best parameters: {best_params}")
     print(f"   Best AUC: {best_score:.4f}")
 ```
 
@@ -1394,7 +1394,7 @@ class ProductionModelRegistry:
                 description=description
             )
 
-        print(f"✅ Registered {model_name} version {model_version.version}")
+        print(f" Registered {model_name} version {model_version.version}")
 
         return model_version.version
 
@@ -1410,7 +1410,7 @@ class ProductionModelRegistry:
             # Get approver
             approval = input(f"Approve promotion of {model_name} v{version} to Staging? (yes/no): ")
             if approval.lower() != 'yes':
-                print("❌ Promotion cancelled")
+                print(" Promotion cancelled")
                 return
 
         # Transition to staging
@@ -1428,7 +1428,7 @@ class ProductionModelRegistry:
             value=datetime.now().isoformat()
         )
 
-        print(f"✅ Promoted to Staging")
+        print(f" Promoted to Staging")
 
     def promote_to_production(
         self,
@@ -1449,18 +1449,18 @@ class ProductionModelRegistry:
                 actual_value = run.data.metrics.get(metric)
 
                 if actual_value is None:
-                    print(f"❌ Metric {metric} not found")
+                    print(f" Metric {metric} not found")
                     return
 
                 if actual_value < threshold:
-                    print(f"❌ {metric}={actual_value:.4f} below threshold {threshold}")
+                    print(f" {metric}={actual_value:.4f} below threshold {threshold}")
                     return
 
         # Require approval
         if approval_required:
             approval = input(f"Approve promotion of {model_name} v{version} to Production? (yes/no): ")
             if approval.lower() != 'yes':
-                print("❌ Promotion cancelled")
+                print(" Promotion cancelled")
                 return
 
         # Transition to production, archiving existing
@@ -1479,7 +1479,7 @@ class ProductionModelRegistry:
             value=datetime.now().isoformat()
         )
 
-        print(f"✅ Promoted to Production")
+        print(f" Promoted to Production")
 
     def get_production_model(self, model_name: str):
         """Get current production model."""
@@ -1525,7 +1525,7 @@ class ProductionModelRegistry:
             archive_existing_versions=True
         )
 
-        print(f"✅ Rolled back to version {previous.version}")
+        print(f" Rolled back to version {previous.version}")
         print(f"   Current version {current.version} archived")
 
 # Usage

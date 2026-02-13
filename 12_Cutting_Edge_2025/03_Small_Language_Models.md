@@ -61,22 +61,22 @@ The pendulum is swinging from "bigger is always better" to "right-sized for the 
 **1. Diminishing Returns**
 ```
 Performance vs Parameters (Generalized)
-100% ┤                    ╭──────
-     │                 ╭──╯
-     │              ╭──╯
-     │           ╭──╯
- 50% │      ╭───╯
-     │   ╭──╯
-     └───┴────┴────┴────┴────┴────>
+100% |                    +------
+     |                 +--+
+     |              +--+
+     |           +--+
+ 50% |      +---+
+     |   +--+
+     +-----+----+----+----+----+---->
      1B  7B  13B 70B 175B 500B Parameters
 
 Domain-Specific Performance
-100% ┤     ╭───────────
-     │  ╭──╯
-     │╭─╯
-     ││
- 50% ││
-     └┴────┴────┴────┴────┴────>
+100% |     +-----------
+     |  +--+
+     |+-+
+     ||
+ 50% ||
+     +--+----+----+----+----+---->
      1B  3B  7B  13B  70B Parameters
 ```
 
@@ -542,7 +542,7 @@ tokenizer.save_pretrained("llama3.2-3b-onnx")
 
 **Process**:
 ```
-Large Model (GPT-4) → Generates training data → Small Model learns
+Large Model (GPT-4) --> Generates training data --> Small Model learns
 ```
 
 **Implementation**:
@@ -754,7 +754,7 @@ model = AutoModelForCausalLM.from_pretrained(
 
 tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
 
-# Model size: ~14GB → ~7GB
+# Model size: ~14GB --> ~7GB
 # Inference speed: 1.5-2x faster
 # Accuracy: <1% degradation
 ```
@@ -775,7 +775,7 @@ model = AutoModelForCausalLM.from_pretrained(
     device_map="auto"
 )
 
-# Model size: ~14GB → ~3.5GB
+# Model size: ~14GB --> ~3.5GB
 # Inference speed: 2-3x faster
 # Accuracy: 1-3% degradation
 # Can run on consumer GPUs (RTX 3080, 4070, etc.)
@@ -1120,22 +1120,22 @@ class IntelligentRouter:
 ### Examples
 
 **Use SLM**:
-- ✅ Email classification (spam/not spam)
-- ✅ Sentiment analysis
-- ✅ Entity extraction
-- ✅ Code completion
-- ✅ Simple chatbots
-- ✅ On-device translation
-- ✅ Privacy-sensitive medical analysis
+-  Email classification (spam/not spam)
+-  Sentiment analysis
+-  Entity extraction
+-  Code completion
+-  Simple chatbots
+-  On-device translation
+-  Privacy-sensitive medical analysis
 
 **Use LLM**:
-- ✅ Complex reasoning tasks
-- ✅ Multi-step problem solving
-- ✅ Creative writing
-- ✅ Broad knowledge Q&A
-- ✅ Research synthesis
-- ✅ Multi-turn conversations
-- ✅ Novel task generalization
+-  Complex reasoning tasks
+-  Multi-step problem solving
+-  Creative writing
+-  Broad knowledge Q&A
+-  Research synthesis
+-  Multi-turn conversations
+-  Novel task generalization
 
 ---
 

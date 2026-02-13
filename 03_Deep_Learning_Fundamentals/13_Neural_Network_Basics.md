@@ -20,7 +20,7 @@
 
 Neural networks are the foundation of modern deep learning. Despite their biological inspiration, they are fundamentally mathematical function approximators that learn hierarchical representations through gradient-based optimization.
 
-**Key Insight:** A neural network is a parametrized function f(x; θ) where θ represents learnable parameters (weights and biases). Training is the process of finding θ* that minimizes a loss function L(θ) over a dataset.
+**Key Insight:** A neural network is a parametrized function f(x; theta) where theta represents learnable parameters (weights and biases). Training is the process of finding theta* that minimizes a loss function L(theta) over a dataset.
 
 ---
 
@@ -32,13 +32,13 @@ The first mathematical model of a neuron:
 
 **Model:**
 ```
-y = 1 if Σ(w_i * x_i) ≥ θ else 0
+y = 1 if sum(w_i * x_i) >= theta else 0
 ```
 
 Where:
 - x_i: binary inputs
 - w_i: weights (fixed, not learned)
-- θ: threshold
+- theta: threshold
 - y: binary output
 
 **Limitations:**
@@ -52,13 +52,13 @@ Where:
 
 **Perceptron Learning Rule:**
 ```
-w_i(t+1) = w_i(t) + α * (y_true - y_pred) * x_i
+w_i(t+1) = w_i(t) + alpha * (y_true - y_pred) * x_i
 ```
 
 **Mathematical Formulation:**
 ```
 z = w^T x + b
-y = sign(z) = { +1 if z ≥ 0
+y = sign(z) = { +1 if z >= 0
               { -1 if z < 0
 ```
 
@@ -78,14 +78,14 @@ Let M be the margin (minimum distance from any point to the decision boundary). 
 
 ### Mathematical Formulation
 
-**Input:** x ∈ ℝ^d (d-dimensional feature vector)
-**Parameters:** w ∈ ℝ^d (weights), b ∈ ℝ (bias)
-**Pre-activation:** z = w^T x + b = Σ(w_i * x_i) + b
-**Activation:** y = φ(z) where φ is an activation function
+**Input:** x in R^d (d-dimensional feature vector)
+**Parameters:** w in R^d (weights), b in R (bias)
+**Pre-activation:** z = w^T x + b = sum(w_i * x_i) + b
+**Activation:** y = phi(z) where phi is an activation function
 
 ### Geometric Interpretation
 
-The decision boundary is a hyperplane in ℝ^d:
+The decision boundary is a hyperplane in R^d:
 ```
 w^T x + b = 0
 ```
@@ -96,10 +96,10 @@ The weight vector w is perpendicular to this hyperplane.
 
 **XOR Problem:**
 ```
-Input: (0,0) → 0
-       (0,1) → 1
-       (1,0) → 1
-       (1,1) → 0
+Input: (0,0) --> 0
+       (0,1) --> 1
+       (1,0) --> 1
+       (1,1) --> 0
 ```
 
 No single line can separate the positive and negative classes.
@@ -113,9 +113,9 @@ No single line can separate the positive and negative classes.
 ### Architecture
 
 An MLP consists of:
-1. **Input layer:** Receives features x ∈ ℝ^d
+1. **Input layer:** Receives features x in R^d
 2. **Hidden layers:** One or more layers of neurons
-3. **Output layer:** Produces predictions y ∈ ℝ^k
+3. **Output layer:** Produces predictions y in R^k
 
 ### Mathematical Formulation
 
@@ -124,19 +124,19 @@ For an L-layer network:
 **Layer 1 (first hidden layer):**
 ```
 z^[1] = W^[1] x + b^[1]
-a^[1] = φ^[1](z^[1])
+a^[1] = phi^[1](z^[1])
 ```
 
 **Layer l (general hidden layer):**
 ```
 z^[l] = W^[l] a^[l-1] + b^[l]
-a^[l] = φ^[l](z^[l])
+a^[l] = phi^[l](z^[l])
 ```
 
 **Output layer L:**
 ```
 z^[L] = W^[L] a^[L-1] + b^[L]
-y_hat = φ^[L](z^[L])
+y_hat = phi^[L](z^[L])
 ```
 
 ### Notation
@@ -147,11 +147,11 @@ y_hat = φ^[L](z^[L])
 - **b^[l]:** Bias vector for layer l, shape (n^[l], 1)
 - **z^[l]:** Pre-activation for layer l
 - **a^[l]:** Activation for layer l (a^[0] = x)
-- **φ^[l]:** Activation function for layer l
+- **phi^[l]:** Activation function for layer l
 
 ### Why Multiple Layers?
 
-**Theorem (Universal Approximation):** A feedforward network with a single hidden layer containing a finite number of neurons can approximate any continuous function on compact subsets of ℝ^n, under mild assumptions on the activation function.
+**Theorem (Universal Approximation):** A feedforward network with a single hidden layer containing a finite number of neurons can approximate any continuous function on compact subsets of R^n, under mild assumptions on the activation function.
 
 **However:** Deeper networks can represent the same functions with exponentially fewer neurons.
 
@@ -165,24 +165,24 @@ y_hat = φ^[L](z^[L])
 
 ### Algorithm
 
-**Input:** x ∈ ℝ^d, parameters {W^[l], b^[l]}_{l=1}^L
-**Output:** y_hat ∈ ℝ^k
+**Input:** x in R^d, parameters {W^[l], b^[l]}_{l=1}^L
+**Output:** y_hat in R^k
 
 ```
 1. Set a^[0] = x
 2. For l = 1 to L:
    a. Compute z^[l] = W^[l] a^[l-1] + b^[l]
-   b. Compute a^[l] = φ^[l](z^[l])
+   b. Compute a^[l] = phi^[l](z^[l])
 3. Return y_hat = a^[L]
 ```
 
 ### Vectorized Implementation (Batch)
 
-For a batch of m examples X ∈ ℝ^(d × m):
+For a batch of m examples X in R^(d x m):
 
 ```
 Z^[l] = W^[l] A^[l-1] + b^[l]  (broadcasting b^[l])
-A^[l] = φ^[l](Z^[l])           (element-wise)
+A^[l] = phi^[l](Z^[l])           (element-wise)
 ```
 
 Where:
@@ -192,8 +192,8 @@ Where:
 ### Computational Complexity
 
 For a single forward pass:
-- **FLOPs per layer l:** O(n^[l] × n^[l-1])
-- **Total FLOPs:** O(Σ n^[l] × n^[l-1])
+- **FLOPs per layer l:** O(n^[l] x n^[l-1])
+- **Total FLOPs:** O(sum n^[l] x n^[l-1])
 
 For typical architectures, this is dominated by matrix multiplications.
 
@@ -203,7 +203,7 @@ For typical architectures, this is dominated by matrix multiplications.
 
 ### The Core Idea
 
-**Goal:** Compute ∂L/∂W^[l] and ∂L/∂b^[l] for all layers
+**Goal:** Compute dL/dW^[l] and dL/db^[l] for all layers
 
 **Key Insight:** Use the chain rule recursively from output to input
 
@@ -213,40 +213,40 @@ For typical architectures, this is dominated by matrix multiplications.
 
 **Output Layer Error:**
 ```
-δ^[L] = ∂L/∂z^[L] = ∂L/∂a^[L] ⊙ φ'^[L](z^[L])
+delta^[L] = dL/dz^[L] = dL/da^[L] (o) phi'^[L](z^[L])
 ```
 
-Where ⊙ denotes element-wise multiplication.
+Where (o) denotes element-wise multiplication.
 
 **Recursive Error Computation:**
 ```
-δ^[l] = ∂L/∂z^[l] = (W^[l+1])^T δ^[l+1] ⊙ φ'^[l](z^[l])
+delta^[l] = dL/dz^[l] = (W^[l+1])^T delta^[l+1] (o) phi'^[l](z^[l])
 ```
 
 **Proof:**
 ```
-∂L/∂z^[l] = ∂L/∂a^[l] ⊙ φ'^[l](z^[l])        (by chain rule)
+dL/dz^[l] = dL/da^[l] (o) phi'^[l](z^[l])        (by chain rule)
 
-∂L/∂a^[l] = Σ_j ∂L/∂z_j^[l+1] * ∂z_j^[l+1]/∂a^[l]
-          = Σ_j δ_j^[l+1] * W_j^[l+1]
-          = (W^[l+1])^T δ^[l+1]
+dL/da^[l] = sum_j dL/dz_j^[l+1] * dz_j^[l+1]/da^[l]
+          = sum_j delta_j^[l+1] * W_j^[l+1]
+          = (W^[l+1])^T delta^[l+1]
 
 Therefore:
-δ^[l] = (W^[l+1])^T δ^[l+1] ⊙ φ'^[l](z^[l])
+delta^[l] = (W^[l+1])^T delta^[l+1] (o) phi'^[l](z^[l])
 ```
 
 **Gradient with respect to parameters:**
 ```
-∂L/∂W^[l] = δ^[l] (a^[l-1])^T
-∂L/∂b^[l] = δ^[l]
+dL/dW^[l] = delta^[l] (a^[l-1])^T
+dL/db^[l] = delta^[l]
 ```
 
 **Proof:**
 ```
-∂L/∂W_ij^[l] = ∂L/∂z_i^[l] * ∂z_i^[l]/∂W_ij^[l]
-              = δ_i^[l] * a_j^[l-1]
+dL/dW_ij^[l] = dL/dz_i^[l] * dz_i^[l]/dW_ij^[l]
+              = delta_i^[l] * a_j^[l-1]
 
-Therefore: ∂L/∂W^[l] = δ^[l] (a^[l-1])^T
+Therefore: dL/dW^[l] = delta^[l] (a^[l-1])^T
 ```
 
 ### Backpropagation Algorithm (Complete)
@@ -256,19 +256,19 @@ Therefore: ∂L/∂W^[l] = δ^[l] (a^[l-1])^T
 1. a^[0] = x
 2. For l = 1 to L:
    z^[l] = W^[l] a^[l-1] + b^[l]
-   a^[l] = φ^[l](z^[l])
+   a^[l] = phi^[l](z^[l])
    (cache z^[l], a^[l])
 ```
 
 **Backward Pass:**
 ```
-1. Compute δ^[L] = ∂L/∂a^[L] ⊙ φ'^[L](z^[L])
+1. Compute delta^[L] = dL/da^[L] (o) phi'^[L](z^[L])
 2. For l = L to 1:
-   a. ∂L/∂W^[l] = δ^[l] (a^[l-1])^T
-   b. ∂L/∂b^[l] = δ^[l]
+   a. dL/dW^[l] = delta^[l] (a^[l-1])^T
+   b. dL/db^[l] = delta^[l]
    c. If l > 1:
-      δ^[l-1] = (W^[l])^T δ^[l] ⊙ φ'^[l-1](z^[l-1])
-3. Return gradients {∂L/∂W^[l], ∂L/∂b^[l]}_{l=1}^L
+      delta^[l-1] = (W^[l])^T delta^[l] (o) phi'^[l-1](z^[l-1])
+3. Return gradients {dL/dW^[l], dL/db^[l]}_{l=1}^L
 ```
 
 ### Vectorized Backpropagation (Batch)
@@ -276,19 +276,19 @@ Therefore: ∂L/∂W^[l] = δ^[l] (a^[l-1])^T
 For batch size m:
 
 ```
-dZ^[L] = ∂L/∂A^[L] ⊙ φ'^[L](Z^[L])
+dZ^[L] = dL/dA^[L] (o) phi'^[L](Z^[L])
 dW^[L] = (1/m) dZ^[L] (A^[L-1])^T
-db^[L] = (1/m) Σ_i dZ_i^[L]  (sum over batch)
+db^[L] = (1/m) sum_i dZ_i^[L]  (sum over batch)
 
 For l = L-1 to 1:
-    dZ^[l] = (W^[l+1])^T dZ^[l+1] ⊙ φ'^[l](Z^[l])
+    dZ^[l] = (W^[l+1])^T dZ^[l+1] (o) phi'^[l](Z^[l])
     dW^[l] = (1/m) dZ^[l] (A^[l-1])^T
-    db^[l] = (1/m) Σ_i dZ_i^[l]
+    db^[l] = (1/m) sum_i dZ_i^[l]
 ```
 
 ### Computational Complexity
 
-Same as forward pass: O(Σ n^[l] × n^[l-1])
+Same as forward pass: O(sum n^[l] x n^[l-1])
 
 **Important:** Backpropagation is not approximation; it's an exact computation of gradients using the chain rule.
 
@@ -305,7 +305,7 @@ A computational graph is a directed acyclic graph (DAG) where:
 ### Example: Simple Network
 
 ```
-x → [Linear] → z1 → [ReLU] → a1 → [Linear] → z2 → [Softmax] → y_hat → [Loss] → L
+x --> [Linear] --> z1 --> [ReLU] --> a1 --> [Linear] --> z2 --> [Softmax] --> y_hat --> [Loss] --> L
 ```
 
 ### Automatic Differentiation
@@ -314,11 +314,11 @@ Modern frameworks (PyTorch, TensorFlow) use computational graphs for automatic d
 
 **Forward Mode AD:**
 - Computes derivatives along with function values
-- Efficient for f: ℝ → ℝ^n
+- Efficient for f: R --> R^n
 
 **Reverse Mode AD (Backpropagation):**
 - Computes derivatives after forward pass
-- Efficient for f: ℝ^n → ℝ (typical in ML)
+- Efficient for f: R^n --> R (typical in ML)
 
 ### PyTorch Autograd Example
 
@@ -400,8 +400,8 @@ W = np.random.randn(n_out, n_in) * 10
 **Derivation:**
 For linear layer z = Wx + b with n_in inputs:
 ```
-Var(z_i) = Var(Σ_j W_ij * x_j)
-         = Σ_j Var(W_ij) * Var(x_j)    (assuming independence)
+Var(z_i) = Var(sum_j W_ij * x_j)
+         = sum_j Var(W_ij) * Var(x_j)    (assuming independence)
          = n_in * Var(W) * Var(x)
 ```
 
@@ -419,7 +419,7 @@ Var(W) = 1 / n_out
 ```
 Var(W) = 2 / (n_in + n_out)
 
-W ~ U[-√(6/(n_in + n_out)), √(6/(n_in + n_out))]  (uniform)
+W ~ U[-sqrt(6/(n_in + n_out)), sqrt(6/(n_in + n_out))]  (uniform)
 or
 W ~ N(0, 2/(n_in + n_out))                          (normal)
 ```
@@ -436,7 +436,7 @@ ReLU zeros out half the neurons on average, so variance is halved.
 ```
 E[ReLU(z)] = E[z | z > 0] * P(z > 0) = E[z | z > 0] / 2
 
-Var(ReLU(z)) ≈ Var(z) / 2  (approximately)
+Var(ReLU(z)) ~= Var(z) / 2  (approximately)
 ```
 
 To compensate:
@@ -496,11 +496,11 @@ E[(y - y_hat)^2] = Bias^2 + Variance + Irreducible Error
 ### Neural Network Perspective
 
 **Capacity:** Determined by:
-- Number of parameters (width × depth)
+- Number of parameters (width x depth)
 - Activation function expressiveness
 - Training procedure
 
-**Classical wisdom:** More capacity → lower bias, higher variance
+**Classical wisdom:** More capacity --> lower bias, higher variance
 
 **Modern deep learning:** Large networks with proper regularization can achieve low bias AND low variance (double descent phenomenon)
 
@@ -538,17 +538,17 @@ Test Error
 
 ### Statement (Classical Version, 1989)
 
-**Theorem (Cybenko, Hornik et al.):** Let φ be a non-constant, bounded, and continuous activation function. Then, for any continuous function f: [0,1]^n → ℝ and any ε > 0, there exists a single-hidden-layer network with finite number of neurons that approximates f within ε:
+**Theorem (Cybenko, Hornik et al.):** Let phi be a non-constant, bounded, and continuous activation function. Then, for any continuous function f: [0,1]^n --> R and any epsilon > 0, there exists a single-hidden-layer network with finite number of neurons that approximates f within epsilon:
 
 ```
-|f(x) - f_NN(x)| < ε  for all x ∈ [0,1]^n
+|f(x) - f_NN(x)| < epsilon  for all x in [0,1]^n
 ```
 
 ### Mathematical Formulation
 
 The approximator has the form:
 ```
-f_NN(x) = Σ_{i=1}^N α_i φ(w_i^T x + b_i)
+f_NN(x) = sum_{i=1}^N alpha_i phi(w_i^T x + b_i)
 ```
 
 Where N is the number of hidden neurons (may be arbitrarily large).

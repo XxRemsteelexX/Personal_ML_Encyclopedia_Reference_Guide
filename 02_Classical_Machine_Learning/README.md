@@ -151,7 +151,7 @@ from sklearn.metrics import mean_squared_error, r2_score, silhouette_score
 ### Linear Regression
 - Ignoring multicollinearity (use VIF analysis)
 - Not checking LINE assumptions
-- Using R² alone for model evaluation
+- Using R^2 alone for model evaluation
 - Extrapolating beyond training data range
 
 ### Ensemble Methods
@@ -197,7 +197,7 @@ from sklearn.metrics import mean_squared_error, r2_score, silhouette_score
 ### Books
 - "The Elements of Statistical Learning" (Hastie, Tibshirani, Friedman)
 - "Pattern Recognition and Machine Learning" (Bishop)
-- "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" (Géron)
+- "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" (Geron)
 
 ### Papers
 - XGBoost: Chen & Guestrin (2016)

@@ -15,15 +15,15 @@ Causal inference goes beyond correlation to understand cause-and-effect relation
 **Key Concept:** For each unit, there exist potential outcomes under different treatments.
 
 **Notation:**
-- Y₁(i): Outcome for unit i if treated
-- Y₀(i): Outcome for unit i if not treated
-- **Individual Treatment Effect (ITE):** τᵢ = Y₁(i) - Y₀(i)
+- Y_1(i): Outcome for unit i if treated
+- Y_0(i): Outcome for unit i if not treated
+- **Individual Treatment Effect (ITE):** tau_i = Y_1(i) - Y_0(i)
 
 **Fundamental Problem:** Can only observe one potential outcome per unit!
 
 **Average Treatment Effect (ATE):**
 ```
-τ = E[Y₁ - Y₀] = E[Y₁] - E[Y₀]
+tau = E[Y_1 - Y_0] = E[Y_1] - E[Y_0]
 ```
 
 **Assumptions:**
@@ -71,9 +71,9 @@ print(f"Estimated ATE: {ate_estimate:.3f}")
 
 **Example DAG:**
 ```
-Treatment (T) → Outcome (Y)
-     ↑              ↑
-     └─ Confounder (X) ─┘
+Treatment (T) --> Outcome (Y)
+     ^              ^
+     +--- Confounder (X) ---+
 ```
 
 **Do-Calculus:** Mathematical framework for causal inference from observational data.
@@ -98,7 +98,7 @@ nx.draw(G, pos, with_labels=True, node_color='lightblue',
 plt.title('Causal DAG: X is a confounder')
 plt.show()
 
-# Backdoor paths: X ← T → Y (blocked by conditioning on X)
+# Backdoor paths: X <-- T --> Y (blocked by conditioning on X)
 # After conditioning on X, association = causation
 ```
 
@@ -111,7 +111,7 @@ plt.show()
 **Gold Standard:** Random assignment breaks all confounding.
 
 ```
-Random Assignment → E[Y₀|T=1] = E[Y₀|T=0]
+Random Assignment --> E[Y_0|T=1] = E[Y_0|T=0]
 ```
 
 Therefore: ATE = E[Y|T=1] - E[Y|T=0]
@@ -192,7 +192,7 @@ print(f"Matched ATE: {matched_ate:.3f}")
 
 **ATE Estimator:**
 ```
-τ̂ = (1/n) Σ [T·Y/e(X) - (1-T)·Y/(1-e(X))]
+tau_hat = (1/n) sum [T*Y/e(X) - (1-T)*Y/(1-e(X))]
 ```
 
 ```python
@@ -217,7 +217,7 @@ print(f"IPW ATE: {ipw_ate:.3f}")
 
 **Estimator:**
 ```
-τ = (Ȳ_treated,after - Ȳ_treated,before) - (Ȳ_control,after - Ȳ_control,before)
+tau = (Y_bar_treated,after - Y_bar_treated,before) - (Y_bar_control,after - Y_bar_control,before)
 ```
 
 **Parallel Trends Assumption:** Without treatment, both groups would have same trend.
@@ -288,7 +288,7 @@ print(f"\nTreatment effect: {model.params['treated:post']:.3f}")
 
 **Example:** Effect of education on earnings
 - Instrument: Distance to college
-- Affects education (closer → more likely to attend)
+- Affects education (closer --> more likely to attend)
 - Doesn't directly affect earnings (except through education)
 
 **Two-Stage Least Squares (2SLS):**
@@ -355,7 +355,7 @@ class DeepSCM(nn.Module):
     """
     Deep Structural Causal Model
 
-    X → T → Y (with unobserved U)
+    X --> T --> Y (with unobserved U)
     """
     def __init__(self, dim_x=10, dim_hidden=50):
         super().__init__()

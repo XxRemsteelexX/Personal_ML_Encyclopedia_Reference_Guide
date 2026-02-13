@@ -904,7 +904,7 @@ for images, labels in train_loader:
 2. **Text:** Back-translation, BERT masking, EDA for quick baseline
 3. **Audio:** SpecAugment is standard (mask time-frequency)
 4. **Tabular:** CTGAN for complex data, SMOTE variants for simple cases
-5. **AutoAugment family:** AutoAugment → RandAugment → TrivialAugment (simpler, better)
+5. **AutoAugment family:** AutoAugment --> RandAugment --> TrivialAugment (simpler, better)
 6. **Always:** No augmentation on validation/test sets
 7. **Progressive:** Start weak, increase augmentation strength during training
 8. **Consistency:** Use augmented views for semi-supervised learning

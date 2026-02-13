@@ -12,28 +12,28 @@ Statistical inference uses sample data to make conclusions about populations. Tw
 
 **Sample Mean:**
 ```
-x̄ = (1/n)Σxᵢ
+x_bar = (1/n)sumx_i
 ```
 
 **Sample Variance:**
 ```
-s² = (1/(n-1))Σ(xᵢ - x̄)²
+s^2 = (1/(n-1))sum(x_i - x_bar)^2
 ```
 
 **Sample Standard Deviation:**
 ```
-s = √s²
+s = sqrts^2
 ```
 
 ### Properties of Estimators
 
-**Bias:** E[θ̂] - θ (estimator is unbiased if bias = 0)
+**Bias:** E[theta_hat] - theta (estimator is unbiased if bias = 0)
 
-**Consistency:** θ̂ → θ as n → ∞
+**Consistency:** theta_hat --> theta as n --> inf
 
 **Efficiency:** Lower variance among unbiased estimators
 
-**Mean Squared Error (MSE):** E[(θ̂ - θ)²] = Var(θ̂) + Bias²
+**Mean Squared Error (MSE):** E[(theta_hat - theta)^2] = Var(theta_hat) + Bias^2
 
 ```python
 import numpy as np
@@ -53,7 +53,7 @@ print(f"True mean: {true_mean}, Estimate: {mean_est:.3f}")
 print(f"True std: {true_std}, Estimate: {std_est:.3f}")
 
 # Bias of estimator
-# Sample mean is unbiased: E[x̄] = μ
+# Sample mean is unbiased: E[x_bar] = mu
 ```
 
 ---
@@ -62,11 +62,11 @@ print(f"True std: {true_std}, Estimate: {std_est:.3f}")
 
 Finds parameter values that maximize the likelihood function.
 
-**Likelihood:** L(θ|data) = P(data|θ)
+**Likelihood:** L(theta|data) = P(data|theta)
 
-**Log-Likelihood:** ℓ(θ) = log L(θ)
+**Log-Likelihood:** l(theta) = log L(theta)
 
-**MLE:** θ̂_MLE = argmax L(θ)
+**MLE:** theta_hat_MLE = argmax L(theta)
 
 ### Example: MLE for Normal Distribution
 
@@ -90,7 +90,7 @@ def neg_log_likelihood(params):
 result = minimize(neg_log_likelihood, x0=[0, 1], method='Nelder-Mead')
 mu_mle, sigma_mle = result.x
 
-print(f"MLE μ: {mu_mle:.3f}, σ: {sigma_mle:.3f}")
+print(f"MLE mu: {mu_mle:.3f}, sigma: {sigma_mle:.3f}")
 print(f"Sample mean: {np.mean(data):.3f}, std: {np.std(data, ddof=1):.3f}")
 
 # For normal distribution, MLE coincides with sample statistics
@@ -133,7 +133,7 @@ Equates sample moments with population moments.
 
 **k-th moment:** E[X^k]
 
-**Sample k-th moment:** (1/n)Σxᵢ^k
+**Sample k-th moment:** (1/n)sumx_i^k
 
 ### Example: Gamma Distribution
 
@@ -141,21 +141,21 @@ Equates sample moments with population moments.
 import numpy as np
 from scipy.stats import gamma
 
-# Generate data from Gamma(α=2, β=3)
+# Generate data from Gamma(alpha=2, beta=3)
 np.random.seed(42)
 data = gamma.rvs(a=2, scale=3, size=1000)
 
 # Method of Moments
-# E[X] = αβ, Var(X) = αβ²
+# E[X] = alphabeta, Var(X) = alphabeta^2
 sample_mean = np.mean(data)
 sample_var = np.var(data, ddof=1)
 
-# Solve for α and β
+# Solve for alpha and beta
 beta_mom = sample_var / sample_mean
 alpha_mom = sample_mean / beta_mom
 
-print(f"True: α=2, β=3")
-print(f"Method of Moments: α={alpha_mom:.3f}, β={beta_mom:.3f}")
+print(f"True: alpha=2, beta=3")
+print(f"Method of Moments: alpha={alpha_mom:.3f}, beta={beta_mom:.3f}")
 ```
 
 ---
@@ -164,19 +164,19 @@ print(f"Method of Moments: α={alpha_mom:.3f}, β={beta_mom:.3f}")
 
 ### Confidence Intervals
 
-**95% CI for mean (known σ):**
+**95% CI for mean (known sigma):**
 ```
-x̄ ± 1.96(σ/√n)
+x_bar +/- 1.96(sigma/sqrtn)
 ```
 
-**95% CI for mean (unknown σ):**
+**95% CI for mean (unknown sigma):**
 ```
-x̄ ± t_(n-1,0.025)(s/√n)
+x_bar +/- t_(n-1,0.025)(s/sqrtn)
 ```
 
 **95% CI for proportion:**
 ```
-p̂ ± 1.96√(p̂(1-p̂)/n)
+p_hat +/- 1.96sqrt(p_hat(1-p_hat)/n)
 ```
 
 ### Interpretation
@@ -431,7 +431,7 @@ p_value, obs_diff, perm_diffs = permutation_test(treatment, control)
 
 print(f"Observed difference: {obs_diff:.3f}")
 print(f"P-value: {p_value:.4f}")
-print(f"Significant at α=0.05: {p_value < 0.05}")
+print(f"Significant at alpha=0.05: {p_value < 0.05}")
 ```
 
 ---

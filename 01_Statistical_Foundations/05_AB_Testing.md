@@ -26,15 +26,15 @@ A/B testing is the gold standard for causal inference in product development. Th
 
 #### Step 2: Define Hypotheses
 
-**Null Hypothesis (H₀):** No difference between variants
+**Null Hypothesis (H_0):** No difference between variants
 - Example: Average revenue per user is same for control and treatment
 
-**Alternative Hypothesis (H₁):** There is a difference
+**Alternative Hypothesis (H_1):** There is a difference
 - Can be one-sided or two-sided
 
 **Set Parameters:**
-- **Significance level (α):** Typically 0.05
-- **Statistical power (1-β):** Typically 0.80
+- **Significance level (alpha):** Typically 0.05
+- **Statistical power (1-beta):** Typically 0.80
 - **Minimum Detectable Effect (MDE):** Smallest practical difference
 
 ```python
@@ -71,7 +71,7 @@ def calculate_sample_size(baseline_rate, mde, alpha=0.05, power=0.80):
 
 # Example: 10% baseline, want to detect 5% relative improvement
 baseline = 0.10
-mde = 0.05  # 5% relative = 10% → 10.5%
+mde = 0.05  # 5% relative = 10% --> 10.5%
 
 n = calculate_sample_size(baseline, mde)
 print(f"Baseline rate: {baseline:.1%}")
@@ -129,8 +129,8 @@ class ABTestDesign:
         print(f"Baseline rate: {self.baseline_rate:.1%}")
         print(f"MDE: {self.mde:.1%} (relative)")
         print(f"Target rate: {self.baseline_rate * (1 + self.mde):.1%}")
-        print(f"Significance level (α): {self.alpha}")
-        print(f"Power (1-β): {self.power}")
+        print(f"Significance level (alpha): {self.alpha}")
+        print(f"Power (1-beta): {self.power}")
         print(f"Traffic split: {self.split:.0%} / {1-self.split:.0%}")
         print(f"\nSample size per variant: {self.n_per_variant:,}")
         print(f"Total sample size: {self.n_total:,}")
@@ -146,10 +146,10 @@ design.summary(daily_traffic=10000)
 #### Step 4: Run the Experiment
 
 **Implementation Checklist:**
-- ✓ Implement random assignment
-- ✓ Log all exposures and outcomes
-- ✓ Set up monitoring dashboard
-- ✓ Do NOT peek at p-values (increases Type I error)
+- [x] Implement random assignment
+- [x] Log all exposures and outcomes
+- [x] Set up monitoring dashboard
+- [x] Do NOT peek at p-values (increases Type I error)
 
 **Assignment Mechanism:**
 
@@ -194,9 +194,9 @@ def check_instrumentation(control_count, treatment_count, expected_total):
     print(f"Missing: {missing_rate:.1%}")
 
     if missing_rate > 0.05:
-        print("⚠️ WARNING: More than 5% data missing!")
+        print("[WARNING] WARNING: More than 5% data missing!")
     else:
-        print("✓ Instrumentation looks good")
+        print("[x] Instrumentation looks good")
 ```
 
 **2. Sample Ratio Mismatch (SRM)**
@@ -229,10 +229,10 @@ def check_srm(control_count, treatment_count, expected_split=0.5):
     print(f"Chi-square p-value: {p_value:.4f}")
 
     if p_value < 0.001:
-        print("⚠️ WARNING: Significant SRM detected!")
+        print("[WARNING] WARNING: Significant SRM detected!")
         print("   Randomization may be broken. Do not trust results.")
     else:
-        print("✓ No SRM detected")
+        print("[x] No SRM detected")
 
     return p_value
 
@@ -258,10 +258,10 @@ def aa_test(control_data, holdout_data):
     print(f"P-value: {p_value:.4f}")
 
     if p_value < 0.05:
-        print("⚠️ WARNING: AA test shows significant difference!")
+        print("[WARNING] WARNING: AA test shows significant difference!")
         print("   This suggests measurement or assignment issues.")
     else:
-        print("✓ AA test passed")
+        print("[x] AA test passed")
 
 # Example
 np.random.seed(42)
@@ -290,7 +290,7 @@ def novelty_check(new_users_treatment, returning_users_treatment,
     print(f"Returning users lift: {returning_lift:.4f}")
 
     if abs(new_lift - returning_lift) / abs(returning_lift) > 0.5:
-        print("⚠️ Large novelty effect detected")
+        print("[WARNING] Large novelty effect detected")
         print("   Consider running longer or analyzing segments separately")
 ```
 
@@ -368,7 +368,7 @@ def print_results(results):
     print(f"\n95% CI (absolute): [{results['ci_lower']:.2%}, {results['ci_upper']:.2%}]")
     print(f"95% CI (relative): [{results['ci_lower_rel']:+.2%}, {results['ci_upper_rel']:+.2%}]")
     print(f"\nP-value:         {results['p_value']:.4f}")
-    print(f"Significant:     {'✓ YES' if results['significant'] else '✗ NO'}")
+    print(f"Significant:     {'[x] YES' if results['significant'] else '[ ] NO'}")
 
 # Example
 results = analyze_ab_test(
@@ -402,20 +402,20 @@ def launch_decision(results, mde, cost_estimate=None):
     print("=" * 60)
 
     if ci_lower_rel > mde:
-        decision = "LAUNCH ✓"
+        decision = "LAUNCH [x]"
         reason = f"CI fully above MDE ({mde:.1%})"
     elif ci_upper_rel < 0:
-        decision = "DO NOT LAUNCH ✗"
+        decision = "DO NOT LAUNCH [ ]"
         reason = "CI fully negative"
     elif relative_lift > 0 and results['significant']:
         if ci_lower_rel > 0:
-            decision = "LIKELY LAUNCH ⚠"
+            decision = "LIKELY LAUNCH [WARNING]"
             reason = "Positive and significant, but CI includes values below MDE"
         else:
-            decision = "RERUN TEST ⟳"
+            decision = "RERUN TEST cycle"
             reason = "Positive but CI includes zero"
     else:
-        decision = "DO NOT LAUNCH ✗"
+        decision = "DO NOT LAUNCH [ ]"
         reason = "Not significant or negative lift"
 
     print(f"Decision: {decision}")
@@ -535,7 +535,7 @@ def simulate_sequential_test(n_max=10000, check_every=500):
               f"Treatment: {np.mean(t_data):.3f}")
 
         if avi.can_stop(p_value):
-            print(f"\n✓ Can stop at n={n} (p={p_value:.4f})")
+            print(f"\n[x] Can stop at n={n} (p={p_value:.4f})")
             break
 
     return n, p_value
@@ -643,7 +643,7 @@ for i in range(5000):
         print(f"n={i+1:5d} | {result}")
 
         if result['can_conclude']:
-            print("\n✓ Test concluded!")
+            print("\n[x] Test concluded!")
             break
 ```
 
@@ -720,7 +720,7 @@ def evaluate_metrics(control_metrics, treatment_metrics, guardrail_threshold=-0.
     print("=" * 80)
 
     for metric, res in results.items():
-        status = "✓" if res['relative_change'] > 0 else "✗"
+        status = "[x]" if res['relative_change'] > 0 else "[ ]"
         print(f"{metric:20s} | {status} | " +
               f"Control: {res['control_mean']:8.3f} | " +
               f"Treatment: {res['treatment_mean']:8.3f} | " +

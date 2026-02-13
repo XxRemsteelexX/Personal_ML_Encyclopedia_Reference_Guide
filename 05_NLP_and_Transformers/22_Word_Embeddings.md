@@ -43,7 +43,7 @@ queen = [0.4, 0.2, -0.1, ..., 0.3]  # 300-dim
 - Lower dimensionality (50-300 vs 50K-100K)
 - Captures semantic relationships
 - Generalizes to similar words
-- Can perform analogies: king - man + woman ≈ queen
+- Can perform analogies: king - man + woman ~= queen
 
 ---
 
@@ -130,7 +130,7 @@ similar = model.wv.most_similar('learning', topn=5)
 ### Famous Analogies
 
 ```python
-# king - man + woman ≈ queen
+# king - man + woman ~= queen
 result = model.wv.most_similar(
     positive=['king', 'woman'],
     negative=['man'],
@@ -138,7 +138,7 @@ result = model.wv.most_similar(
 )
 # Output: queen
 
-# Paris - France + Germany ≈ Berlin
+# Paris - France + Germany ~= Berlin
 result = model.wv.most_similar(
     positive=['Paris', 'Germany'],
     negative=['France'],
@@ -163,7 +163,7 @@ result = model.wv.most_similar(
 
 **Objective Function:**
 ```
-J = Σ f(X_ij) (w_i^T w_j + b_i + b_j - log X_ij)²
+J = sum f(X_ij) (w_i^T w_j + b_i + b_j - log X_ij)^2
 ```
 
 Where:

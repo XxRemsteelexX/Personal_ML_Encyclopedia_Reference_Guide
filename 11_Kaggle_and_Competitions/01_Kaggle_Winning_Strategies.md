@@ -12,16 +12,16 @@
 
 ```
 Problem Understanding (20%)
-    ↓
+    v
 Strong Baseline (20%)
-    ↓
+    v
 Feature Engineering (25%)
-    ↓
+    v
 Model Ensembles (25%)
-    ↓
+    v
 Final Refinements (10%)
-    ↓
-🏆 Top 1% Finish
+    v
+[trophy] Top 1% Finish
 ```
 
 ---
@@ -99,12 +99,12 @@ distribution_report = compare_train_test_distributions(
 
 # Flag problematic features
 different_dist = distribution_report[distribution_report['different_distribution']]
-print(f"⚠️ Features with different distributions: {len(different_dist)}")
+print(f"[WARNING] Features with different distributions: {len(different_dist)}")
 print(different_dist[['feature', 'ks_statistic', 'p_value']])
 ```
 
 **Why this matters:**
-- If train/test distributions differ → model will fail
+- If train/test distributions differ --> model will fail
 - Can reveal data leakage or time-based splits
 - Informs feature engineering strategy
 
@@ -133,17 +133,17 @@ def detect_temporal_patterns(train_df, test_df, date_column='date'):
     print(f"Test min time: {test_min_time}")
 
     if test_min_time > train_max_time:
-        print("✓ Chronological split (test is future)")
+        print("[x] Chronological split (test is future)")
         cv_strategy = "TimeSeriesSplit"
     else:
-        print("✓ Random split")
+        print("[x] Random split")
         cv_strategy = "KFold or StratifiedKFold"
 
     # Check for trends over time
     for col in train_df.select_dtypes(include=[np.number]).columns:
         correlation = train_df[[col, 'time_index']].corr().iloc[0, 1]
         if abs(correlation) > 0.3:
-            print(f"⚠️ {col} has temporal trend (corr={correlation:.3f})")
+            print(f"[WARNING] {col} has temporal trend (corr={correlation:.3f})")
 
     return cv_strategy
 ```
@@ -167,8 +167,8 @@ def competition_specific_eda(train_df, target_col, competition_type):
         imbalance_ratio = class_counts.max() / class_counts.min()
 
         if imbalance_ratio > 10:
-            print(f"⚠️ Severe class imbalance (ratio: {imbalance_ratio:.1f})")
-            print("→ Consider: SMOTE, class weights, focal loss")
+            print(f"[WARNING] Severe class imbalance (ratio: {imbalance_ratio:.1f})")
+            print("--> Consider: SMOTE, class weights, focal loss")
 
     elif competition_type == 'regression':
         # Target distribution
@@ -195,7 +195,7 @@ def competition_specific_eda(train_df, target_col, competition_type):
 
         print(f"Skewness - Original: {skew_original:.2f}, Log: {skew_log:.2f}")
         if abs(skew_log) < abs(skew_original):
-            print("→ Consider log-transforming target")
+            print("--> Consider log-transforming target")
 
     elif competition_type == 'time_series':
         # Stationarity check
@@ -206,8 +206,8 @@ def competition_specific_eda(train_df, target_col, competition_type):
         print(f"p-value: {result[1]:.4f}")
 
         if result[1] > 0.05:
-            print("⚠️ Non-stationary series")
-            print("→ Consider: Differencing, detrending, seasonal decomposition")
+            print("[WARNING] Non-stationary series")
+            print("--> Consider: Differencing, detrending, seasonal decomposition")
 ```
 
 ---
@@ -273,15 +273,15 @@ def create_diverse_baselines(X, y, task='classification'):
 
     # Identify best model family
     best_model = max(results, key=lambda x: results[x]['mean_score'])
-    print(f"\n🏆 Best baseline: {best_model}")
+    print(f"\n[trophy] Best baseline: {best_model}")
 
     return results, models[best_model]
 ```
 
 **Key Insights:**
-- **Tree-based models (XGB, LGBM, CatBoost)** → Usually best for tabular data
-- **Neural networks** → Good for complex interactions, large datasets
-- **Linear models** → Fast baseline, good for high-dimensional sparse data
+- **Tree-based models (XGB, LGBM, CatBoost)** --> Usually best for tabular data
+- **Neural networks** --> Good for complex interactions, large datasets
+- **Linear models** --> Fast baseline, good for high-dimensional sparse data
 
 ---
 
@@ -559,9 +559,9 @@ final_predictions = meta_model.predict(test_meta)
 5. **Systematic approach** - Follow proven playbook, don't reinvent
 
 **Competition Winning Formula:**
-- Solid EDA (find quirks/leakage) → +5-10%
-- Strong feature engineering → +10-20%
-- Well-tuned ensemble → +5-10%
+- Solid EDA (find quirks/leakage) --> +5-10%
+- Strong feature engineering --> +10-20%
+- Well-tuned ensemble --> +5-10%
 - **Total edge: 20-40% over naive approaches**
 
 **Next:** `02_Advanced_Ensembles.md` - Deep dive into stacking, blending, and weighted ensembles

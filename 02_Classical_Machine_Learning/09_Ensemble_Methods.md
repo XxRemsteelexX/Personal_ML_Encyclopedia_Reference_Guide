@@ -22,7 +22,7 @@ Ensemble methods combine multiple models to achieve superior performance compare
 **Wisdom of Crowds**: Aggregate predictions from multiple models to reduce error.
 
 ```
-Ensemble prediction = f(model₁, model₂, ..., modelₙ)
+Ensemble prediction = f(model_1, model_2, ..., model_n)
 ```
 
 ### Three Main Strategies
@@ -46,7 +46,7 @@ Ensemble prediction = f(model₁, model₂, ..., modelₙ)
 
 **Bias-Variance Decomposition**:
 ```
-Expected Error = Bias² + Variance + Irreducible Error
+Expected Error = Bias^2 + Variance + Irreducible Error
 ```
 
 - **Bagging**: Reduces variance (individual trees have high variance)
@@ -62,14 +62,14 @@ Expected Error = Bias² + Variance + Irreducible Error
 **Definition**: Sampling with replacement from dataset.
 
 Given dataset D with n samples:
-1. Draw n samples with replacement → Bootstrap sample D*
+1. Draw n samples with replacement --> Bootstrap sample D*
 2. Approximately 63.2% unique samples (1 - 1/e)
 3. Remaining 36.8% are out-of-bag (OOB) samples
 
 **Mathematical Insight**:
 ```
 P(sample not selected in one draw) = (n-1)/n
-P(sample not selected in n draws) = ((n-1)/n)^n → 1/e ≈ 0.368 as n→∞
+P(sample not selected in n draws) = ((n-1)/n)^n --> 1/e ~= 0.368 as n-->inf
 ```
 
 ### Bagging Algorithm
@@ -80,8 +80,8 @@ For b = 1 to B:
   2. Train model f_b on D_b
 
 Prediction:
-  Regression: ŷ = (1/B) Σ f_b(x)
-  Classification: ŷ = majority vote of {f_b(x)}
+  Regression: y_hat = (1/B) sum f_b(x)
+  Classification: y_hat = majority vote of {f_b(x)}
 ```
 
 ### Out-of-Bag (OOB) Error Estimation
@@ -93,7 +93,7 @@ For each sample i:
 - Average their predictions
 - Compute error
 
-**OOB Error ≈ Cross-Validation Error** but computed in single training run.
+**OOB Error ~= Cross-Validation Error** but computed in single training run.
 
 ### Implementation
 
@@ -137,7 +137,7 @@ class BaggingRegressor:
         return predictions.mean(axis=0)
 
     def oob_score(self, X, y):
-        """Compute out-of-bag R² score."""
+        """Compute out-of-bag R^2 score."""
         n_samples = len(X)
         oob_predictions = np.zeros(n_samples)
         oob_counts = np.zeros(n_samples)
@@ -151,7 +151,7 @@ class BaggingRegressor:
         valid_idx = oob_counts > 0
         oob_predictions[valid_idx] /= oob_counts[valid_idx]
 
-        # Compute R²
+        # Compute R^2
         ss_res = np.sum((y[valid_idx] - oob_predictions[valid_idx]) ** 2)
         ss_tot = np.sum((y[valid_idx] - y[valid_idx].mean()) ** 2)
         return 1 - ss_res / ss_tot
@@ -181,11 +181,11 @@ bagging = BaggingRegressor(
 bagging.fit(X_train, y_train)
 
 print("Bagging Results:")
-print(f"Single Tree Test R²: {single_tree.score(X_test, y_test):.4f}")
-print(f"Bagging Test R²: {bagging.predict(X_test).shape}")
+print(f"Single Tree Test R^2: {single_tree.score(X_test, y_test):.4f}")
+print(f"Bagging Test R^2: {bagging.predict(X_test).shape}")
 bagging_score = 1 - mean_squared_error(y_test, bagging.predict(X_test)) / y_test.var()
-print(f"Bagging Test R²: {bagging_score:.4f}")
-print(f"Bagging OOB R²: {bagging.oob_score(X_train, y_train):.4f}")
+print(f"Bagging Test R^2: {bagging_score:.4f}")
+print(f"Bagging OOB R^2: {bagging.oob_score(X_train, y_train):.4f}")
 ```
 
 ## Random Forests
@@ -196,7 +196,7 @@ Random Forest = Bagging + Random Feature Subsampling
 
 **Key Modifications**:
 1. Bootstrap samples (like bagging)
-2. **Random feature subset at each split**: Consider only √p features (regression) or p features (classification)
+2. **Random feature subset at each split**: Consider only sqrtp features (regression) or p features (classification)
 3. Grow deep trees (low bias, high variance)
 4. No pruning
 
@@ -209,19 +209,19 @@ Random Forest = Bagging + Random Feature Subsampling
 
 **Variance of Average**:
 ```
-Var(Average) = ρσ²/B + (1-ρ)σ²/B
+Var(Average) = rhosigma^2/B + (1-rho)sigma^2/B
 
 Where:
-- ρ: correlation between trees
-- σ²: variance of individual trees
+- rho: correlation between trees
+- sigma^2: variance of individual trees
 - B: number of trees
 ```
 
-As B → ∞:
-- Uncorrelated trees (ρ=0): Variance → 0
-- Perfectly correlated (ρ=1): Variance = σ² (no benefit)
+As B --> inf:
+- Uncorrelated trees (rho=0): Variance --> 0
+- Perfectly correlated (rho=1): Variance = sigma^2 (no benefit)
 
-Feature subsampling reduces ρ, maximizing variance reduction.
+Feature subsampling reduces rho, maximizing variance reduction.
 
 ### Feature Importance
 
@@ -260,7 +260,7 @@ y_train, y_test = y[:800], y[800:]
 rf = RandomForestClassifier(
     n_estimators=100,
     max_depth=10,
-    max_features='sqrt',  # √p features per split
+    max_features='sqrt',  # sqrtp features per split
     min_samples_split=10,
     min_samples_leaf=5,
     bootstrap=True,
@@ -360,40 +360,40 @@ print(f"Test Score: {rf_random.score(X_test, y_test):.4f}")
 ### Algorithm
 
 ```
-Initialize: F₀(x) = argmin_γ Σᵢ L(yᵢ, γ)
+Initialize: F_0(x) = argmin_gamma sum_i L(y_i, gamma)
 
 For m = 1 to M:
   1. Compute pseudo-residuals:
-     rᵢₘ = -[∂L(yᵢ, F(xᵢ))/∂F(xᵢ)]_{F=F_{m-1}}
+     r_i_m = -[dL(y_i, F(x_i))/dF(x_i)]_{F=F_{m-1}}
 
-  2. Fit base learner hₘ(x) to pseudo-residuals
+  2. Fit base learner h_m(x) to pseudo-residuals
 
   3. Find optimal step size:
-     γₘ = argmin_γ Σᵢ L(yᵢ, F_{m-1}(xᵢ) + γhₘ(xᵢ))
+     gamma_m = argmin_gamma sum_i L(y_i, F_{m-1}(x_i) + gammah_m(x_i))
 
   4. Update:
-     Fₘ(x) = F_{m-1}(x) + ν·γₘ·hₘ(x)
+     F_m(x) = F_{m-1}(x) + nu*gamma_m*h_m(x)
 
 Final model: F_M(x)
 ```
 
 Where:
 - L: Loss function (MSE for regression, log-loss for classification)
-- ν: Learning rate (shrinkage parameter)
-- hₘ: Base learner (usually decision tree)
+- nu: Learning rate (shrinkage parameter)
+- h_m: Base learner (usually decision tree)
 
 ### Key Parameters
 
-1. **Number of trees (M)**: More trees → better fit but slower
-2. **Learning rate (ν)**: Smaller → better generalization but needs more trees
+1. **Number of trees (M)**: More trees --> better fit but slower
+2. **Learning rate (nu)**: Smaller --> better generalization but needs more trees
 3. **Tree depth**: Controls base learner complexity
 4. **Subsampling**: Fraction of samples per tree (adds randomness)
 
 ### For Regression (MSE Loss)
 
 ```
-L(y, F) = (y - F)²/2
-∂L/∂F = F - y
+L(y, F) = (y - F)^2/2
+dL/dF = F - y
 
 Pseudo-residual: r = y - F_{m-1}(x)  (just the residual!)
 ```
@@ -413,14 +413,14 @@ XGBoost revolutionized Kaggle competitions (2015-2020) with:
 ### Objective Function
 
 ```
-Obj(θ) = Σᵢ L(yᵢ, ŷᵢ) + Σₖ Ω(fₖ)
+Obj(theta) = sum_i L(y_i, y_hat_i) + sum_k Omega(f_k)
 
-Regularization: Ω(f) = γT + (λ/2)||w||²
+Regularization: Omega(f) = gammaT + (lambda/2)||w||^2
 
 Where:
 - T: number of leaves
 - w: leaf weights
-- γ, λ: regularization parameters
+- gamma, lambda: regularization parameters
 ```
 
 ### Taylor Approximation
@@ -428,11 +428,11 @@ Where:
 Uses second-order Taylor expansion for optimization:
 
 ```
-Obj^(t) ≈ Σᵢ [L(yᵢ, ŷᵢ^(t-1)) + gᵢfₜ(xᵢ) + (hᵢ/2)fₜ²(xᵢ)] + Ω(fₜ)
+Obj^(t) ~= sum_i [L(y_i, y_hat_i^(t-1)) + g_if_t(x_i) + (h_i/2)f_t^2(x_i)] + Omega(f_t)
 
 Where:
-- gᵢ = ∂L/∂ŷ (first-order gradient)
-- hᵢ = ∂²L/∂ŷ² (second-order gradient, Hessian)
+- g_i = dL/dy_hat (first-order gradient)
+- h_i = d^2L/dy_hat^2 (second-order gradient, Hessian)
 ```
 
 ### Implementation
@@ -525,7 +525,7 @@ xgb_model.fit(
 )
 
 print(f"Best iteration: {xgb_model.best_iteration}")
-print(f"Test R²: {xgb_model.score(X_test, y_test):.4f}")
+print(f"Test R^2: {xgb_model.score(X_test, y_test):.4f}")
 ```
 
 ## LightGBM
@@ -546,7 +546,7 @@ print(f"Test R²: {xgb_model.score(X_test, y_test):.4f}")
 
 Keeps all large gradient samples, randomly samples small gradient samples.
 
-**Intuition**: Large gradients = poorly fit samples → more important for learning
+**Intuition**: Large gradients = poorly fit samples --> more important for learning
 
 ### Exclusive Feature Bundling (EFB)
 
@@ -662,22 +662,22 @@ print(f"Test AUC: {roc_auc_score(y_test, lgb_model.predict_proba(X_test)[:, 1]):
 
 ### Target Statistic + Ordered TS
 
-For categorical feature c with categories c₁, c₂, ..., cₖ:
+For categorical feature c with categories c_1, c_2, ..., c_k:
 
 **Naive Target Encoding**:
 ```
-Encode(cᵢ) = E[y | c = cᵢ]
+Encode(c_i) = E[y | c = c_i]
 ```
 
 **Problem**: Overfitting (especially for rare categories)
 
 **CatBoost Solution**: Ordered target statistic
 ```
-Encode(cᵢ, at position j) = (countPrior + sum(y for c=cᵢ in rows 1..j-1)) /
-                              (countPrior + count(c=cᵢ in rows 1..j-1))
+Encode(c_i, at position j) = (countPrior + sum(y for c=c_i in rows 1..j-1)) /
+                              (countPrior + count(c=c_i in rows 1..j-1))
 ```
 
-Uses only preceding rows → prevents target leakage.
+Uses only preceding rows --> prevents target leakage.
 
 ### 2025 Research Findings
 
@@ -854,21 +854,21 @@ gpu_model.fit(train_pool, eval_set=val_pool)
 
 ```
 Level 0 (Base Models):
-  - Model 1: f₁(X) → Predictions P₁
-  - Model 2: f₂(X) → Predictions P₂
-  - Model 3: f₃(X) → Predictions P₃
+  - Model 1: f_1(X) --> Predictions P_1
+  - Model 2: f_2(X) --> Predictions P_2
+  - Model 3: f_3(X) --> Predictions P_3
 
 Level 1 (Meta-Model):
-  - Meta-learner: g([P₁, P₂, P₃]) → Final prediction
+  - Meta-learner: g([P_1, P_2, P_3]) --> Final prediction
 ```
 
 ### Proper Stacking (Avoid Overfitting)
 
 ```
 For each fold k in K-fold:
-  1. Train base models on folds ≠ k
-  2. Predict on fold k → Out-of-fold predictions
-  3. Predict on test set → Test predictions
+  1. Train base models on folds != k
+  2. Predict on fold k --> Out-of-fold predictions
+  3. Predict on test set --> Test predictions
 
 Meta-features:
   - Train: Out-of-fold predictions from all folds
@@ -1153,75 +1153,75 @@ optuna.visualization.plot_param_importances(study).show()
 
 ```
 Use Random Forest when:
-✓ Need interpretable feature importance
-✓ Moderate dataset size (<1M rows)
-✓ Want stable, reliable performance
-✓ Don't want to tune hyperparameters extensively
+[x] Need interpretable feature importance
+[x] Moderate dataset size (<1M rows)
+[x] Want stable, reliable performance
+[x] Don't want to tune hyperparameters extensively
 
 Avoid when:
-✗ Need maximum accuracy
-✗ Real-time inference required
-✗ Working with very large datasets
+[ ] Need maximum accuracy
+[ ] Real-time inference required
+[ ] Working with very large datasets
 ```
 
 ### XGBoost
 
 ```
 Use XGBoost when:
-✓ Competing in Kaggle (still common in ensembles)
-✓ Need proven, battle-tested library
-✓ Want extensive documentation and examples
-✓ Moderate dataset size
+[x] Competing in Kaggle (still common in ensembles)
+[x] Need proven, battle-tested library
+[x] Want extensive documentation and examples
+[x] Moderate dataset size
 
 Avoid when:
-✗ Training speed is critical
-✗ Working with many categorical features
-✗ Dataset is very large (>10M rows)
+[ ] Training speed is critical
+[ ] Working with many categorical features
+[ ] Dataset is very large (>10M rows)
 ```
 
 ### LightGBM
 
 ```
 Use LightGBM when:
-✓ Large datasets (>100K rows)
-✓ Need fast training (7x faster than XGBoost)
-✓ Want excellent accuracy
-✓ Production deployment (good inference speed)
-✓ DEFAULT CHOICE for most tabular problems
+[x] Large datasets (>100K rows)
+[x] Need fast training (7x faster than XGBoost)
+[x] Want excellent accuracy
+[x] Production deployment (good inference speed)
+[x] DEFAULT CHOICE for most tabular problems
 
 Avoid when:
-✗ Very small dataset (<1K rows) - may overfit
-✗ Many categorical features with high cardinality
+[ ] Very small dataset (<1K rows) - may overfit
+[ ] Many categorical features with high cardinality
 ```
 
 ### CatBoost
 
 ```
 Use CatBoost when:
-✓ Dataset has many categorical features
-✓ Need fastest inference (30-60x faster)
-✓ Want minimal hyperparameter tuning
-✓ Robustness to overfitting is important
-✓ Production systems with strict latency requirements
+[x] Dataset has many categorical features
+[x] Need fastest inference (30-60x faster)
+[x] Want minimal hyperparameter tuning
+[x] Robustness to overfitting is important
+[x] Production systems with strict latency requirements
 
 Avoid when:
-✗ Only numerical features (LightGBM may be faster)
-✗ Training time is more important than inference
+[ ] Only numerical features (LightGBM may be faster)
+[ ] Training time is more important than inference
 ```
 
 ### Stacking
 
 ```
 Use Stacking when:
-✓ Competing for maximum accuracy
-✓ Can afford longer training time
-✓ Have diverse base models
-✓ Final +1-3% accuracy improvement matters
+[x] Competing for maximum accuracy
+[x] Can afford longer training time
+[x] Have diverse base models
+[x] Final +1-3% accuracy improvement matters
 
 Avoid when:
-✗ Training/inference time is limited
-✗ Model complexity must be low
-✗ Interpretability is required
+[ ] Training/inference time is limited
+[ ] Model complexity must be low
+[ ] Interpretability is required
 ```
 
 ### 2025 Production Recommendation
@@ -1309,7 +1309,7 @@ model.fit(
 
 # Evaluate
 test_score = model.score(X_test, y_test)
-print(f"Test R²: {test_score:.4f}")
+print(f"Test R^2: {test_score:.4f}")
 
 # Save model
 import joblib

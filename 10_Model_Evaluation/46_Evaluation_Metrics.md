@@ -101,7 +101,7 @@ accuracy = evaluate_accuracy(y_true, y_pred)
 - All errors have equal cost
 
 **When NOT to Use:**
-- Imbalanced datasets (e.g., 99% negative class → 99% accuracy by always predicting negative!)
+- Imbalanced datasets (e.g., 99% negative class --> 99% accuracy by always predicting negative!)
 - Different error costs (e.g., false negative in cancer detection is worse than false positive)
 
 ---
@@ -169,18 +169,18 @@ metrics = detailed_classification_metrics(y_true, y_pred, labels)
 
 $$F_\beta = (1 + \beta^2) \cdot \frac{\text{Precision} \cdot \text{Recall}}{\beta^2 \cdot \text{Precision} + \text{Recall}}$$
 
-- **β < 1:** Emphasize precision (e.g., β=0.5)
-- **β = 1:** F1-score (balanced)
-- **β > 1:** Emphasize recall (e.g., β=2)
+- **beta < 1:** Emphasize precision (e.g., beta=0.5)
+- **beta = 1:** F1-score (balanced)
+- **beta > 1:** Emphasize recall (e.g., beta=2)
 
 ```python
 from sklearn.metrics import fbeta_score
 
-# Emphasize recall (β=2) - important when false negatives are costly
+# Emphasize recall (beta=2) - important when false negatives are costly
 f2 = fbeta_score(y_true, y_pred, beta=2)
 print(f"F2-Score (emphasize recall): {f2:.4f}")
 
-# Emphasize precision (β=0.5) - important when false positives are costly
+# Emphasize precision (beta=0.5) - important when false positives are costly
 f05 = fbeta_score(y_true, y_pred, beta=0.5)
 print(f"F0.5-Score (emphasize precision): {f05:.4f}")
 ```
@@ -693,7 +693,7 @@ def regression_metrics(y_true, y_pred):
     print(f"MSE:   {mse:.4f}")
     print(f"RMSE:  {rmse:.4f}")
     print(f"MAE:   {mae:.4f}")
-    print(f"R²:    {r2:.4f}")
+    print(f"R^2:    {r2:.4f}")
 
     print("\n" + "=" * 60)
     print("RESIDUAL STATISTICS")
@@ -788,21 +788,21 @@ compare_mse_mae(y_test_reg, y_pred_reg, with_outliers=True)
 
 ---
 
-### 3. R² (Coefficient of Determination)
+### 3. R^2 (Coefficient of Determination)
 
 $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}$$
 
 **Interpretation:**
 - Proportion of variance in target explained by model
-- Range: (-∞, 1]
-- **R² = 1:** Perfect fit
-- **R² = 0:** Model no better than mean baseline
-- **R² < 0:** Model worse than predicting mean
+- Range: (-inf, 1]
+- **R^2 = 1:** Perfect fit
+- **R^2 = 0:** Model no better than mean baseline
+- **R^2 < 0:** Model worse than predicting mean
 
 ```python
 def detailed_r2_analysis(y_true, y_pred):
     """
-    Detailed R² analysis with adjusted R².
+    Detailed R^2 analysis with adjusted R^2.
     """
     r2 = r2_score(y_true, y_pred)
 
@@ -811,15 +811,15 @@ def detailed_r2_analysis(y_true, y_pred):
     ss_tot = np.sum((y_true - y_true.mean()) ** 2)
 
     print("=" * 60)
-    print("R² ANALYSIS")
+    print("R^2 ANALYSIS")
     print("=" * 60)
-    print(f"R²: {r2:.4f}")
+    print(f"R^2: {r2:.4f}")
     print(f"\nComponents:")
     print(f"  SS_res (residual sum of squares): {ss_res:.2f}")
     print(f"  SS_tot (total sum of squares):    {ss_tot:.2f}")
     print(f"  Variance explained: {r2 * 100:.2f}%")
 
-    # Adjusted R² (requires number of features)
+    # Adjusted R^2 (requires number of features)
     # adj_r2 = 1 - (1 - r2) * (n - 1) / (n - p - 1)
     # where n = samples, p = features
 
@@ -828,7 +828,7 @@ def detailed_r2_analysis(y_true, y_pred):
 r2 = detailed_r2_analysis(y_test_reg, y_pred_reg)
 ```
 
-**Adjusted R²:** Penalizes adding irrelevant features.
+**Adjusted R^2:** Penalizes adding irrelevant features.
 
 $$R^2_{adj} = 1 - \frac{(1 - R^2)(n - 1)}{n - p - 1}$$
 
@@ -1312,39 +1312,39 @@ dice = dice_coefficient(y_true_mask, y_pred_mask)
 
 ```
 Classification?
-├─ Yes
-│  ├─ Binary or Multi-class?
-│  │  ├─ Binary
-│  │  │  ├─ Balanced classes?
-│  │  │  │  ├─ Yes → Accuracy, F1-Score
-│  │  │  │  └─ No → F1-Score, ROC-AUC, PR-AUC, MCC
-│  │  │  ├─ Need probabilities?
-│  │  │  │  └─ Yes → Log Loss, Brier Score
-│  │  │  └─ Different error costs?
-│  │  │     └─ Yes → Custom weighted metric
-│  │  └─ Multi-class
-│  │     ├─ Classes equally important?
-│  │     │  ├─ Yes → Macro F1
-│  │     │  └─ No → Weighted F1
-│  │     └─ Need calibrated probabilities?
-│  │        └─ Yes → Log Loss
-│  └─ Ranking/Recommendation?
-│     └─ NDCG, MRR, MAP
-└─ No (Regression?)
-   ├─ Yes
-   │  ├─ Outliers present?
-   │  │  ├─ Yes → MAE, Huber Loss
-   │  │  └─ No → RMSE, MSE
-   │  ├─ Need interpretable percentage?
-   │  │  └─ Yes → MAPE, SMAPE
-   │  ├─ Multiple scales/datasets?
-   │  │  └─ Yes → MAPE, R²
-   │  └─ Need uncertainty?
-   │     └─ Yes → Quantile Loss
-   └─ NLP?
-      ├─ Translation → BLEU
-      ├─ Summarization → ROUGE
-      └─ Language Modeling → Perplexity
++--- Yes
+|  +--- Binary or Multi-class?
+|  |  +--- Binary
+|  |  |  +--- Balanced classes?
+|  |  |  |  +--- Yes --> Accuracy, F1-Score
+|  |  |  |  +--- No --> F1-Score, ROC-AUC, PR-AUC, MCC
+|  |  |  +--- Need probabilities?
+|  |  |  |  +--- Yes --> Log Loss, Brier Score
+|  |  |  +--- Different error costs?
+|  |  |     +--- Yes --> Custom weighted metric
+|  |  +--- Multi-class
+|  |     +--- Classes equally important?
+|  |     |  +--- Yes --> Macro F1
+|  |     |  +--- No --> Weighted F1
+|  |     +--- Need calibrated probabilities?
+|  |        +--- Yes --> Log Loss
+|  +--- Ranking/Recommendation?
+|     +--- NDCG, MRR, MAP
++--- No (Regression?)
+   +--- Yes
+   |  +--- Outliers present?
+   |  |  +--- Yes --> MAE, Huber Loss
+   |  |  +--- No --> RMSE, MSE
+   |  +--- Need interpretable percentage?
+   |  |  +--- Yes --> MAPE, SMAPE
+   |  +--- Multiple scales/datasets?
+   |  |  +--- Yes --> MAPE, R^2
+   |  +--- Need uncertainty?
+   |     +--- Yes --> Quantile Loss
+   +--- NLP?
+      +--- Translation --> BLEU
+      +--- Summarization --> ROUGE
+      +--- Language Modeling --> Perplexity
 ```
 
 ### Metric Selection by Domain

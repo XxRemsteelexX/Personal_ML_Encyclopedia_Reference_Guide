@@ -18,9 +18,9 @@ Meta-learning (learning to learn) trains models to quickly adapt to new tasks wi
 
 ### Core Concept: Learning to Learn
 
-**Traditional Learning**: Given dataset D, learn parameters θ* that minimize loss L(θ; D).
+**Traditional Learning**: Given dataset D, learn parameters theta* that minimize loss L(theta; D).
 
-**Meta-Learning**: Given task distribution p(T), learn meta-parameters φ such that a model can quickly adapt to new tasks sampled from p(T).
+**Meta-Learning**: Given task distribution p(T), learn meta-parameters phi such that a model can quickly adapt to new tasks sampled from p(T).
 
 **Intuition**: Learn how to learn efficiently, rather than learning specific tasks.
 
@@ -33,10 +33,10 @@ Meta-learning (learning to learn) trains models to quickly adapt to new tasks wi
 **Meta-Learning Objective**:
 
 ```
-φ* = argmin_φ E_{T~p(T)} [ L_T(f_φ(S_T)) ]
+phi* = argmin_phi E_{T~p(T)} [ L_T(f_phi(S_T)) ]
 ```
 
-Where L_T evaluates task-specific model f_φ(S_T) adapted from meta-parameters φ using support set S_T.
+Where L_T evaluates task-specific model f_phi(S_T) adapted from meta-parameters phi using support set S_T.
 
 ### Two-Loop Optimization Structure
 
@@ -45,7 +45,7 @@ Meta-learning typically involves nested optimization loops:
 **Inner Loop (Task-Level)**:
 - Adapt to specific task using support set
 - Fast adaptation with few gradient steps
-- Produces task-specific parameters θ_i
+- Produces task-specific parameters theta_i
 
 **Outer Loop (Meta-Level)**:
 - Update meta-parameters across tasks
@@ -57,13 +57,13 @@ For each iteration:
     Sample batch of tasks {T_i} ~ p(T)
     For each task T_i:
         # Inner loop: adapt to task
-        θ_i = adapt(φ, S_i)  # Few-shot learning
+        theta_i = adapt(phi, S_i)  # Few-shot learning
 
         # Evaluate on query set
-        L_i = loss(θ_i, Q_i)
+        L_i = loss(theta_i, Q_i)
 
     # Outer loop: update meta-parameters
-    φ = φ - α * ∇_φ Σ_i L_i
+    phi = phi - alpha * grad_phi sum_i L_i
 ```
 
 ### Support Set and Query Set
@@ -102,7 +102,7 @@ MAML (Finn et al., 2017) is the most influential optimization-based meta-learnin
 
 ### Core Idea
 
-Learn initialization parameters φ such that one or few gradient steps on a new task lead to optimal performance.
+Learn initialization parameters phi such that one or few gradient steps on a new task lead to optimal performance.
 
 **Key Insight**: Good meta-initialization is sensitive to task-specific training, such that small parameter changes lead to large improvements on any task.
 
@@ -113,15 +113,15 @@ Learn initialization parameters φ such that one or few gradient steps on a new 
 For task T_i with support set S_i, perform K gradient steps:
 
 ```
-θ_i = φ - α * ∇_φ L_{S_i}(φ)
+theta_i = phi - alpha * grad_phi L_{S_i}(phi)
 ```
 
-Where α is inner loop learning rate (typically small, e.g., 0.01).
+Where alpha is inner loop learning rate (typically small, e.g., 0.01).
 
 For multiple steps:
 ```
-θ_i^(0) = φ
-θ_i^(k+1) = θ_i^(k) - α * ∇_{θ_i^(k)} L_{S_i}(θ_i^(k))
+theta_i^(0) = phi
+theta_i^(k+1) = theta_i^(k) - alpha * grad_{theta_i^(k)} L_{S_i}(theta_i^(k))
 ```
 
 **Outer Loop (Meta-Update)**:
@@ -129,39 +129,39 @@ For multiple steps:
 Update meta-parameters using query set performance:
 
 ```
-φ = φ - β * ∇_φ Σ_{T_i ~ p(T)} L_{Q_i}(θ_i)
+phi = phi - beta * grad_phi sum_{T_i ~ p(T)} L_{Q_i}(theta_i)
 ```
 
-Where β is outer loop learning rate (meta-learning rate).
+Where beta is outer loop learning rate (meta-learning rate).
 
 ### Complete Derivation
 
 **Objective**: Minimize expected loss on query sets after adaptation:
 
 ```
-min_φ E_{T~p(T)} [ L_T^{query}(θ_T') ]
+min_phi E_{T~p(T)} [ L_T^{query}(theta_T') ]
 
-where θ_T' = φ - α * ∇_φ L_T^{support}(φ)
+where theta_T' = phi - alpha * grad_phi L_T^{support}(phi)
 ```
 
 **Meta-Gradient (Single Inner Step)**:
 
 ```
-∇_φ L_T^{query}(θ_T') = ∇_φ L_T^{query}(φ - α * ∇_φ L_T^{support}(φ))
+grad_phi L_T^{query}(theta_T') = grad_phi L_T^{query}(phi - alpha * grad_phi L_T^{support}(phi))
 ```
 
 By chain rule:
 ```
-= ∇_{θ_T'} L_T^{query}(θ_T') * ∂θ_T'/∂φ
+= grad_{theta_T'} L_T^{query}(theta_T') * dtheta_T'/dphi
 
-= ∇_{θ_T'} L_T^{query}(θ_T') * (I - α * ∂²L_T^{support}/∂φ²)
+= grad_{theta_T'} L_T^{query}(theta_T') * (I - alpha * d^2L_T^{support}/dphi^2)
 ```
 
-The second-order term ∂²L_T^{support}/∂φ² (Hessian) is expensive to compute!
+The second-order term d^2L_T^{support}/dphi^2 (Hessian) is expensive to compute!
 
 **Computational Complexity**:
-- First-order: O(|θ|) where |θ| is number of parameters
-- Second-order: O(|θ|²) due to Hessian
+- First-order: O(|theta|) where |theta| is number of parameters
+- Second-order: O(|theta|^2) due to Hessian
 
 ### PyTorch Implementation
 
@@ -177,8 +177,8 @@ class MAML:
 
     Args:
         model: Neural network model
-        inner_lr: Learning rate for task adaptation (α)
-        outer_lr: Learning rate for meta-update (β)
+        inner_lr: Learning rate for task adaptation (alpha)
+        outer_lr: Learning rate for meta-update (beta)
         num_inner_steps: Number of gradient steps for adaptation
         first_order: If True, use first-order approximation (faster)
     """
@@ -450,7 +450,7 @@ class MAMLWithHigher:
 
 **Improvements over MAML**:
 1. **Multi-Step Loss**: Use loss at all inner loop steps, not just final
-2. **Per-Parameter Learning Rates**: Learn separate α for each parameter
+2. **Per-Parameter Learning Rates**: Learn separate alpha for each parameter
 3. **Batch Normalization**: Transductive batch norm statistics
 4. **Cosine Annealing**: Anneal learning rates during inner loop
 
@@ -528,10 +528,10 @@ class MAMLPlusPlus(MAML):
 
 **Update Rule**:
 ```
-φ = φ + β * (θ_i - φ)
+phi = phi + beta * (theta_i - phi)
 ```
 
-Where θ_i are parameters after K steps on task i.
+Where theta_i are parameters after K steps on task i.
 
 **Key Difference from MAML**: No second-order derivatives, no query set needed!
 
@@ -645,14 +645,14 @@ Metric-based methods learn an embedding space where classification is performed 
 ### Prototypical Networks (Detailed)
 
 **Algorithm**:
-1. Embed all examples: e_i = f_θ(x_i)
-2. Compute class prototypes: c_k = (1/|S_k|) ∑_{(x_i,y_i)∈S_k} f_θ(x_i)
+1. Embed all examples: e_i = f_theta(x_i)
+2. Compute class prototypes: c_k = (1/|S_k|) sum_{(x_i,y_i)inS_k} f_theta(x_i)
 3. Classify by nearest prototype in embedding space
 
 **Loss** (negative log-probability based on softmax over distances):
 
 ```
-L = -log(exp(-d(f_θ(x), c_y)) / ∑_k exp(-d(f_θ(x), c_k)))
+L = -log(exp(-d(f_theta(x), c_y)) / sum_k exp(-d(f_theta(x), c_k)))
 ```
 
 Where d(.,.) is distance metric (typically squared Euclidean).
@@ -718,9 +718,9 @@ def train_protonet(model, task_loader, num_episodes):
 
 **Architecture**:
 ```
-Query → Encoder → e_q
-Support → Encoder → e_s
-Relation Module(e_q, e_s) → similarity score
+Query --> Encoder --> e_q
+Support --> Encoder --> e_s
+Relation Module(e_q, e_s) --> similarity score
 ```
 
 ```python
@@ -782,10 +782,10 @@ class RelationModule(nn.Module):
 
 **Update**:
 ```
-θ_i = φ - α ⊙ ∇_φ L_S(φ)
+theta_i = phi - alpha (o) grad_phi L_S(phi)
 ```
 
-Where α is a vector of learnable learning rates (one per parameter), ⊙ is element-wise multiplication.
+Where alpha is a vector of learnable learning rates (one per parameter), (o) is element-wise multiplication.
 
 ```python
 class MetaSGD(MAML):
@@ -967,7 +967,7 @@ class FewShotClassifier:
             return self.meta_learner(support_x, support_y, query_x, self.n_way)
 ```
 
-### Reinforcement Learning (RL²)
+### Reinforcement Learning (RL^2)
 
 **Idea**: Meta-learn RL algorithm that can quickly adapt to new tasks.
 
@@ -1122,9 +1122,9 @@ prompt = """
 Classify the sentiment of movie reviews.
 
 Examples:
-Review: "This movie was amazing!" → Positive
-Review: "Waste of time and money." → Negative
-Review: "Pretty good, but could be better." → Neutral
+Review: "This movie was amazing!" --> Positive
+Review: "Waste of time and money." --> Negative
+Review: "Pretty good, but could be better." --> Neutral
 
 Now classify:
 Review: "Absolutely loved it! Best film this year."
@@ -1371,8 +1371,8 @@ class MetaHyperparameterOptimizer:
 - Use appropriate train/val/test task splits
 
 ### Hyperparameters
-- **Inner LR** (α): 0.001 - 0.01 (smaller for pretrained models)
-- **Outer LR** (β): 0.0001 - 0.001
+- **Inner LR** (alpha): 0.001 - 0.01 (smaller for pretrained models)
+- **Outer LR** (beta): 0.0001 - 0.001
 - **Inner Steps**: 1-10 (more steps = better adaptation but slower)
 - **Tasks per batch**: 2-8 (limited by memory)
 

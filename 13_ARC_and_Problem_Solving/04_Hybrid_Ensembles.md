@@ -34,7 +34,7 @@
 
 ### Transduction: Direct Mapping
 
-**Approach:** Learn input → output mapping directly
+**Approach:** Learn input --> output mapping directly
 
 **Example Methods:**
 - Test-time fine-tuned models
@@ -42,10 +42,10 @@
 - Neural network prediction
 
 **Characteristics:**
-- ✅ Fast inference
-- ✅ Good at pattern matching
-- ❌ Poor abstraction
-- ❌ Struggles with novel patterns
+-  Fast inference
+-  Good at pattern matching
+-  Poor abstraction
+-  Struggles with novel patterns
 
 **Performance:** ~40% alone
 
@@ -61,10 +61,10 @@
 - Symbolic reasoning
 
 **Characteristics:**
-- ✅ Better generalization
-- ✅ Explicit reasoning
-- ❌ Slow search
-- ❌ Hard to represent all rules
+-  Better generalization
+-  Explicit reasoning
+-  Slow search
+-  Hard to represent all rules
 
 **Performance:** ~40% alone
 
@@ -106,42 +106,42 @@ def hybrid_solve(task):
 
 ```
 Input Task
-    ↓
-┌─────────────────────────────────────┐
-│  Stage 1: Quick Heuristics          │
-│  - Hand-coded rules for common      │
-│    patterns (rotation, flip, etc.)  │
-│  - Exact match to training data     │
-└─────────────────────────────────────┘
-    ↓ (if no solution)
-┌─────────────────────────────────────┐
-│  Stage 2: Test-Time Training        │
-│  - Fine-tune on task                │
-│  - Generate 96 predictions          │
-│  - Vote for top 3                   │
-└─────────────────────────────────────┘
-    ↓ (in parallel)
-┌─────────────────────────────────────┐
-│  Stage 3: LLM Reasoning              │
-│  - Multi-perspective prompting      │
-│  - Code generation + verification   │
-│  - Self-correction loop             │
-└─────────────────────────────────────┘
-    ↓ (in parallel)
-┌─────────────────────────────────────┐
-│  Stage 4: Program Synthesis          │
-│  - Search in DSL space              │
-│  - Verify on training examples      │
-│  - Return verified programs         │
-└─────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────┐
-│  Stage 5: Ensemble Selection         │
-│  - Collect all candidates           │
-│  - Score by confidence/verification │
-│  - Return top 3                     │
-└─────────────────────────────────────┘
-    ↓
+    v
++-----------------------------------------+
+|  Stage 1: Quick Heuristics          |
+|  - Hand-coded rules for common      |
+|    patterns (rotation, flip, etc.)  |
+|  - Exact match to training data     |
++-----------------------------------------+
+    v (if no solution)
++-----------------------------------------+
+|  Stage 2: Test-Time Training        |
+|  - Fine-tune on task                |
+|  - Generate 96 predictions          |
+|  - Vote for top 3                   |
++-----------------------------------------+
+    v (in parallel)
++-----------------------------------------+
+|  Stage 3: LLM Reasoning              |
+|  - Multi-perspective prompting      |
+|  - Code generation + verification   |
+|  - Self-correction loop             |
++-----------------------------------------+
+    v (in parallel)
++-----------------------------------------+
+|  Stage 4: Program Synthesis          |
+|  - Search in DSL space              |
+|  - Verify on training examples      |
+|  - Return verified programs         |
++-----------------------------------------+
+    v
++-----------------------------------------+
+|  Stage 5: Ensemble Selection         |
+|  - Collect all candidates           |
+|  - Score by confidence/verification |
+|  - Return top 3                     |
++-----------------------------------------+
+    v
 Final Predictions (3 attempts allowed)
 ```
 
@@ -569,19 +569,19 @@ def route_task(task):
 
     # Decision rules (learned from validation data)
     if properties['grid_size'] <= 8 and properties['simple_transformation']:
-        # Small, simple tasks → Heuristics work well
+        # Small, simple tasks --> Heuristics work well
         return 'heuristic'
 
     elif properties['has_objects'] and properties['object_manipulation']:
-        # Object-based tasks → Program synthesis excels
+        # Object-based tasks --> Program synthesis excels
         return 'program'
 
     elif properties['requires_counting'] or properties['arithmetic']:
-        # Arithmetic tasks → LLM reasoning helps
+        # Arithmetic tasks --> LLM reasoning helps
         return 'llm'
 
     elif properties['pattern_continuation']:
-        # Pattern-based → TTT works well
+        # Pattern-based --> TTT works well
         return 'ttt'
 
     else:
@@ -916,7 +916,7 @@ if time_remaining < 60:
 ## Key Takeaways
 
 1. **No single method solves ARC** - Ensembles are essential
-2. **Transduction + Induction** both needed (~40% each → 55%+ together)
+2. **Transduction + Induction** both needed (~40% each --> 55%+ together)
 3. **Weighted voting** better than simple majority
 4. **Task routing** can save time (run fast methods first)
 5. **Parallel execution** critical for production (run all methods simultaneously)

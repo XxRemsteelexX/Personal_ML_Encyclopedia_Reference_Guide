@@ -28,10 +28,10 @@ Where:
 
 **Visual:**
 ```
-Input:  x_1 → x_2 → x_3 → ... → x_T
-         ↓     ↓     ↓           ↓
-Hidden: h_1 → h_2 → h_3 → ... → h_T
-         ↓     ↓     ↓           ↓
+Input:  x_1 --> x_2 --> x_3 --> ... --> x_T
+         v     v     v           v
+Hidden: h_1 --> h_2 --> h_3 --> ... --> h_T
+         v     v     v           v
 Output: y_1   y_2   y_3         y_T
 ```
 
@@ -83,10 +83,10 @@ output, next_hidden = rnn(input, hidden)
 
 **Math:**
 ```
-∂L/∂h_1 = ∂L/∂h_T * ∂h_T/∂h_{T-1} * ... * ∂h_2/∂h_1
+dL/dh_1 = dL/dh_T * dh_T/dh_{T-1} * ... * dh_2/dh_1
 
-If ∂h_t/∂h_{t-1} < 1, gradient vanishes
-If ∂h_t/∂h_{t-1} > 1, gradient explodes
+If dh_t/dh_{t-1} < 1, gradient vanishes
+If dh_t/dh_{t-1} > 1, gradient explodes
 ```
 
 **Consequences:**
@@ -122,23 +122,23 @@ If ∂h_t/∂h_{t-1} > 1, gradient explodes
 **Equations:**
 ```python
 # Forget gate: what to forget from cell state
-f_t = σ(W_f · [h_{t-1}, x_t] + b_f)
+f_t = sigma(W_f * [h_{t-1}, x_t] + b_f)
 
 # Input gate: what to add to cell state
-i_t = σ(W_i · [h_{t-1}, x_t] + b_i)
-c̃_t = tanh(W_c · [h_{t-1}, x_t] + b_c)
+i_t = sigma(W_i * [h_{t-1}, x_t] + b_i)
+c_tilde_t = tanh(W_c * [h_{t-1}, x_t] + b_c)
 
 # Update cell state
-c_t = f_t ⊙ c_{t-1} + i_t ⊙ c̃_t
+c_t = f_t (o) c_{t-1} + i_t (o) c_tilde_t
 
 # Output gate: what to output
-o_t = σ(W_o · [h_{t-1}, x_t] + b_o)
-h_t = o_t ⊙ tanh(c_t)
+o_t = sigma(W_o * [h_{t-1}, x_t] + b_o)
+h_t = o_t (o) tanh(c_t)
 ```
 
 Where:
-- σ = sigmoid function (0 to 1, acts as gate)
-- ⊙ = element-wise multiplication
+- sigma = sigmoid function (0 to 1, acts as gate)
+- (o) = element-wise multiplication
 - tanh = hyperbolic tangent (-1 to 1)
 
 ### PyTorch Implementation
@@ -200,7 +200,7 @@ output = model(x)  # Shape: (32, 5)
 
 **Gradient Flow:**
 - Cell state provides direct path for gradients
-- Additive update (`c_t = f_t ⊙ c_{t-1} + i_t ⊙ c̃_t`) preserves gradients
+- Additive update (`c_t = f_t (o) c_{t-1} + i_t (o) c_tilde_t`) preserves gradients
 - Can learn dependencies over 100+ time steps
 
 **Gating Mechanism:**
@@ -225,16 +225,16 @@ output = model(x)  # Shape: (32, 5)
 **Equations:**
 ```python
 # Reset gate
-r_t = σ(W_r · [h_{t-1}, x_t])
+r_t = sigma(W_r * [h_{t-1}, x_t])
 
 # Update gate
-z_t = σ(W_z · [h_{t-1}, x_t])
+z_t = sigma(W_z * [h_{t-1}, x_t])
 
 # Candidate hidden state
-h̃_t = tanh(W · [r_t ⊙ h_{t-1}, x_t])
+h_tilde_t = tanh(W * [r_t (o) h_{t-1}, x_t])
 
 # Final hidden state
-h_t = (1 - z_t) ⊙ h_{t-1} + z_t ⊙ h̃_t
+h_t = (1 - z_t) (o) h_{t-1} + z_t (o) h_tilde_t
 ```
 
 ### PyTorch Implementation
@@ -285,10 +285,10 @@ class GRUModel(nn.Module):
 ### Architecture
 
 ```
-Forward:  h⃗_1 → h⃗_2 → h⃗_3 → ... → h⃗_T
-Backward: h⃖_1 ← h⃖_2 ← h⃖_3 ← ... ← h⃖_T
+Forward:  h_vec_1 --> h_vec_2 --> h_vec_3 --> ... --> h_vec_T
+Backward: h_vec_1 <-- h_vec_2 <-- h_vec_3 <-- ... <-- h_vec_T
 
-Output: y_t = f([h⃗_t; h⃖_t])  # Concatenate both directions
+Output: y_t = f([h_vec_t; h_vec_t])  # Concatenate both directions
 ```
 
 ### Implementation
@@ -339,8 +339,8 @@ class BiLSTM(nn.Module):
 
 **Architecture:**
 ```
-Encoder RNN: x_1, x_2, ..., x_n → context vector (c)
-Decoder RNN: c → y_1, y_2, ..., y_m
+Encoder RNN: x_1, x_2, ..., x_n --> context vector (c)
+Decoder RNN: c --> y_1, y_2, ..., y_m
 ```
 
 **Applications:**
@@ -398,7 +398,7 @@ pos_tags = classifier(outputs)    # (batch, seq_len, num_tags)
 ### One-to-Many (Image Captioning)
 
 ```python
-# Image → CNN → feature vector → RNN → caption
+# Image --> CNN --> feature vector --> RNN --> caption
 image_features = cnn(image)
 hidden = image_features.unsqueeze(0)
 caption = rnn.generate(hidden, max_length=20)

@@ -120,7 +120,7 @@ for epoch in range(total_epochs):
 
 2. **Exponential Decay:**
    ```
-   threshold(t) = threshold_final + (threshold_initial - threshold_final) * exp(-λt)
+   threshold(t) = threshold_final + (threshold_initial - threshold_final) * exp(-lambdat)
    ```
 
 3. **Step Decay:**
@@ -300,7 +300,7 @@ class FlexMatch:
 **Weak Augmentations:**
 - Random horizontal flip
 - Small random crop
-- Small rotation (±15 degrees)
+- Small rotation (+/-15 degrees)
 
 **Strong Augmentations:**
 - RandAugment (chain of transformations)

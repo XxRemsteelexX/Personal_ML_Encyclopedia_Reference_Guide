@@ -51,7 +51,7 @@ Meta-learning trains models to quickly adapt to new tasks with minimal data by l
 - **Variants**: MAML++, Reptile, ANIL
 - **Metric-based**: Prototypical networks, matching networks, relation networks
 - **Optimization-based**: Meta-SGD, Meta-Curvature
-- **Applications**: Few-shot classification, fast adaptation, personalization, RL²
+- **Applications**: Few-shot classification, fast adaptation, personalization, RL^2
 
 **Key 2025 Updates:**
 - Foundation models reducing meta-learning need
@@ -133,7 +133,7 @@ Before diving into advanced topics, ensure familiarity with:
 
 **Transfer Learning + Computer Vision**: Nearly all CV applications start with ImageNet-pretrained models.
 
-**Reinforcement Learning + Meta-Learning**: RL² and meta-RL enable rapid adaptation to new environments.
+**Reinforcement Learning + Meta-Learning**: RL^2 and meta-RL enable rapid adaptation to new environments.
 
 **GNNs + Transfer Learning**: Pretrained molecular GNNs transfer to drug discovery tasks.
 
@@ -293,7 +293,7 @@ for episode in range(num_episodes):
 **Solution**: Ensure task distribution covers target task variations
 
 **Pitfall**: Support set too small for inner loop learning
-**Solution**: Increase support set size (k-shot with k ≥ 5), use MAML++
+**Solution**: Increase support set size (k-shot with k >= 5), use MAML++
 
 **Pitfall**: Computational cost of second-order gradients (MAML)
 **Solution**: Use first-order approximations (Reptile, FOMAML)
@@ -333,7 +333,7 @@ for episode in range(num_episodes):
 **Graph Neural Networks:**
 - Kipf & Welling (2017): "Semi-Supervised Classification with Graph Convolutional Networks"
 - Hamilton et al. (2017): "Inductive Representation Learning on Large Graphs" (GraphSAGE)
-- Veličković et al. (2018): "Graph Attention Networks"
+- Velickovic et al. (2018): "Graph Attention Networks"
 
 **Time Series:**
 - Vaswani et al. (2017): "Attention Is All You Need" (Transformers)
@@ -377,39 +377,39 @@ for episode in range(num_episodes):
 Advanced techniques fit into the broader ML pipeline:
 
 1. **Data Collection & Preprocessing** (Section 00)
-   ↓
+   v
 2. **Exploratory Analysis** (Section 00)
-   ↓
+   v
 3. **Statistical Validation** (Section 01)
-   ↓
+   v
 4. **Model Selection**:
    - Classical ML (Section 02) for tabular, interpretable tasks
    - Deep Learning (Sections 03-06) for vision, language, generation
    - **Advanced Techniques (Section 07)** for limited data, adaptation, graphs, RL
-   ↓
+   v
 5. **Training & Optimization** (Section 03)
-   ↓
+   v
 6. **Evaluation & Validation** (Sections 00, 01)
-   ↓
+   v
 7. **Deployment & Monitoring** (Production best practices)
 
 **Decision Tree for Advanced Techniques:**
 
 ```
 Do you have limited labeled data?
-├─ Yes → Consider Transfer Learning (31) or Meta-Learning (32)
-│   ├─ Pretrained model available? → Transfer Learning
-│   ├─ Many related tasks? → Meta-Learning
-│   └─ Vision + Language? → CLIP (31)
-│
-├─ Is data graph-structured?
-│   └─ Yes → Graph Neural Networks (34)
-│
-├─ Is data temporal/sequential?
-│   └─ Yes → Time Series Deep Learning (35)
-│
-└─ Is task sequential decision-making?
-    └─ Yes → Reinforcement Learning (33)
++--- Yes --> Consider Transfer Learning (31) or Meta-Learning (32)
+|   +--- Pretrained model available? --> Transfer Learning
+|   +--- Many related tasks? --> Meta-Learning
+|   +--- Vision + Language? --> CLIP (31)
+|
++--- Is data graph-structured?
+|   +--- Yes --> Graph Neural Networks (34)
+|
++--- Is data temporal/sequential?
+|   +--- Yes --> Time Series Deep Learning (35)
+|
++--- Is task sequential decision-making?
+    +--- Yes --> Reinforcement Learning (33)
 ```
 
 ---

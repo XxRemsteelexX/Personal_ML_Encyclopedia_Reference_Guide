@@ -294,7 +294,7 @@ AI is becoming accessible to more organizations:
 
 ## Learning Path
 
-### Beginner → Intermediate
+### Beginner --> Intermediate
 
 1. Understand transformer fundamentals
 2. Experiment with pre-trained models (Hugging Face)
@@ -302,7 +302,7 @@ AI is becoming accessible to more organizations:
 4. Try fine-tuning small models
 5. Explore multimodal models (CLIP, GPT-4 Vision)
 
-### Intermediate → Advanced
+### Intermediate --> Advanced
 
 1. Implement agent frameworks (LangChain)
 2. Deploy models to edge devices
@@ -310,7 +310,7 @@ AI is becoming accessible to more organizations:
 4. Build RAG (Retrieval-Augmented Generation) systems
 5. Multi-agent orchestration
 
-### Advanced → Expert
+### Advanced --> Expert
 
 1. Train custom multimodal models
 2. Neural architecture search
@@ -429,7 +429,7 @@ The AI landscape in 2025 is characterized by:
 4. **Edge deployment** for latency and privacy
 5. **Democratization** through open-source and accessibility
 
-These trends are not mutually exclusive—the most powerful solutions combine multiple approaches. A production system might use a multimodal LLM for complex reasoning in the cloud, while deploying a small language model to the edge for low-latency, privacy-preserving tasks.
+These trends are not mutually exclusive--the most powerful solutions combine multiple approaches. A production system might use a multimodal LLM for complex reasoning in the cloud, while deploying a small language model to the edge for low-latency, privacy-preserving tasks.
 
 The key is understanding **when to use what** and **how to combine** these technologies for maximum impact.
 

@@ -194,8 +194,8 @@ Randomly corrupt spans of text, train to reconstruct.
 **Optimal Compute Budget:**
 ```
 For compute budget C:
-- Model params N ∝ C^0.5
-- Training tokens D ∝ C^0.5
+- Model params N proportional to C^0.5
+- Training tokens D proportional to C^0.5
 
 Optimal: N and D should scale equally
 ```
@@ -254,8 +254,8 @@ for batch in task_data:
 **Idea:** Add trainable low-rank matrices to frozen weights.
 
 ```python
-# Original: W ∈ R^(d×k)
-# LoRA: W + BA where B ∈ R^(d×r), A ∈ R^(r×k), r << d
+# Original: W in R^(dxk)
+# LoRA: W + BA where B in R^(dxr), A in R^(rxk), r << d
 
 class LoRALayer(nn.Module):
     def __init__(self, in_features, out_features, rank=8):
@@ -378,7 +378,7 @@ for prompt in prompts:
 
     # PPO objective
     ratio = new_policy(response) / old_policy(response)
-    clipped_ratio = clip(ratio, 1-ε, 1+ε)
+    clipped_ratio = clip(ratio, 1-epsilon, 1+epsilon)
     loss = -min(ratio * advantage, clipped_ratio * advantage)
 ```
 
@@ -391,8 +391,8 @@ for prompt in prompts:
 ```python
 # Directly optimize on preference pairs
 loss = -log_sigmoid(
-    β * (log p_θ(y_w|x) - log p_θ(y_l|x))
-    - β * (log p_ref(y_w|x) - log p_ref(y_l|x))
+    beta * (log p_theta(y_w|x) - log p_theta(y_l|x))
+    - beta * (log p_ref(y_w|x) - log p_ref(y_l|x))
 )
 ```
 
@@ -400,7 +400,7 @@ Where:
 - y_w = winning response
 - y_l = losing response
 - p_ref = reference model (SFT)
-- β = temperature
+- beta = temperature
 
 **Advantages over RLHF:**
 - No reward model needed
@@ -424,10 +424,10 @@ response = model.generate(prompt)
 ```python
 prompt = """
 Translate to French:
-English: Hello → French: Bonjour
-English: Goodbye → French: Au revoir
-English: Thank you → French: Merci
-English: How are you? → French:"""
+English: Hello --> French: Bonjour
+English: Goodbye --> French: Au revoir
+English: Thank you --> French: Merci
+English: How are you? --> French:"""
 
 response = model.generate(prompt)
 # Output: "Comment allez-vous?"
@@ -442,7 +442,7 @@ Each can has 3 tennis balls. How many tennis balls does he have now?
 
 A: Let's think step by step.
 Roger started with 5 balls.
-2 cans × 3 balls per can = 6 balls.
+2 cans x 3 balls per can = 6 balls.
 5 + 6 = 11 balls.
 The answer is 11.
 
@@ -571,9 +571,9 @@ class MixtureOfExperts(nn.Module):
 
 ### Problem
 
-Standard transformers: O(n²) attention complexity.
+Standard transformers: O(n^2) attention complexity.
 
-Long sequences → memory explosion.
+Long sequences --> memory explosion.
 
 ### Solutions
 
@@ -605,7 +605,7 @@ Memory-efficient attention implementation (I/O optimization).
 #### 4. Extended Context Models
 
 - GPT-4: 128K tokens
-- Claude 2: 100K → Claude 3: 200K
+- Claude 2: 100K --> Claude 3: 200K
 - Gemini: 1M+ tokens (2024)
 
 ---
@@ -797,7 +797,7 @@ for output in outputs:
 - Misuse (disinformation, spam)
 - Bias and fairness
 - Privacy (training data memorization)
-- Alignment challenges (goals ≠ human values)
+- Alignment challenges (goals != human values)
 
 ---
 

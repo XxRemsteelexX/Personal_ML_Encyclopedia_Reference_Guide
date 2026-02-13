@@ -15,19 +15,19 @@ Diffusion models are the dominant generative AI approach in 2025. They gradually
 Gradually add Gaussian noise over T steps:
 
 ```
-q(x_t | x_{t-1}) = N(x_t; √(1-β_t) x_{t-1}, β_t I)
+q(x_t | x_{t-1}) = N(x_t; sqrt(1-beta_t) x_{t-1}, beta_t I)
 
-x_t = √(1-β_t) x_{t-1} + √β_t ε,  where ε ~ N(0, I)
+x_t = sqrt(1-beta_t) x_{t-1} + sqrtbeta_t epsilon,  where epsilon ~ N(0, I)
 ```
 
-After T steps: x_T ≈ pure noise
+After T steps: x_T ~= pure noise
 
 ### Reverse Process (Denoising)
 
 Learn to reverse the process:
 
 ```
-p_θ(x_{t-1} | x_t) = N(x_{t-1}; μ_θ(x_t, t), Σ_θ(x_t, t))
+p_theta(x_{t-1} | x_t) = N(x_{t-1}; mu_theta(x_t, t), sum_theta(x_t, t))
 ```
 
 **Key insight:** Predict noise at each step, remove it
@@ -39,12 +39,12 @@ p_θ(x_{t-1} | x_t) = N(x_{t-1}; μ_θ(x_t, t), Σ_θ(x_t, t))
 ### Training Objective
 
 ```python
-L = E_t,x_0,ε [||ε - ε_θ(x_t, t)||²]
+L = E_t,x_0,epsilon [||epsilon - epsilon_theta(x_t, t)||^2]
 ```
 
 Where:
-- ε = actual noise added
-- ε_θ = predicted noise by model
+- epsilon = actual noise added
+- epsilon_theta = predicted noise by model
 - x_t = noisy image at step t
 
 ### Implementation
@@ -65,7 +65,7 @@ class DiffusionModel(nn.Module):
         self.alpha_bar = torch.cumprod(self.alpha, dim=0)
     
     def add_noise(self, x_0, t):
-        # x_t = √ᾱ_t x_0 + √(1-ᾱ_t) ε
+        # x_t = sqrtalpha_bar_t x_0 + sqrt(1-alpha_bar_t) epsilon
         noise = torch.randn_like(x_0)
         alpha_bar_t = self.alpha_bar[t].view(-1, 1, 1, 1)
         
@@ -197,9 +197,9 @@ class UNet(nn.Module):
 
 ```python
 # Architecture
-VAE Encoder: image → latent z
+VAE Encoder: image --> latent z
 Diffusion: denoise z
-VAE Decoder: z → image
+VAE Decoder: z --> image
 
 # Advantages:
 # - 4-8x faster
@@ -317,13 +317,13 @@ image = pipe(
 
 ### SDXL (Stable Diffusion XL)
 
-- Higher resolution (1024×1024)
+- Higher resolution (1024x1024)
 - Better prompt understanding
 - Dual text encoders (CLIP + OpenCLIP)
 
 ### Cascaded Diffusion
 
-- Low-res → High-res in stages
+- Low-res --> High-res in stages
 - Used in DALL-E 2, Imagen
 
 ### Video Diffusion
@@ -334,7 +334,7 @@ image = pipe(
 ### 3D Diffusion
 
 - DreamFusion, Point-E
-- Text → 3D models
+- Text --> 3D models
 
 ---
 
@@ -380,7 +380,7 @@ image = inpaint(image, mask, prompt="a red apple")
 ### 4. Super-Resolution
 
 ```python
-# Upscale 512x512 → 2048x2048
+# Upscale 512x512 --> 2048x2048
 high_res = super_resolve(low_res_image)
 ```
 

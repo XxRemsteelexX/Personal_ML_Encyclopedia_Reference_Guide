@@ -16,7 +16,7 @@
 
 ## Introduction
 
-**Edge AI** brings artificial intelligence processing directly to devices at the "edge" of the network—smartphones, IoT sensors, drones, cameras, vehicles—rather than sending data to centralized cloud servers. This paradigm shift enables real-time, privacy-preserving, and cost-effective AI deployment.
+**Edge AI** brings artificial intelligence processing directly to devices at the "edge" of the network--smartphones, IoT sensors, drones, cameras, vehicles--rather than sending data to centralized cloud servers. This paradigm shift enables real-time, privacy-preserving, and cost-effective AI deployment.
 
 ### Definition
 
@@ -31,7 +31,7 @@
 
 | **Metric** | **Value** |
 |------------|-----------|
-| Global Edge AI Market | $45.6B (2025) → $112.8B (2030) |
+| Global Edge AI Market | $45.6B (2025) --> $112.8B (2030) |
 | CAGR | 19.8% |
 | Primary Drivers | Privacy regulations, latency requirements, bandwidth costs |
 | Adoption Rate | 62% of enterprises deploying edge AI (up from 28% in 2023) |
@@ -44,51 +44,51 @@
 
 **Traditional Cloud AI**:
 ```
-Device → Internet → Cloud Server (GPU) → Inference → Response → Device
+Device --> Internet --> Cloud Server (GPU) --> Inference --> Response --> Device
 Latency: 500-2000ms
 ```
 
 **Edge AI**:
 ```
-Device → On-Device Inference → Response
+Device --> On-Device Inference --> Response
 Latency: 5-50ms (10-100x faster)
 ```
 
 ### Visual Comparison
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    CLOUD AI                                 │
-└─────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|                    CLOUD AI                                 |
++-----------------------------------------------------------------+
 
-[Device] ──┐
-           │ Upload
-[Device] ──┤ Data      [Internet]      ┌──────────┐
-           │ ────────────────────────> │  Cloud   │
-[Device] ──┘ (100-500ms)                │ GPU Farm │
-                                        └──────────┘
-                                             │
+[Device] ----+
+           | Upload
+[Device] --| Data      [Internet]      +--------------+
+           | ------------------------> |  Cloud   |
+[Device] ----+ (100-500ms)                | GPU Farm |
+                                        +--------------+
+                                             |
                                         Inference
                                         (50-500ms)
-                                             │
-[Device] <──────────────────────────────────┘
+                                             |
+[Device] <------------------------------------+
            Download Results
            (100-500ms)
 
 Total: 250-1500ms
 
 
-┌─────────────────────────────────────────────────────────────┐
-│                     EDGE AI                                 │
-└─────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|                     EDGE AI                                 |
++-----------------------------------------------------------------+
 
 [Device with AI Chip]
-    │
-    ├─> Capture Data (0-5ms)
-    │
-    ├─> On-Device Inference (5-50ms)
-    │
-    └─> Action/Display (0-5ms)
+    |
+    +---> Capture Data (0-5ms)
+    |
+    +---> On-Device Inference (5-50ms)
+    |
+    +---> Action/Display (0-5ms)
 
 Total: 10-60ms (10-25x faster)
 ```
@@ -154,13 +154,13 @@ for i in range(100):
     edge_inference(np.random.rand(224, 224, 3))
     edge_times.append((time.time() - start) * 1000)
 
-print(f"Cloud latency: {np.mean(cloud_times):.1f}ms (±{np.std(cloud_times):.1f})")
-print(f"Edge latency: {np.mean(edge_times):.1f}ms (±{np.std(edge_times):.1f})")
+print(f"Cloud latency: {np.mean(cloud_times):.1f}ms (+/-{np.std(cloud_times):.1f})")
+print(f"Edge latency: {np.mean(edge_times):.1f}ms (+/-{np.std(edge_times):.1f})")
 print(f"Speedup: {np.mean(cloud_times) / np.mean(edge_times):.1f}x")
 
 # Output:
-# Cloud latency: 502.3ms (±47.2)
-# Edge latency: 25.1ms (±2.3)
+# Cloud latency: 502.3ms (+/-47.2)
+# Edge latency: 25.1ms (+/-2.3)
 # Speedup: 20.0x
 ```
 
@@ -178,13 +178,13 @@ print(f"Speedup: {np.mean(cloud_times) / np.mean(edge_times):.1f}x")
 
 **Cloud AI**:
 ```
-Your face photo → Uploaded to company server → Processed → Result returned
+Your face photo --> Uploaded to company server --> Processed --> Result returned
 Security concerns: Data breach, unauthorized access, government surveillance
 ```
 
 **Edge AI**:
 ```
-Your face photo → Processed locally on YOUR device → Result
+Your face photo --> Processed locally on YOUR device --> Result
 Data NEVER leaves your device
 ```
 
@@ -277,14 +277,14 @@ response = assistant.process_voice_command(microphone_audio)
 
 **Cloud Processing**:
 ```
-Data: 1000 cameras × 2 Mbps × 86,400 sec/day = 172.8 TB/day
-Bandwidth cost: 172.8 TB × $0.09/GB = $15,552/day = $466,560/month
+Data: 1000 cameras x 2 Mbps x 86,400 sec/day = 172.8 TB/day
+Bandwidth cost: 172.8 TB x $0.09/GB = $15,552/day = $466,560/month
 ```
 
 **Edge Processing**:
 ```
 Data: Only alerts sent to cloud (1% of data)
-Bandwidth: 1.728 TB/day × $0.09/GB = $155/day = $4,660/month
+Bandwidth: 1.728 TB/day x $0.09/GB = $155/day = $4,660/month
 
 Savings: $461,900/month (99% reduction)
 ```
@@ -323,15 +323,15 @@ class SmartCamera:
 
 **Cloud AI** (10,000 devices, 1M inferences/day):
 ```
-API costs: $0.002/inference × 1M × 365 × 5 = $3,650,000
-Bandwidth: $50,000/month × 60 months = $3,000,000
+API costs: $0.002/inference x 1M x 365 x 5 = $3,650,000
+Bandwidth: $50,000/month x 60 months = $3,000,000
 Total: $6,650,000
 ```
 
 **Edge AI** (10,000 devices, 1M inferences/day):
 ```
-Hardware: $50/device × 10,000 = $500,000 (one-time)
-Maintenance: $10,000/month × 60 = $600,000
+Hardware: $50/device x 10,000 = $500,000 (one-time)
+Maintenance: $10,000/month x 60 = $600,000
 Total: $1,100,000
 
 Savings: $5,550,000 (83% reduction)
@@ -617,11 +617,11 @@ while True:
 
 ### 1. Quantization (INT8, INT4)
 
-**Concept**: Reduce precision from FP32 → INT8 → INT4
+**Concept**: Reduce precision from FP32 --> INT8 --> INT4
 
 **Benefits**:
-- **4x smaller** model size (FP32 → INT8)
-- **8x smaller** model size (FP32 → INT4)
+- **4x smaller** model size (FP32 --> INT8)
+- **8x smaller** model size (FP32 --> INT4)
 - **2-4x faster** inference
 - **<1%** accuracy degradation (with proper calibration)
 
@@ -658,9 +658,9 @@ with open('resnet50_int8.tflite', 'wb') as f:
     f.write(tflite_quant_model)
 
 # Results:
-# Model size: 98MB → 25MB (4x reduction)
-# Inference: 45ms → 12ms (3.75x speedup)
-# Accuracy: 76.1% → 75.8% (-0.3% degradation)
+# Model size: 98MB --> 25MB (4x reduction)
+# Inference: 45ms --> 12ms (3.75x speedup)
+# Accuracy: 76.1% --> 75.8% (-0.3% degradation)
 ```
 
 **Quantization-Aware Training** (QAT):
@@ -688,7 +688,7 @@ converter.optimizations = [tf.lite.Optimize.DEFAULT]
 tflite_model = converter.convert()
 
 # Result: Even better accuracy after QAT
-# Accuracy: 76.1% → 76.0% (only -0.1% degradation)
+# Accuracy: 76.1% --> 76.0% (only -0.1% degradation)
 ```
 
 ---
@@ -747,9 +747,9 @@ converter = tf.lite.TFLiteConverter.from_keras_model(model_for_export)
 tflite_model = converter.convert()
 
 # Results:
-# Model size: 14MB → 7MB (50% reduction from sparsity)
-# Inference: 22ms → 15ms (1.5x speedup)
-# Accuracy: 71.8% → 71.3% (-0.5% degradation)
+# Model size: 14MB --> 7MB (50% reduction from sparsity)
+# Inference: 22ms --> 15ms (1.5x speedup)
+# Accuracy: 71.8% --> 71.3% (-0.5% degradation)
 ```
 
 ---
@@ -758,7 +758,7 @@ tflite_model = converter.convert()
 
 **Concept**: Train small "student" model to mimic large "teacher" model
 
-**Example: Distill BERT → DistilBERT**:
+**Example: Distill BERT --> DistilBERT**:
 ```python
 import torch
 import torch.nn.functional as F
@@ -806,7 +806,7 @@ student = DistilBertModel.from_pretrained("distilbert-base-uncased")  # 66M para
 trainer = DistillationTrainer(teacher, student)
 
 # After training:
-# Size: 110M → 66M (40% reduction)
+# Size: 110M --> 66M (40% reduction)
 # Speed: 2x faster
 # Accuracy: 95% of teacher performance
 ```
@@ -981,7 +981,7 @@ class TorchClassifier {
 
 **Cross-platform, hardware-agnostic**
 
-**Conversion (PyTorch → ONNX)**:
+**Conversion (PyTorch --> ONNX)**:
 ```python
 import torch
 import onnx
@@ -1242,40 +1242,40 @@ class SmartWatch:
 ### End-to-End Workflow
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    EDGE AI PIPELINE                         │
-└─────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|                    EDGE AI PIPELINE                         |
++-----------------------------------------------------------------+
 
 1. MODEL TRAINING (Cloud/Workstation)
-   ├─> Collect data
-   ├─> Train model (PyTorch/TensorFlow)
-   ├─> Validate accuracy
-   └─> Export checkpoint
+   +---> Collect data
+   +---> Train model (PyTorch/TensorFlow)
+   +---> Validate accuracy
+   +---> Export checkpoint
 
 2. MODEL OPTIMIZATION
-   ├─> Quantization (INT8/INT4)
-   ├─> Pruning (remove 30-50% weights)
-   ├─> Knowledge distillation (optional)
-   └─> Architecture optimization
+   +---> Quantization (INT8/INT4)
+   +---> Pruning (remove 30-50% weights)
+   +---> Knowledge distillation (optional)
+   +---> Architecture optimization
 
 3. FRAMEWORK CONVERSION
-   ├─> PyTorch → ONNX → TFLite
-   ├─> PyTorch → CoreML (iOS)
-   ├─> TensorFlow → TFLite → EdgeTPU
-   └─> PyTorch → TensorRT (NVIDIA)
+   +---> PyTorch --> ONNX --> TFLite
+   +---> PyTorch --> CoreML (iOS)
+   +---> TensorFlow --> TFLite --> EdgeTPU
+   +---> PyTorch --> TensorRT (NVIDIA)
 
 4. ON-DEVICE TESTING
-   ├─> Load model on target hardware
-   ├─> Benchmark latency
-   ├─> Measure accuracy degradation
-   ├─> Profile power consumption
-   └─> Iterate if needed
+   +---> Load model on target hardware
+   +---> Benchmark latency
+   +---> Measure accuracy degradation
+   +---> Profile power consumption
+   +---> Iterate if needed
 
 5. DEPLOYMENT
-   ├─> Package model with app/firmware
-   ├─> Deploy to devices
-   ├─> Monitor performance
-   └─> OTA updates as needed
+   +---> Package model with app/firmware
+   +---> Deploy to devices
+   +---> Monitor performance
+   +---> OTA updates as needed
 ```
 
 ### Example Pipeline Script
@@ -1324,7 +1324,7 @@ class EdgeDeploymentPipeline:
         return "model_int8.onnx"
 
     def convert_to_tflite(self, onnx_path):
-        # ONNX → TFLite conversion
+        # ONNX --> TFLite conversion
         # (Simplified - actual conversion more complex)
         converter = tf.lite.TFLiteConverter.from_onnx(onnx_path)
         tflite_model = converter.convert()
@@ -1460,11 +1460,11 @@ class ModelUpdateManager:
 ### 2. Optimize Aggressively
 
 **Checklist**:
-- ✅ Quantize to INT8 (minimum)
-- ✅ Prune 30-50% of weights
-- ✅ Use efficient architectures (MobileNet, EfficientNet)
-- ✅ Compile for target hardware (TensorRT, EdgeTPU)
-- ✅ Profile and identify bottlenecks
+-  Quantize to INT8 (minimum)
+-  Prune 30-50% of weights
+-  Use efficient architectures (MobileNet, EfficientNet)
+-  Compile for target hardware (TensorRT, EdgeTPU)
+-  Profile and identify bottlenecks
 
 ### 3. Test on Real Hardware
 
@@ -1522,7 +1522,7 @@ class EdgeMonitor:
 
 **Model versioning**:
 - Semantic versioning (1.0.0, 1.1.0, 2.0.0)
-- A/B testing new models (10% rollout → 50% → 100%)
+- A/B testing new models (10% rollout --> 50% --> 100%)
 - Rollback capability
 - Delta updates (only changed weights)
 
@@ -1547,7 +1547,7 @@ Edge AI is transforming how we deploy machine learning in 2025:
 5. **Intel Movidius**: Drones, AR glasses
 
 **Optimization Essentials**:
-- Quantization (FP32 → INT8 → INT4)
+- Quantization (FP32 --> INT8 --> INT4)
 - Pruning (remove 30-50% weights)
 - Knowledge distillation (90%+ teacher performance)
 - NAS for efficiency (MobileNet, EfficientNet)

@@ -13,7 +13,7 @@ Model evaluation is a critical component of the machine learning lifecycle that 
 ### 1. **46_Evaluation_Metrics.md**
 Comprehensive guide to evaluation metrics across all ML domains:
 - **Classification Metrics:** Accuracy, precision, recall, F1, ROC-AUC, PR curves
-- **Regression Metrics:** MSE, RMSE, MAE, R², MAPE, quantile loss
+- **Regression Metrics:** MSE, RMSE, MAE, R^2, MAPE, quantile loss
 - **Ranking Metrics:** NDCG, MRR, MAP
 - **NLP Metrics:** BLEU, ROUGE, METEOR, perplexity
 - **Computer Vision Metrics:** IoU, mAP, Dice coefficient
@@ -85,54 +85,54 @@ Detecting and mitigating bias in ML systems:
 ## The Complete Evaluation Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│              1. Define Success Metrics                  │
-│  • Business KPIs → ML metrics mapping                   │
-│  • Stakeholder alignment                                │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│              2. Choose Evaluation Strategy              │
-│  • Cross-validation method                              │
-│  • Train/validation/test split                          │
-│  • Stratification for imbalanced data                   │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│           3. Compute Performance Metrics                │
-│  • Classification: precision, recall, F1, ROC-AUC       │
-│  • Regression: RMSE, MAE, R²                            │
-│  • Domain-specific: BLEU, IoU, etc.                     │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│            4. Assess Model Interpretability             │
-│  • Feature importance (global)                          │
-│  • SHAP values (local + global)                         │
-│  • Partial dependence plots                             │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│              5. Evaluate Fairness and Bias              │
-│  • Demographic parity check                             │
-│  • Equal opportunity assessment                         │
-│  • Disparate impact analysis                            │
-│  • Mitigation if needed                                 │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│             6. Statistical Significance                 │
-│  • Confidence intervals (bootstrap)                     │
-│  • Hypothesis testing (paired t-test)                   │
-│  • Multiple comparison correction                       │
-└─────────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│                7. Documentation & Reporting             │
-│  • Model cards (Mitchell et al., 2019)                  │
-│  • Datasheets for datasets                              │
-│  • EU AI Act technical documentation                    │
-└─────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+|              1. Define Success Metrics                  |
+|  * Business KPIs --> ML metrics mapping                   |
+|  * Stakeholder alignment                                |
++-------------------------------------------------------------+
+                         v
++-------------------------------------------------------------+
+|              2. Choose Evaluation Strategy              |
+|  * Cross-validation method                              |
+|  * Train/validation/test split                          |
+|  * Stratification for imbalanced data                   |
++-------------------------------------------------------------+
+                         v
++-------------------------------------------------------------+
+|           3. Compute Performance Metrics                |
+|  * Classification: precision, recall, F1, ROC-AUC       |
+|  * Regression: RMSE, MAE, R^2                            |
+|  * Domain-specific: BLEU, IoU, etc.                     |
++-------------------------------------------------------------+
+                         v
++-------------------------------------------------------------+
+|            4. Assess Model Interpretability             |
+|  * Feature importance (global)                          |
+|  * SHAP values (local + global)                         |
+|  * Partial dependence plots                             |
++-------------------------------------------------------------+
+                         v
++-------------------------------------------------------------+
+|              5. Evaluate Fairness and Bias              |
+|  * Demographic parity check                             |
+|  * Equal opportunity assessment                         |
+|  * Disparate impact analysis                            |
+|  * Mitigation if needed                                 |
++-------------------------------------------------------------+
+                         v
++-------------------------------------------------------------+
+|             6. Statistical Significance                 |
+|  * Confidence intervals (bootstrap)                     |
+|  * Hypothesis testing (paired t-test)                   |
+|  * Multiple comparison correction                       |
++-------------------------------------------------------------+
+                         v
++-------------------------------------------------------------+
+|                7. Documentation & Reporting             |
+|  * Model cards (Mitchell et al., 2019)                  |
+|  * Datasheets for datasets                              |
+|  * EU AI Act technical documentation                    |
++-------------------------------------------------------------+
 ```
 
 ---
@@ -301,7 +301,7 @@ scorer = make_scorer(f1_score, average='weighted')
 # 3. Cross-validate
 model = RandomForestClassifier(random_state=42)
 scores = cross_val_score(model, X_train, y_train, cv=cv, scoring=scorer)
-print(f"F1 Score: {scores.mean():.3f} ± {scores.std():.3f}")
+print(f"F1 Score: {scores.mean():.3f} +/- {scores.std():.3f}")
 
 # 4. Train final model
 model.fit(X_train, y_train)
@@ -396,12 +396,12 @@ print(f"Demographic Parity Difference: {dpd:.3f}")
 ## Next Steps
 
 After completing this section, you will be able to:
-- ✅ Select appropriate metrics for any ML problem
-- ✅ Implement robust cross-validation strategies
-- ✅ Explain model predictions with SHAP/LIME
-- ✅ Detect and mitigate bias in ML systems
-- ✅ Comply with 2025 regulatory requirements
-- ✅ Document models for production deployment
+-  Select appropriate metrics for any ML problem
+-  Implement robust cross-validation strategies
+-  Explain model predictions with SHAP/LIME
+-  Detect and mitigate bias in ML systems
+-  Comply with 2025 regulatory requirements
+-  Document models for production deployment
 
 **Recommended Next:** 08_MLOps_and_Production for deploying evaluated models to production.
 

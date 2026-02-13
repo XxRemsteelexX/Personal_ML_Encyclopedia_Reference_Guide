@@ -33,11 +33,11 @@ Proven techniques from Kaggle Grandmasters for winning data science competitions
 ## Quick Start
 
 **Competition Workflow:**
-1. **EDA** → Analyze train/test distributions, detect leakage
-2. **Baselines** → Train 5-10 diverse models quickly
-3. **Features** → Generate 100s of features (GroupBy aggregations)
-4. **Ensemble** → Stack or blend top models
-5. **Validate** → Ensure CV correlates with LB
+1. **EDA** --> Analyze train/test distributions, detect leakage
+2. **Baselines** --> Train 5-10 diverse models quickly
+3. **Features** --> Generate 100s of features (GroupBy aggregations)
+4. **Ensemble** --> Stack or blend top models
+5. **Validate** --> Ensure CV correlates with LB
 
 ---
 

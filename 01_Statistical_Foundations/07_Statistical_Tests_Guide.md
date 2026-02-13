@@ -18,25 +18,25 @@ Statistical tests help you determine if differences or relationships in your dat
 ```
 What are you comparing?
 
-├─ TWO CATEGORICAL VARIABLES
-│  └─ Chi-Square Test of Independence
-│
-├─ ONE CATEGORICAL, ONE NUMERICAL
-│  ├─ 2 Groups?
-│  │  ├─ Data normally distributed? → Independent t-test
-│  │  └─ NOT normal or ordinal? → Mann-Whitney U test
-│  │
-│  └─ 3+ Groups?
-│     ├─ Data normally distributed? → One-Way ANOVA
-│     └─ NOT normal or ordinal? → Kruskal-Wallis test
-│
-├─ TWO NUMERICAL VARIABLES
-│  ├─ Linear relationship? → Pearson Correlation
-│  └─ Monotonic (not linear)? → Spearman Correlation
-│
-└─ BEFORE/AFTER MEASUREMENTS (same subjects)
-   ├─ Data normally distributed? → Paired t-test
-   └─ NOT normal? → Wilcoxon Signed-Rank test
++--- TWO CATEGORICAL VARIABLES
+|  +--- Chi-Square Test of Independence
+|
++--- ONE CATEGORICAL, ONE NUMERICAL
+|  +--- 2 Groups?
+|  |  +--- Data normally distributed? --> Independent t-test
+|  |  +--- NOT normal or ordinal? --> Mann-Whitney U test
+|  |
+|  +--- 3+ Groups?
+|     +--- Data normally distributed? --> One-Way ANOVA
+|     +--- NOT normal or ordinal? --> Kruskal-Wallis test
+|
++--- TWO NUMERICAL VARIABLES
+|  +--- Linear relationship? --> Pearson Correlation
+|  +--- Monotonic (not linear)? --> Spearman Correlation
+|
++--- BEFORE/AFTER MEASUREMENTS (same subjects)
+   +--- Data normally distributed? --> Paired t-test
+   +--- NOT normal? --> Wilcoxon Signed-Rank test
 ```
 
 ---
@@ -46,7 +46,7 @@ What are you comparing?
 ### What It Tests
 Whether two categorical variables are independent or associated.
 
-### ✅ When to Use
+###  When to Use
 
 1. **Both variables are categorical**
    - Example: Gender (Male/Female) vs Product Preference (A/B/C)
@@ -59,7 +59,7 @@ Whether two categorical variables are independent or associated.
 3. **Have contingency table data**
    - Counts or frequencies in each cell
 
-### ❌ When NOT to Use
+###  When NOT to Use
 
 1. **Small sample sizes**
    - Expected count < 5 in more than 20% of cells
@@ -75,10 +75,10 @@ Whether two categorical variables are independent or associated.
 
 ### Assumptions
 
-1. ✅ **Independence**: Each observation is independent
-2. ✅ **Expected frequencies ≥ 5**: In at least 80% of cells
-3. ✅ **Mutually exclusive categories**: Each observation in only one cell
-4. ✅ **Random sampling**: Data collected randomly
+1.  **Independence**: Each observation is independent
+2.  **Expected frequencies >= 5**: In at least 80% of cells
+3.  **Mutually exclusive categories**: Each observation in only one cell
+4.  **Random sampling**: Data collected randomly
 
 ### Code Example
 
@@ -98,33 +98,33 @@ print(f"P-value: {p_value:.4f}")
 print(f"Degrees of freedom: {dof}")
 print(f"\nExpected frequencies:\n{expected}")
 
-# Check assumption: expected frequencies ≥ 5
+# Check assumption: expected frequencies >= 5
 if (expected < 5).sum() / expected.size > 0.2:
-    print("⚠️ Warning: >20% of cells have expected count < 5")
+    print("[WARNING] Warning: >20% of cells have expected count < 5")
     print("Consider using Fisher's Exact Test instead")
 
 # Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Reject null hypothesis (p={p_value:.4f} < {alpha})")
+    print(f"\n Reject null hypothesis (p={p_value:.4f} < {alpha})")
     print("Variables are associated")
 else:
-    print(f"\n❌ Fail to reject null hypothesis (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n Fail to reject null hypothesis (p={p_value:.4f} >= {alpha})")
     print("No evidence of association")
 
-# Effect size: Cramér's V
+# Effect size: Cramer's V
 import numpy as np
 n = contingency_table.sum().sum()
 cramers_v = np.sqrt(chi2 / (n * (min(contingency_table.shape) - 1)))
-print(f"\nCramér's V (effect size): {cramers_v:.4f}")
+print(f"\nCramer's V (effect size): {cramers_v:.4f}")
 # Interpretation: 0.1=small, 0.3=medium, 0.5=large
 ```
 
 ### Interpretation
 
 - **p-value < 0.05**: Variables are associated (dependent)
-- **p-value ≥ 0.05**: No evidence of association (independent)
-- **Cramér's V**: Effect size (0=no association, 1=perfect association)
+- **p-value >= 0.05**: No evidence of association (independent)
+- **Cramer's V**: Effect size (0=no association, 1=perfect association)
 
 ---
 
@@ -144,7 +144,7 @@ print(f"\nCramér's V (effect size): {cramers_v:.4f}")
 
 **What:** Compare means between two independent groups
 
-### ✅ When to Use
+###  When to Use
 
 1. **Comparing 2 groups only**
    - Male vs Female salaries
@@ -156,7 +156,7 @@ print(f"\nCramér's V (effect size): {cramers_v:.4f}")
 3. **Groups are independent**
    - Different subjects in each group
 
-### ❌ When NOT to Use
+###  When NOT to Use
 
 1. **More than 2 groups**
    - **Solution:** Use ANOVA
@@ -173,11 +173,11 @@ print(f"\nCramér's V (effect size): {cramers_v:.4f}")
 
 ### Assumptions
 
-1. ✅ **Independence**: Observations are independent
-2. ✅ **Normality**: Data in each group is normally distributed
+1.  **Independence**: Observations are independent
+2.  **Normality**: Data in each group is normally distributed
    - Check with: Shapiro-Wilk test, Q-Q plot, histogram
    - Robust if n > 30 per group (Central Limit Theorem)
-3. ✅ **Equal variances** (for standard t-test)
+3.  **Equal variances** (for standard t-test)
    - Check with: Levene's test
    - If violated, use Welch's t-test
 
@@ -198,7 +198,7 @@ print(f"Normality test - Group A: p={p_norm_a:.4f}")
 print(f"Normality test - Group B: p={p_norm_b:.4f}")
 
 if p_norm_a < 0.05 or p_norm_b < 0.05:
-    print("⚠️ Data not normal, consider Mann-Whitney U test")
+    print("[WARNING] Data not normal, consider Mann-Whitney U test")
 
 # 2. Check equal variances
 _, p_levene = stats.levene(group_a, group_b)
@@ -227,11 +227,11 @@ print(f"Cohen's d (effect size): {cohens_d:.4f}")
 # 5. Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Reject null hypothesis (p={p_value:.4f} < {alpha})")
+    print(f"\n Reject null hypothesis (p={p_value:.4f} < {alpha})")
     print(f"Group means are significantly different")
     print(f"Mean A: {mean_a:.2f}, Mean B: {mean_b:.2f}")
 else:
-    print(f"\n❌ Fail to reject null hypothesis (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n Fail to reject null hypothesis (p={p_value:.4f} >= {alpha})")
     print("No significant difference between groups")
 ```
 
@@ -241,7 +241,7 @@ else:
 
 **What:** Compare means before/after on same subjects
 
-### ✅ When to Use
+###  When to Use
 
 1. **Before/after measurements**
    - Weight before/after diet
@@ -265,7 +265,7 @@ _, p_norm = stats.shapiro(differences)
 print(f"Normality of differences: p={p_norm:.4f}")
 
 if p_norm < 0.05:
-    print("⚠️ Differences not normal, consider Wilcoxon test")
+    print("[WARNING] Differences not normal, consider Wilcoxon test")
 
 # 2. Perform paired t-test
 t_stat, p_value = stats.ttest_rel(before, after)
@@ -277,13 +277,13 @@ print(f"Mean difference: {np.mean(differences):.2f}")
 # 3. Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Significant difference (p={p_value:.4f} < {alpha})")
+    print(f"\n Significant difference (p={p_value:.4f} < {alpha})")
     if np.mean(differences) > 0:
         print("Scores decreased after treatment")
     else:
         print("Scores increased after treatment")
 else:
-    print(f"\n❌ No significant difference (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n No significant difference (p={p_value:.4f} >= {alpha})")
 ```
 
 ---
@@ -293,7 +293,7 @@ else:
 ### What It Tests
 Whether means differ across 3 or more groups
 
-### ✅ When to Use
+###  When to Use
 
 1. **Comparing 3+ groups**
    - Drug A vs Drug B vs Drug C vs Placebo
@@ -303,7 +303,7 @@ Whether means differ across 3 or more groups
 
 3. **Groups are independent**
 
-### ❌ When NOT to Use
+###  When NOT to Use
 
 1. **Only 2 groups**
    - **Solution:** Use t-test (simpler)
@@ -316,9 +316,9 @@ Whether means differ across 3 or more groups
 
 ### Assumptions
 
-1. ✅ **Independence**: Observations are independent
-2. ✅ **Normality**: Each group is normally distributed
-3. ✅ **Homogeneity of variance**: Groups have equal variances
+1.  **Independence**: Observations are independent
+2.  **Normality**: Each group is normally distributed
+3.  **Homogeneity of variance**: Groups have equal variances
 
 ### Code Example
 
@@ -342,7 +342,7 @@ _, p_levene = stats.levene(group1, group2, group3)
 print(f"Levene's test: p={p_levene:.4f}")
 
 if p_levene < 0.05:
-    print("⚠️ Variances not equal, consider Welch's ANOVA or transformation")
+    print("[WARNING] Variances not equal, consider Welch's ANOVA or transformation")
 
 # 2. Perform One-Way ANOVA
 f_stat, p_value = stats.f_oneway(group1, group2, group3)
@@ -353,12 +353,12 @@ print(f"P-value: {p_value:.4f}")
 # 3. Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Reject null hypothesis (p={p_value:.4f} < {alpha})")
+    print(f"\n Reject null hypothesis (p={p_value:.4f} < {alpha})")
     print("At least one group mean is different")
-    print("\n⚠️ ANOVA doesn't tell you WHICH groups differ")
-    print("→ Perform post-hoc tests (e.g., Tukey HSD)")
+    print("\n[WARNING] ANOVA doesn't tell you WHICH groups differ")
+    print("--> Perform post-hoc tests (e.g., Tukey HSD)")
 else:
-    print(f"\n❌ Fail to reject null hypothesis (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n Fail to reject null hypothesis (p={p_value:.4f} >= {alpha})")
     print("No significant difference between groups")
 
 # 4. Post-hoc test: Tukey HSD (if ANOVA significant)
@@ -386,7 +386,7 @@ if p_value < alpha:
 
 **What:** Non-parametric alternative to independent t-test
 
-### ✅ When to Use
+###  When to Use
 
 1. **Comparing 2 independent groups**
 2. **Data NOT normally distributed**
@@ -411,10 +411,10 @@ print(f"P-value: {p_value:.4f}")
 # Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Significant difference (p={p_value:.4f} < {alpha})")
+    print(f"\n Significant difference (p={p_value:.4f} < {alpha})")
     print("Groups have different distributions")
 else:
-    print(f"\n❌ No significant difference (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n No significant difference (p={p_value:.4f} >= {alpha})")
 ```
 
 **Advantages:**
@@ -432,7 +432,7 @@ else:
 
 **What:** Non-parametric alternative to ANOVA
 
-### ✅ When to Use
+###  When to Use
 
 1. **Comparing 3+ groups**
 2. **Data NOT normally distributed**
@@ -454,11 +454,11 @@ print(f"P-value: {p_value:.4f}")
 # Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Significant difference (p={p_value:.4f} < {alpha})")
+    print(f"\n Significant difference (p={p_value:.4f} < {alpha})")
     print("At least one group is different")
-    print("→ Perform post-hoc tests (e.g., Dunn's test)")
+    print("--> Perform post-hoc tests (e.g., Dunn's test)")
 else:
-    print(f"\n❌ No significant difference (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n No significant difference (p={p_value:.4f} >= {alpha})")
 ```
 
 ---
@@ -467,7 +467,7 @@ else:
 
 **What:** Non-parametric alternative to paired t-test
 
-### ✅ When to Use
+###  When to Use
 
 1. **Paired/before-after data**
 2. **Data NOT normally distributed**
@@ -487,9 +487,9 @@ print(f"P-value: {p_value:.4f}")
 # Interpret
 alpha = 0.05
 if p_value < alpha:
-    print(f"\n✅ Significant change (p={p_value:.4f} < {alpha})")
+    print(f"\n Significant change (p={p_value:.4f} < {alpha})")
 else:
-    print(f"\n❌ No significant change (p={p_value:.4f} ≥ {alpha})")
+    print(f"\n No significant change (p={p_value:.4f} >= {alpha})")
 ```
 
 ---
@@ -509,8 +509,8 @@ Comparing two versions (A vs B) to determine which performs better.
 
 1. **Baseline conversion rate**: Current conversion rate (e.g., 5%)
 2. **Minimum Detectable Effect (MDE)**: Smallest difference worth detecting (e.g., 10% relative lift)
-3. **Statistical significance (α)**: Probability of false positive (typically 0.05 = 5%)
-4. **Statistical power (1-β)**: Probability of detecting true effect (typically 0.80 = 80%)
+3. **Statistical significance (alpha)**: Probability of false positive (typically 0.05 = 5%)
+4. **Statistical power (1-beta)**: Probability of detecting true effect (typically 0.80 = 80%)
 
 ### Code Example
 
@@ -673,11 +673,11 @@ print(f"P-value: {results['p_value']:.4f}")
 print(f"95% CI: [{results['ci_lower']*100:.2f}%, {results['ci_upper']*100:.2f}%]")
 
 if results['significant']:
-    print(f"\n✅ Statistically significant (p < 0.05)")
+    print(f"\n Statistically significant (p < 0.05)")
     print(f"Variant B {'increases' if results['relative_lift'] > 0 else 'decreases'} "
           f"conversion by {abs(results['relative_lift']):.2f}%")
 else:
-    print(f"\n❌ Not statistically significant (p ≥ 0.05)")
+    print(f"\n Not statistically significant (p >= 0.05)")
     print("Continue test or accept no difference")
 ```
 
@@ -687,13 +687,13 @@ else:
 
 ### Pitfall 1: Peeking (Multiple Testing)
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Checking results every day and stopping when p < 0.05
 # This inflates false positive rate!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Wait until planned sample size is reached
 # Use sequential testing methods if must peek
@@ -701,12 +701,12 @@ else:
 
 ### Pitfall 2: Ignoring Sample Size
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # "Let's run test for 1 week regardless of traffic"
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Calculate required sample size first
 # Run until sample size is reached (even if > 1 week)
@@ -714,13 +714,13 @@ else:
 
 ### Pitfall 3: Testing Too Many Variants
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Testing A vs B vs C vs D vs E simultaneously
 # Needs 5x more traffic, increases false positive rate
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Test 2 variants at a time
 # Use multivariate testing frameworks if needed
@@ -728,12 +728,12 @@ else:
 
 ### Pitfall 4: Stopping Too Early
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Stopping at p=0.049 after 3 days
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Run for at least 2 weeks
 # Reach planned sample size
@@ -744,7 +744,7 @@ else:
 
 **Issue:** Users click new design out of curiosity, not genuine preference
 
-✅ **Solution:**
+ **Solution:**
 - Run test for at least 2-4 weeks
 - Segment new vs returning users
 - Monitor metrics over time
@@ -772,22 +772,22 @@ else:
 ```
 Step 1: What type of variables?
 
-├─ TWO CATEGORICAL → Chi-Square Test
-│
-├─ ONE CATEGORICAL + ONE CONTINUOUS
-│  └─ How many groups?
-│     ├─ 2 GROUPS
-│     │  └─ Paired or independent?
-│     │     ├─ Independent
-│     │     │  └─ Normal? → t-test | Not normal? → Mann-Whitney U
-│     │     └─ Paired
-│     │        └─ Normal? → Paired t-test | Not normal? → Wilcoxon
-│     │
-│     └─ 3+ GROUPS
-│        └─ Normal? → ANOVA | Not normal? → Kruskal-Wallis
-│
-└─ TWO CONTINUOUS
-   └─ Linear relationship? → Pearson | Monotonic? → Spearman
++--- TWO CATEGORICAL --> Chi-Square Test
+|
++--- ONE CATEGORICAL + ONE CONTINUOUS
+|  +--- How many groups?
+|     +--- 2 GROUPS
+|     |  +--- Paired or independent?
+|     |     +--- Independent
+|     |     |  +--- Normal? --> t-test | Not normal? --> Mann-Whitney U
+|     |     +--- Paired
+|     |        +--- Normal? --> Paired t-test | Not normal? --> Wilcoxon
+|     |
+|     +--- 3+ GROUPS
+|        +--- Normal? --> ANOVA | Not normal? --> Kruskal-Wallis
+|
++--- TWO CONTINUOUS
+   +--- Linear relationship? --> Pearson | Monotonic? --> Spearman
 ```
 
 ---
@@ -796,7 +796,7 @@ Step 1: What type of variables?
 
 ### Before Running Any Test:
 - [ ] Define null hypothesis (H0) and alternative hypothesis (H1)
-- [ ] Set significance level (α = 0.05 typically)
+- [ ] Set significance level (alpha = 0.05 typically)
 - [ ] Calculate required sample size (for A/B tests)
 - [ ] Check test assumptions
 - [ ] Choose appropriate test based on data type
@@ -805,7 +805,7 @@ Step 1: What type of variables?
 - [ ] Check assumptions are met (normality, independence, etc.)
 - [ ] Use appropriate test statistic
 - [ ] Calculate p-value
-- [ ] Report effect size (Cohen's d, Cramér's V, etc.)
+- [ ] Report effect size (Cohen's d, Cramer's V, etc.)
 - [ ] Construct confidence intervals
 
 ### After Test:

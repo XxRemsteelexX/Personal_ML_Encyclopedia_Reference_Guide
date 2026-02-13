@@ -18,7 +18,7 @@ Natural Language Processing (NLP) has evolved dramatically from traditional stat
 ### The Evolution
 
 ```
-Traditional NLP → Word Embeddings → RNN/LSTM → Transformers → LLMs
+Traditional NLP --> Word Embeddings --> RNN/LSTM --> Transformers --> LLMs
 (2000s)          (2013-2015)       (2015-2018)  (2017-now)    (2023-now)
 ```
 
@@ -39,29 +39,29 @@ Traditional NLP → Word Embeddings → RNN/LSTM → Transformers → LLMs
 ```
 Start: What's your NLP task?
 
-├─ Simple text classification with <10K samples?
-│  └─ Use: TF-IDF + Logistic Regression / Naive Bayes
-│
-├─ Need embeddings for downstream task?
-│  ├─ Have GPU + large dataset?
-│  │  └─ Use: Fine-tune BERT embeddings
-│  └─ Limited compute?
-│     └─ Use: Pre-trained Word2Vec/GloVe
-│
-├─ Text generation (stories, code, etc)?
-│  ├─ Need best quality?
-│  │  └─ Use: GPT-based models (GPT-4, GPT-3.5)
-│  └─ Need to self-host?
-│     └─ Use: Open-source LLMs (Llama, Mistral)
-│
-├─ Text understanding (classification, NER, Q&A)?
-│  └─ Use: BERT-based models
-│
-├─ Multi-task (translation, summarization, Q&A)?
-│  └─ Use: T5 or Flan-T5
-│
-└─ Time-series text data (sensor logs, monitoring)?
-   └─ Consider: LSTM (specialized use case)
++--- Simple text classification with <10K samples?
+|  +--- Use: TF-IDF + Logistic Regression / Naive Bayes
+|
++--- Need embeddings for downstream task?
+|  +--- Have GPU + large dataset?
+|  |  +--- Use: Fine-tune BERT embeddings
+|  +--- Limited compute?
+|     +--- Use: Pre-trained Word2Vec/GloVe
+|
++--- Text generation (stories, code, etc)?
+|  +--- Need best quality?
+|  |  +--- Use: GPT-based models (GPT-4, GPT-3.5)
+|  +--- Need to self-host?
+|     +--- Use: Open-source LLMs (Llama, Mistral)
+|
++--- Text understanding (classification, NER, Q&A)?
+|  +--- Use: BERT-based models
+|
++--- Multi-task (translation, summarization, Q&A)?
+|  +--- Use: T5 or Flan-T5
+|
++--- Time-series text data (sensor logs, monitoring)?
+   +--- Consider: LSTM (specialized use case)
 ```
 
 ---
@@ -71,9 +71,9 @@ Start: What's your NLP task?
 ### What They Are
 
 - **Bag-of-Words (BoW):** Count word frequencies
-- **TF-IDF:** Weight words by importance (term frequency × inverse document frequency)
+- **TF-IDF:** Weight words by importance (term frequency x inverse document frequency)
 
-### ✅ When to Use Traditional NLP
+###  When to Use Traditional NLP
 
 1. **Small datasets (<10,000 samples)**
    - Deep learning needs more data
@@ -96,7 +96,7 @@ Start: What's your NLP task?
    - Can see exact words/features used
    - Easy to debug
 
-### ❌ When NOT to Use Traditional NLP
+###  When NOT to Use Traditional NLP
 
 1. **Need semantic understanding**
    - TF-IDF: "king" and "monarch" are different words
@@ -131,12 +131,12 @@ Convert words to dense vectors where similar words have similar vectors.
 | Feature | Word2Vec | GloVe | FastText |
 |---------|----------|-------|----------|
 | **Training Method** | Predictive (neural net) | Count-based (matrix factorization) | Predictive + subword |
-| **Handles OOV** | ❌ No | ❌ No | ✅ Yes (subword vectors) |
+| **Handles OOV** |  No |  No |  Yes (subword vectors) |
 | **Speed** | Fast | Faster | Slower |
-| **Pretrained Available** | ✅ Yes (Google News 300d) | ✅ Yes (Wikipedia, Common Crawl) | ✅ Yes (157 languages) |
+| **Pretrained Available** |  Yes (Google News 300d) |  Yes (Wikipedia, Common Crawl) |  Yes (157 languages) |
 | **Best For** | General use | Global statistics important | Morphologically rich languages, typos |
 
-### ✅ When to Use Static Word Embeddings
+###  When to Use Static Word Embeddings
 
 1. **Limited compute (no GPU)**
    - Pretrained embeddings + simple model
@@ -154,7 +154,7 @@ Convert words to dense vectors where similar words have similar vectors.
    - FastText handles word variations well
    - Example: German, Turkish, Finnish
 
-### ❌ When NOT to Use Static Embeddings (Use Transformers Instead)
+###  When NOT to Use Static Embeddings (Use Transformers Instead)
 
 1. **Need context-dependent meanings**
    - Word2Vec: "bank" always same vector
@@ -187,13 +187,13 @@ Convert words to dense vectors where similar words have similar vectors.
 | Feature | LSTM | Transformer |
 |---------|------|-------------|
 | **Processing** | Sequential (slow) | Parallel (fast) |
-| **Long-range dependencies** | ❌ Vanishing gradient issues | ✅ Attention captures all positions |
+| **Long-range dependencies** |  Vanishing gradient issues |  Attention captures all positions |
 | **Training Speed** | Slow (no parallelization) | Fast (GPU-optimized) |
 | **Context** | Unidirectional (or bidirectional LSTM) | Bidirectional by default |
 | **Memory** | Hidden state (limited) | Full attention matrix |
-| **2025 Status** | ⚠️ Mostly obsolete | ✅ Standard |
+| **2025 Status** | [WARNING] Mostly obsolete |  Standard |
 
-### ✅ When to Use LSTM (Rare in 2025)
+###  When to Use LSTM (Rare in 2025)
 
 1. **Time-series data (NOT text)**
    - Sensor readings, stock prices
@@ -208,11 +208,11 @@ Convert words to dense vectors where similar words have similar vectors.
    - Can't wait for full sequence
 
 4. **Very long sequences (>10K tokens)**
-   - Transformer attention = O(n²) memory
+   - Transformer attention = O(n^2) memory
    - LSTM = O(1) memory per step
    - **Note:** Long-context transformers (e.g., ModernBERT 8K) are replacing this use case
 
-### ✅ When to Use Transformers (Default Choice)
+###  When to Use Transformers (Default Choice)
 
 1. **Any standard NLP task**
    - Text classification, NER, Q&A, summarization
@@ -223,7 +223,7 @@ Convert words to dense vectors where similar words have similar vectors.
    - Training/inference much faster
 
 3. **Need bidirectional context**
-   - "The bank by the river" – needs both directions
+   - "The bank by the river" - needs both directions
    - Transformers capture this naturally
 
 4. **Have 1K+ samples or can use pretrained models**
@@ -234,7 +234,7 @@ Convert words to dense vectors where similar words have similar vectors.
    - Industry standard
    - Extensive tooling (HuggingFace)
 
-### ❌ When NOT to Use LSTM
+###  When NOT to Use LSTM
 
 **In 2025, LSTMs are mostly obsolete for NLP.** Transformers have replaced them for almost all use cases.
 
@@ -260,25 +260,25 @@ Convert words to dense vectors where similar words have similar vectors.
 ```
 What's your task?
 
-├─ Text Classification / NER / Q&A (understanding)?
-│  └─ Use: BERT
-│     Models: bert-base-uncased, roberta-base, distilbert
-│
-├─ Text Generation (stories, code, chat)?
-│  └─ Use: GPT
-│     Models: gpt-3.5-turbo, gpt-4, llama, mistral
-│
-├─ Translation / Summarization / Multi-task?
-│  └─ Use: T5 or Flan-T5
-│
-├─ Sentiment Analysis?
-│  └─ Use: RoBERTa or DistilBERT (fine-tuned)
-│
-├─ Named Entity Recognition?
-│  └─ Use: BERT or RoBERTa
-│
-└─ Question Answering?
-   └─ Use: BERT or T5
++--- Text Classification / NER / Q&A (understanding)?
+|  +--- Use: BERT
+|     Models: bert-base-uncased, roberta-base, distilbert
+|
++--- Text Generation (stories, code, chat)?
+|  +--- Use: GPT
+|     Models: gpt-3.5-turbo, gpt-4, llama, mistral
+|
++--- Translation / Summarization / Multi-task?
+|  +--- Use: T5 or Flan-T5
+|
++--- Sentiment Analysis?
+|  +--- Use: RoBERTa or DistilBERT (fine-tuned)
+|
++--- Named Entity Recognition?
+|  +--- Use: BERT or RoBERTa
+|
++--- Question Answering?
+   +--- Use: BERT or T5
 ```
 
 ---
@@ -294,7 +294,7 @@ BERT reads text bidirectionally (left AND right context) to understand meaning.
 - BERT sees: ["The", "bank", "by", "the", "river"] all at once
 - Understands "bank" = river bank (not financial bank)
 
-### ✅ When to Use BERT
+###  When to Use BERT
 
 1. **Text classification**
    - Sentiment analysis, topic classification
@@ -320,7 +320,7 @@ BERT reads text bidirectionally (left AND right context) to understand meaning.
    - Medical, legal, scientific text
    - BioBERT, SciBERT, LegalBERT
 
-### ❌ When NOT to Use BERT
+###  When NOT to Use BERT
 
 1. **Text generation**
    - BERT is encoder-only (no decoder)
@@ -358,7 +358,7 @@ models = {
 
 GPT reads text left-to-right and generates next tokens. Optimized for text generation.
 
-### ✅ When to Use GPT
+###  When to Use GPT
 
 1. **Text generation**
    - Creative writing, stories
@@ -381,7 +381,7 @@ GPT reads text left-to-right and generates next tokens. Optimized for text gener
    - Chain-of-thought prompting
    - Multi-step problem solving
 
-### ❌ When NOT to Use GPT
+###  When NOT to Use GPT
 
 1. **Simple classification**
    - Overkill and expensive
@@ -416,11 +416,11 @@ GPT reads text left-to-right and generates next tokens. Optimized for text gener
 ### What It Is
 
 T5 treats ALL NLP tasks as text-to-text:
-- Translation: "translate English to French: Hello" → "Bonjour"
-- Summarization: "summarize: [long text]" → "[summary]"
-- Classification: "sentiment: I love this!" → "positive"
+- Translation: "translate English to French: Hello" --> "Bonjour"
+- Summarization: "summarize: [long text]" --> "[summary]"
+- Classification: "sentiment: I love this!" --> "positive"
 
-### ✅ When to Use T5
+###  When to Use T5
 
 1. **Need one model for multiple tasks**
    - Translation, summarization, Q&A
@@ -442,7 +442,7 @@ T5 treats ALL NLP tasks as text-to-text:
    - Flan-T5 fine-tuned on instructions
    - Good zero-shot performance
 
-### ❌ When NOT to Use T5
+###  When NOT to Use T5
 
 1. **Simple classification**
    - Slower than BERT encoder
@@ -488,14 +488,14 @@ models = {
 
 | Model Type | Lowercase? | Remove Punctuation? | Lemmatize/Stem? | Tokenizer |
 |------------|-----------|---------------------|-----------------|-----------|
-| **TF-IDF** | ✅ Yes | ✅ Yes | ✅ Yes | Manual or NLTK |
+| **TF-IDF** |  Yes |  Yes |  Yes | Manual or NLTK |
 | **Word2Vec** | Optional | Optional | Optional | Gensim tokenizer |
-| **LSTM (manual)** | ✅ Yes | ⚠️ Maybe | ⚠️ Maybe | Custom |
-| **BERT** | ❌ Use model tokenizer | ❌ Keep it | ❌ Not needed | `BertTokenizer` |
-| **GPT** | ❌ Use model tokenizer | ❌ Keep it | ❌ Not needed | `GPT2Tokenizer` |
-| **T5** | ❌ Use model tokenizer | ❌ Keep it | ❌ Not needed | `T5Tokenizer` |
+| **LSTM (manual)** |  Yes | [WARNING] Maybe | [WARNING] Maybe | Custom |
+| **BERT** |  Use model tokenizer |  Keep it |  Not needed | `BertTokenizer` |
+| **GPT** |  Use model tokenizer |  Keep it |  Not needed | `GPT2Tokenizer` |
+| **T5** |  Use model tokenizer |  Keep it |  Not needed | `T5Tokenizer` |
 
-### ✅ Correct BERT Preprocessing (2025)
+###  Correct BERT Preprocessing (2025)
 
 ```python
 from transformers import BertTokenizer, BertForSequenceClassification
@@ -505,7 +505,7 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 # Raw text - NO manual preprocessing needed!
 texts = [
-    "I love this movie! 😊",
+    "I love this movie! ",
     "This is terrible... worst ever.",
     "It's okay, nothing special"
 ]
@@ -525,7 +525,7 @@ encoded = tokenizer(
 # - token_type_ids: segment IDs (for sentence pairs)
 ```
 
-### ❌ Common Mistakes
+###  Common Mistakes
 
 **Mistake 1: Over-preprocessing**
 ```python
@@ -590,27 +590,27 @@ text = text.replace('[REDACTED]', '')  # Remove placeholders
 ```
 Start: Do you have a NLP task?
 
-├─ Have <1K samples?
-│  └─ Use: Pretrained model + few-shot prompting (GPT-4)
-│     OR: Pretrained embeddings → simple classifier
-│
-├─ Have 1K-10K samples?
-│  └─ Use: Fine-tune pretrained model (BERT, T5)
-│     - Start with checkpoint (e.g., bert-base-uncased)
-│     - Train on your data (few epochs)
-│
-├─ Have 10K-100K samples?
-│  └─ Use: Fine-tune pretrained model
-│     - Best results with domain-specific pretraining
-│     - Example: BioBERT for medical, LegalBERT for law
-│
-├─ Have 1M+ samples + unique domain?
-│  └─ Consider: Continue pretraining → fine-tune
-│     - Example: Train on your domain corpus first
-│     - Then fine-tune on task
-│
-└─ Have 100M+ samples + billions in budget?
-   └─ Consider: Train from scratch (rare!)
++--- Have <1K samples?
+|  +--- Use: Pretrained model + few-shot prompting (GPT-4)
+|     OR: Pretrained embeddings --> simple classifier
+|
++--- Have 1K-10K samples?
+|  +--- Use: Fine-tune pretrained model (BERT, T5)
+|     - Start with checkpoint (e.g., bert-base-uncased)
+|     - Train on your data (few epochs)
+|
++--- Have 10K-100K samples?
+|  +--- Use: Fine-tune pretrained model
+|     - Best results with domain-specific pretraining
+|     - Example: BioBERT for medical, LegalBERT for law
+|
++--- Have 1M+ samples + unique domain?
+|  +--- Consider: Continue pretraining --> fine-tune
+|     - Example: Train on your domain corpus first
+|     - Then fine-tune on task
+|
++--- Have 100M+ samples + billions in budget?
+   +--- Consider: Train from scratch (rare!)
       - Only for new languages or truly novel domains
 ```
 
@@ -867,7 +867,7 @@ trainer = Trainer(
 
 ---
 
-## 10.13 Common NLP Tasks → Model Selection
+## 10.13 Common NLP Tasks --> Model Selection
 
 ### Task-to-Model Quick Reference
 
@@ -890,13 +890,13 @@ trainer = Trainer(
 
 ### Pitfall 1: Not Using Model-Specific Tokenizer
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 text = text.lower().split()
 model.predict(text)  # Won't work!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 from transformers import AutoTokenizer
 
@@ -909,13 +909,13 @@ model(**encoded)
 
 ### Pitfall 2: Forgetting model.eval() During Inference
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Dropout is still active!
 predictions = model(inputs)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 model.eval()  # Turn off dropout
 with torch.no_grad():  # Disable gradient computation
@@ -930,7 +930,7 @@ with torch.no_grad():  # Disable gradient computation
 - Train accuracy: 99%
 - Val accuracy: 70%
 
-✅ **Solutions:**
+ **Solutions:**
 ```python
 # 1. Reduce epochs
 num_train_epochs=2  # Instead of 5
@@ -957,9 +957,9 @@ augmented_text = aug.augment(text)
 
 ### Pitfall 4: Not Handling Class Imbalance
 
-❌ **Problem:** 95% class A, 5% class B → Model predicts all A
+ **Problem:** 95% class A, 5% class B --> Model predicts all A
 
-✅ **Solutions:**
+ **Solutions:**
 ```python
 # 1. Class weights
 from sklearn.utils.class_weight import compute_class_weight
@@ -990,13 +990,13 @@ f1 = f1_score(y_true, y_pred, average='weighted')
 
 ### Pitfall 5: Truncating Long Documents Incorrectly
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Truncates to 512 tokens, loses end of document
 encoded = tokenizer(long_text, truncation=True, max_length=512)
 ```
 
-✅ **Better: Sliding Window**
+ **Better: Sliding Window**
 ```python
 def split_long_text(text, tokenizer, max_length=512, stride=128):
     """Split long text into overlapping chunks"""
@@ -1203,9 +1203,9 @@ print(summary[0]['summary_text'])
 - [ ] Handle long documents (truncate, sliding window, or Longformer)
 
 ### Model Selection:
-- [ ] Small data (<1K) → Few-shot GPT-4 or pretrained
-- [ ] Medium data (1K-100K) → Fine-tune BERT/RoBERTa
-- [ ] Large data (100K+) → Fine-tune or domain-adapt
+- [ ] Small data (<1K) --> Few-shot GPT-4 or pretrained
+- [ ] Medium data (1K-100K) --> Fine-tune BERT/RoBERTa
+- [ ] Large data (100K+) --> Fine-tune or domain-adapt
 - [ ] Use DistilBERT for speed, RoBERTa for accuracy
 
 ### Training:

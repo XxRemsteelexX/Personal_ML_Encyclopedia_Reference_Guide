@@ -20,9 +20,9 @@
 
 **The fundamental tradeoff:**
 ```
-Test Error = Bias² + Variance + Irreducible Error
+Test Error = Bias^2 + Variance + Irreducible Error
 
-Regularization ↑ → Bias ↑, Variance ↓
+Regularization ^ --> Bias ^, Variance v
 ```
 
 **Goal:** Find the sweet spot where test error is minimized.
@@ -49,26 +49,26 @@ Neural networks can fit **random labels** perfectly, but generalize poorly.
 
 **Objective function:**
 ```
-L_total(θ) = L(θ) + (λ/2) ||θ||²
+L_total(theta) = L(theta) + (lambda/2) ||theta||^2
 ```
 
 Where:
-- **L(θ):** Original loss function
-- **λ:** Regularization strength
-- **||θ||²:** Sum of squared weights
+- **L(theta):** Original loss function
+- **lambda:** Regularization strength
+- **||theta||^2:** Sum of squared weights
 
 **Gradient:**
 ```
-∇L_total = ∇L(θ) + λθ
+gradL_total = gradL(theta) + lambdatheta
 ```
 
 **Update rule:**
 ```
-θ_{t+1} = θ_t - α(∇L(θ_t) + λθ_t)
-        = (1 - αλ)θ_t - α∇L(θ_t)
+theta_{t+1} = theta_t - alpha(gradL(theta_t) + lambdatheta_t)
+        = (1 - alphalambda)theta_t - alphagradL(theta_t)
 ```
 
-**Interpretation:** Weights "decay" toward zero by factor (1 - αλ) each step.
+**Interpretation:** Weights "decay" toward zero by factor (1 - alphalambda) each step.
 
 **Effect:**
 - Penalizes large weights
@@ -80,7 +80,7 @@ Where:
 optimizer = torch.optim.SGD(
     model.parameters(),
     lr=0.01,
-    weight_decay=1e-4  # λ = 0.0001
+    weight_decay=1e-4  # lambda = 0.0001
 )
 ```
 
@@ -90,18 +90,18 @@ optimizer = torch.optim.SGD(
 
 **Objective function:**
 ```
-L_total(θ) = L(θ) + λ ||θ||₁
+L_total(theta) = L(theta) + lambda ||theta||_1
 ```
 
-Where ||θ||₁ = Σ|θᵢ|
+Where ||theta||_1 = sum|theta_i|
 
 **Gradient (subgradient):**
 ```
-∇L_total = ∇L(θ) + λ sign(θ)
+gradL_total = gradL(theta) + lambda sign(theta)
 ```
 
 **Effect:**
-- Promotes sparsity (many weights → 0)
+- Promotes sparsity (many weights --> 0)
 - Feature selection
 - Bayesian interpretation: Laplacian prior
 
@@ -122,7 +122,7 @@ loss = loss + l1_lambda * l1_norm
 
 **Objective function:**
 ```
-L_total(θ) = L(θ) + λ₁||θ||₁ + λ₂||θ||²
+L_total(theta) = L(theta) + lambda_1||theta||_1 + lambda_2||theta||^2
 ```
 
 **Benefits:**
@@ -203,7 +203,7 @@ For each training example:
 ```
 # Training
 r ~ Bernoulli(p)  # Dropout mask
-y = r ⊙ (Wx + b)   # Element-wise multiplication
+y = r (o) (Wx + b)   # Element-wise multiplication
 
 # Testing (no dropout)
 y = p(Wx + b)      # Scale by p
@@ -213,7 +213,7 @@ y = p(Wx + b)      # Scale by p
 ```
 # Training (scale during training)
 r ~ Bernoulli(p)
-y = (r ⊙ (Wx + b)) / p
+y = (r (o) (Wx + b)) / p
 
 # Testing (no scaling needed)
 y = Wx + b
@@ -230,7 +230,7 @@ y = Wx + b
 
 Expected output during training:
 ```
-E[y] = E[r ⊙ (Wx + b) / p]
+E[y] = E[r (o) (Wx + b) / p]
      = (Wx + b) E[r] / p
      = (Wx + b) p / p
      = Wx + b
@@ -323,8 +323,8 @@ class CNN(nn.Module):
 
 **Implementation:**
 ```
-# Dropout: r ⊙ (Wx)
-# DropConnect: (r ⊙ W)x
+# Dropout: r (o) (Wx)
+# DropConnect: (r (o) W)x
 
 where r is the dropout mask
 ```
@@ -345,7 +345,7 @@ where r is the dropout mask
 **Algorithm:**
 ```
 1. Sample random locations
-2. For each location, drop a block_size × block_size region
+2. For each location, drop a block_size x block_size region
 3. Keep proportion of activations equal to (1 - drop_rate)
 ```
 
@@ -393,30 +393,30 @@ class DropBlock2D(nn.Module):
 
 **Algorithm (training):**
 ```
-# For mini-batch B = {x₁, ..., xₘ}
+# For mini-batch B = {x_1, ..., x_m}
 
 1. Compute batch statistics:
-   μ_B = (1/m) Σᵢ xᵢ
-   σ²_B = (1/m) Σᵢ (xᵢ - μ_B)²
+   mu_B = (1/m) sum_i x_i
+   sigma^2_B = (1/m) sum_i (x_i - mu_B)^2
 
 2. Normalize:
-   x̂ᵢ = (xᵢ - μ_B) / √(σ²_B + ε)
+   x_hat_i = (x_i - mu_B) / sqrt(sigma^2_B + epsilon)
 
 3. Scale and shift (learnable):
-   yᵢ = γx̂ᵢ + β
+   y_i = gammax_hat_i + beta
 ```
 
 Where:
-- **γ, β:** Learnable parameters (scale and shift)
-- **ε:** Small constant for numerical stability (1e-5)
+- **gamma, beta:** Learnable parameters (scale and shift)
+- **epsilon:** Small constant for numerical stability (1e-5)
 
 **Algorithm (testing):**
 ```
 Use running averages computed during training:
-   μ_test = moving_avg(μ_B)
-   σ²_test = moving_avg(σ²_B)
+   mu_test = moving_avg(mu_B)
+   sigma^2_test = moving_avg(sigma^2_B)
 
-   y = γ(x - μ_test) / √(σ²_test + ε) + β
+   y = gamma(x - mu_test) / sqrt(sigma^2_test + epsilon) + beta
 ```
 
 **Why BatchNorm works:**
@@ -430,7 +430,7 @@ Use running averages computed during training:
 
 **Gradient flow:**
 ```
-∂L/∂x = ∂L/∂x̂ * (1/√(σ² + ε)) * (I - (1/m) - (x̂)(x̂)ᵀ/m)
+dL/dx = dL/dx_hat * (1/sqrt(sigma^2 + epsilon)) * (I - (1/m) - (x_hat)(x_hat)^T/m)
 ```
 
 The (I - ...) term prevents gradient explosion.
@@ -476,7 +476,7 @@ class BatchNormNetwork(nn.Module):
 
 **Disadvantages:**
 - Behavior differs between train/test (requires running statistics)
-- Sensitive to batch size (small batches → noisy statistics)
+- Sensitive to batch size (small batches --> noisy statistics)
 - Not suitable for RNNs (LayerNorm preferred)
 - Can hurt performance in some cases (GANs discriminator)
 
@@ -494,14 +494,14 @@ class BatchNormNetwork(nn.Module):
 # For input x with shape (batch, features)
 
 1. Compute statistics for each example:
-   μ = (1/d) Σⱼ xⱼ         # Mean across features
-   σ² = (1/d) Σⱼ (xⱼ - μ)²  # Variance across features
+   mu = (1/d) sum_j x_j         # Mean across features
+   sigma^2 = (1/d) sum_j (x_j - mu)^2  # Variance across features
 
 2. Normalize:
-   x̂ = (x - μ) / √(σ² + ε)
+   x_hat = (x - mu) / sqrt(sigma^2 + epsilon)
 
 3. Scale and shift:
-   y = γx̂ + β
+   y = gammax_hat + beta
 ```
 
 **Key difference from BatchNorm:**
@@ -549,10 +549,10 @@ class TransformerBlock(nn.Module):
 # For input x with shape (batch, channels, height, width)
 
 Normalize each (batch_i, channel_j) independently:
-   μᵢⱼ = mean over (height, width)
-   σ²ᵢⱼ = variance over (height, width)
+   mu_i_j = mean over (height, width)
+   sigma^2_i_j = variance over (height, width)
 
-   x̂ᵢⱼ = (xᵢⱼ - μᵢⱼ) / √(σ²ᵢⱼ + ε)
+   x_hat_i_j = (x_i_j - mu_i_j) / sqrt(sigma^2_i_j + epsilon)
 ```
 
 **When to use:**
@@ -604,10 +604,10 @@ nn.GroupNorm(8, 32)
 
 | Technique | Normalizes Over | Batch-Independent | Use Case |
 |-----------|----------------|-------------------|----------|
-| **BatchNorm** | (batch, height, width) | ❌ | CNNs with large batches |
-| **LayerNorm** | (features) | ✅ | Transformers, RNNs |
-| **InstanceNorm** | (height, width) | ✅ | Style transfer, GANs |
-| **GroupNorm** | (group, height, width) | ✅ | Small batch training |
+| **BatchNorm** | (batch, height, width) |  | CNNs with large batches |
+| **LayerNorm** | (features) |  | Transformers, RNNs |
+| **InstanceNorm** | (height, width) |  | Style transfer, GANs |
+| **GroupNorm** | (group, height, width) |  | Small batch training |
 
 **2025 Recommendation:**
 - **CNNs (batch >= 32):** BatchNorm
@@ -622,7 +622,7 @@ nn.GroupNorm(8, 32)
 
 ### Why Data Augmentation?
 
-**Problem:** Limited training data → overfitting
+**Problem:** Limited training data --> overfitting
 
 **Solution:** Create new training examples by applying transformations.
 
@@ -656,7 +656,7 @@ train_transform = transforms.Compose([
 | Transformation | Effect | When to Use |
 |---------------|--------|-------------|
 | **Horizontal Flip** | Mirror image | Almost always (not for text) |
-| **Rotation** | Rotate ±15° | Natural images |
+| **Rotation** | Rotate +/-15 degrees | Natural images |
 | **Crop** | Random crops | Almost always |
 | **Color Jitter** | Adjust brightness/contrast | Natural images |
 | **Gaussian Blur** | Blur image | Robustness to blur |
@@ -721,14 +721,14 @@ Hard label: [0, 1, 0]  # 100% confident
 
 **Label smoothing formula:**
 ```
-y_smooth = (1 - ε) * y_hard + ε / K
+y_smooth = (1 - epsilon) * y_hard + epsilon / K
 
 where:
-  ε: smoothing parameter (typically 0.1)
+  epsilon: smoothing parameter (typically 0.1)
   K: number of classes
 ```
 
-**Example (K=3, ε=0.1):**
+**Example (K=3, epsilon=0.1):**
 ```
 Hard label:   [0, 1, 0]
 Smooth label: [0.033, 0.933, 0.033]
@@ -777,7 +777,7 @@ loss = criterion(logits, targets)
 - When model is overconfident
 - Modern image classification (2025 standard)
 
-**Typical values:** ε = 0.1 for most tasks
+**Typical values:** epsilon = 0.1 for most tasks
 
 ### Mixup
 
@@ -785,14 +785,14 @@ loss = criterion(logits, targets)
 
 **Algorithm:**
 ```
-1. Sample two examples: (x₁, y₁), (x₂, y₂)
-2. Sample mixing coefficient: λ ~ Beta(α, α)
+1. Sample two examples: (x_1, y_1), (x_2, y_2)
+2. Sample mixing coefficient: lambda ~ Beta(alpha, alpha)
 3. Create mixed example:
-   x_mix = λx₁ + (1-λ)x₂
-   y_mix = λy₁ + (1-λ)y₂
+   x_mix = lambdax_1 + (1-lambda)x_2
+   y_mix = lambday_1 + (1-lambda)y_2
 ```
 
-**Typical hyperparameter:** α = 0.2 or α = 1.0
+**Typical hyperparameter:** alpha = 0.2 or alpha = 1.0
 
 **Effect:**
 - Encourages linear behavior between examples
@@ -849,11 +849,11 @@ for x, y in train_loader:
 
 **Algorithm:**
 ```
-1. Sample two examples: (x₁, y₁), (x₂, y₂)
+1. Sample two examples: (x_1, y_1), (x_2, y_2)
 2. Sample bounding box B (region to cut)
 3. Create mixed example:
-   x_mix = x₁ with region B replaced by corresponding region from x₂
-   y_mix = λy₁ + (1-λ)y₂  where λ = area(B) / area(image)
+   x_mix = x_1 with region B replaced by corresponding region from x_2
+   y_mix = lambday_1 + (1-lambda)y_2  where lambda = area(B) / area(image)
 ```
 
 **PyTorch implementation:**
@@ -1325,8 +1325,8 @@ if __name__ == "__main__":
 # Training
 - Optimizer: AdamW (lr=1e-3, weight_decay=1e-4)
 - Data augmentation: RandAugment or AutoAugment
-- Mixup OR CutMix (α=1.0)
-- Label smoothing (ε=0.1)
+- Mixup OR CutMix (alpha=1.0)
+- Label smoothing (epsilon=0.1)
 - Learning rate: Cosine annealing with warm-up
 ```
 
@@ -1344,7 +1344,7 @@ if __name__ == "__main__":
 - Warm-up: 10% of total steps
 - Learning rate: Linear decay after warm-up
 - Gradient clipping: max_norm=1.0
-- Label smoothing (ε=0.1) for classification
+- Label smoothing (epsilon=0.1) for classification
 ```
 
 ### Summary

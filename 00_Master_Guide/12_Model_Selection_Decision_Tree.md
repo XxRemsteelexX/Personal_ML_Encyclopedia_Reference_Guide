@@ -7,7 +7,7 @@ This is the **ultimate reference guide** integrating all previous sections. Use 
 **What This Guide Covers:**
 - Complete end-to-end ML workflow
 - Model selection decision trees
-- Data type → model mapping
+- Data type --> model mapping
 - Performance vs complexity tradeoffs
 - Quick reference tables
 - Common scenarios and solutions
@@ -18,48 +18,48 @@ This is the **ultimate reference guide** integrating all previous sections. Use 
 
 ```
 1. UNDERSTAND THE PROBLEM
-   ├─ What are you predicting?
-   ├─ Classification, regression, generation?
-   └─ What's the success metric?
+   +--- What are you predicting?
+   +--- Classification, regression, generation?
+   +--- What's the success metric?
 
 2. EXPLORE YOUR DATA
-   ├─ How many samples? (100? 1K? 1M?)
-   ├─ How many features? (10? 100? 10K?)
-   ├─ What types? (numerical, categorical, text, images?)
-   ├─ Missing values? Outliers? Imbalance?
-   └─ Run statistical tests (see Phase 4)
+   +--- How many samples? (100? 1K? 1M?)
+   +--- How many features? (10? 100? 10K?)
+   +--- What types? (numerical, categorical, text, images?)
+   +--- Missing values? Outliers? Imbalance?
+   +--- Run statistical tests (see Phase 4)
 
 3. FEATURE ENGINEERING
-   ├─ Handle missing values
-   ├─ Encode categoricals (see Phase 3)
-   │  ├─ Tree models → Label/Target encoding
-   │  └─ Linear models → One-hot encoding
-   ├─ Scale features (if using linear/neural nets)
-   └─ Create derived features
+   +--- Handle missing values
+   +--- Encode categoricals (see Phase 3)
+   |  +--- Tree models --> Label/Target encoding
+   |  +--- Linear models --> One-hot encoding
+   +--- Scale features (if using linear/neural nets)
+   +--- Create derived features
 
 4. MODEL SELECTION (THIS GUIDE)
-   ├─ Choose based on:
-   │  ├─ Data size
-   │  ├─ Data type
-   │  ├─ Problem type
-   │  └─ Constraints (time, compute, interpretability)
+   +--- Choose based on:
+   |  +--- Data size
+   |  +--- Data type
+   |  +--- Problem type
+   |  +--- Constraints (time, compute, interpretability)
 
 5. TRAINING
-   ├─ Split data (train/val/test)
-   ├─ Handle class imbalance
-   ├─ Hyperparameter tuning
-   └─ Cross-validation
+   +--- Split data (train/val/test)
+   +--- Handle class imbalance
+   +--- Hyperparameter tuning
+   +--- Cross-validation
 
 6. EVALUATION
-   ├─ Right metrics for problem
-   ├─ Test on holdout set
-   ├─ Check for overfitting
-   └─ Statistical significance tests
+   +--- Right metrics for problem
+   +--- Test on holdout set
+   +--- Check for overfitting
+   +--- Statistical significance tests
 
 7. DEPLOYMENT
-   ├─ Model serving
-   ├─ Monitoring
-   └─ A/B testing (see Phase 4)
+   +--- Model serving
+   +--- Monitoring
+   +--- A/B testing (see Phase 4)
 ```
 
 ---
@@ -71,35 +71,35 @@ This is the **ultimate reference guide** integrating all previous sections. Use 
 ```
 What type of problem do you have?
 
-├─── SUPERVISED LEARNING
-│    ├─ Predicting a category (classification)
-│    │  └─ See Section 12.3
-│    │
-│    └─ Predicting a number (regression)
-│       └─ See Section 12.4
-│
-├─── UNSUPERVISED LEARNING
-│    ├─ Finding groups (clustering)
-│    ├─ Reducing dimensions (PCA, t-SNE)
-│    └─ Anomaly detection
-│       └─ See Section 12.5
-│
-├─── GENERATIVE
-│    ├─ Generate images
-│    ├─ Generate text
-│    └─ Generate other data
-│       └─ See Section 12.6
-│
-├─── NATURAL LANGUAGE PROCESSING
-│    ├─ Text classification
-│    ├─ Text generation
-│    ├─ NER, Q&A, etc.
-│    └─ See Section 12.7
-│
-└─── TIME SERIES
-     ├─ Forecasting
-     ├─ Anomaly detection
-     └─ See Section 12.8
++----- SUPERVISED LEARNING
+|    +--- Predicting a category (classification)
+|    |  +--- See Section 12.3
+|    |
+|    +--- Predicting a number (regression)
+|       +--- See Section 12.4
+|
++----- UNSUPERVISED LEARNING
+|    +--- Finding groups (clustering)
+|    +--- Reducing dimensions (PCA, t-SNE)
+|    +--- Anomaly detection
+|       +--- See Section 12.5
+|
++----- GENERATIVE
+|    +--- Generate images
+|    +--- Generate text
+|    +--- Generate other data
+|       +--- See Section 12.6
+|
++----- NATURAL LANGUAGE PROCESSING
+|    +--- Text classification
+|    +--- Text generation
+|    +--- NER, Q&A, etc.
+|    +--- See Section 12.7
+|
++----- TIME SERIES
+     +--- Forecasting
+     +--- Anomaly detection
+     +--- See Section 12.8
 ```
 
 ---
@@ -111,24 +111,24 @@ What type of problem do you have?
 ```
 What type of features do you have?
 
-├─ TABULAR/STRUCTURED DATA (most common)
-│  └─ Go to Step 2: Sample Size
-│
-├─ IMAGES
-│  ├─ <10K samples → Use pretrained CNN (transfer learning)
-│  ├─ 10K-100K → Fine-tune CNN (ResNet, EfficientNet)
-│  └─ 100K+ → Train CNN from scratch (rare) or fine-tune
-│
-├─ TEXT
-│  ├─ <1K samples → TF-IDF + Logistic Regression OR few-shot LLM
-│  ├─ 1K-100K → Fine-tune BERT/RoBERTa
-│  └─ 100K+ → Fine-tune large transformer
-│
-├─ AUDIO
-│  └─ Extract features → Spectrograms → CNN
-│
-└─ MIXED (tabular + text/images)
-   └─ Multi-modal model or separate models + ensemble
++--- TABULAR/STRUCTURED DATA (most common)
+|  +--- Go to Step 2: Sample Size
+|
++--- IMAGES
+|  +--- <10K samples --> Use pretrained CNN (transfer learning)
+|  +--- 10K-100K --> Fine-tune CNN (ResNet, EfficientNet)
+|  +--- 100K+ --> Train CNN from scratch (rare) or fine-tune
+|
++--- TEXT
+|  +--- <1K samples --> TF-IDF + Logistic Regression OR few-shot LLM
+|  +--- 1K-100K --> Fine-tune BERT/RoBERTa
+|  +--- 100K+ --> Fine-tune large transformer
+|
++--- AUDIO
+|  +--- Extract features --> Spectrograms --> CNN
+|
++--- MIXED (tabular + text/images)
+   +--- Multi-modal model or separate models + ensemble
 ```
 
 ### Step 2: Tabular Classification - Sample Size
@@ -136,25 +136,25 @@ What type of features do you have?
 ```
 How many training samples?
 
-├─ < 1,000 samples (SMALL)
-│  ├─ Try: Logistic Regression (baseline)
-│  ├─ Then: Random Forest (usually best for small data)
-│  └─ Avoid: Deep learning (will overfit)
-│
-├─ 1,000 - 10,000 samples (MEDIUM)
-│  ├─ Start: Random Forest (good defaults)
-│  ├─ Best: XGBoost (with tuning)
-│  └─ Alternative: Logistic Regression with L1/L2
-│
-├─ 10,000 - 100,000 samples (LARGE)
-│  ├─ Best: XGBoost or LightGBM (winner 90% of time)
-│  ├─ Alternative: Random Forest
-│  └─ Try: Neural network (if features complex)
-│
-└─ 100,000+ samples (VERY LARGE)
-   ├─ Best: LightGBM (fastest)
-   ├─ Alternative: XGBoost
-   └─ Deep learning: Only if non-linear relationships
++--- < 1,000 samples (SMALL)
+|  +--- Try: Logistic Regression (baseline)
+|  +--- Then: Random Forest (usually best for small data)
+|  +--- Avoid: Deep learning (will overfit)
+|
++--- 1,000 - 10,000 samples (MEDIUM)
+|  +--- Start: Random Forest (good defaults)
+|  +--- Best: XGBoost (with tuning)
+|  +--- Alternative: Logistic Regression with L1/L2
+|
++--- 10,000 - 100,000 samples (LARGE)
+|  +--- Best: XGBoost or LightGBM (winner 90% of time)
+|  +--- Alternative: Random Forest
+|  +--- Try: Neural network (if features complex)
+|
++--- 100,000+ samples (VERY LARGE)
+   +--- Best: LightGBM (fastest)
+   +--- Alternative: XGBoost
+   +--- Deep learning: Only if non-linear relationships
 ```
 
 ### Step 3: Feature Count
@@ -162,24 +162,24 @@ How many training samples?
 ```
 How many features?
 
-├─ < 10 features (LOW)
-│  ├─ Start with Logistic Regression
-│  ├─ Visualize relationships
-│  └─ Try: Random Forest
-│
-├─ 10 - 100 features (MEDIUM)
-│  ├─ XGBoost / Random Forest (sweet spot)
-│  └─ Check feature importance
-│
-├─ 100 - 1,000 features (HIGH)
-│  ├─ XGBoost with feature selection
-│  ├─ OR: L1 regularized logistic regression
-│  └─ Reduce dimensions if needed
-│
-└─ 1,000+ features (VERY HIGH)
-   ├─ L1 Logistic Regression (feature selection)
-   ├─ Deep learning (if enough samples)
-   └─ Consider: PCA or feature selection first
++--- < 10 features (LOW)
+|  +--- Start with Logistic Regression
+|  +--- Visualize relationships
+|  +--- Try: Random Forest
+|
++--- 10 - 100 features (MEDIUM)
+|  +--- XGBoost / Random Forest (sweet spot)
+|  +--- Check feature importance
+|
++--- 100 - 1,000 features (HIGH)
+|  +--- XGBoost with feature selection
+|  +--- OR: L1 regularized logistic regression
+|  +--- Reduce dimensions if needed
+|
++--- 1,000+ features (VERY HIGH)
+   +--- L1 Logistic Regression (feature selection)
+   +--- Deep learning (if enough samples)
+   +--- Consider: PCA or feature selection first
 ```
 
 ### Step 4: Class Imbalance?
@@ -187,18 +187,18 @@ How many features?
 ```
 Is your dataset imbalanced?
 
-├─ Balanced (40-60% split)
-│  └─ No special handling needed
-│
-├─ Moderate (20-40% or 60-80%)
-│  ├─ Random Forest: class_weight='balanced'
-│  └─ XGBoost: scale_pos_weight
-│
-└─ Severe (<20% or >80%)
-   ├─ 1. Resample (SMOTE, RandomOverSampler)
-   ├─ 2. Use class weights
-   ├─ 3. Use F1/precision/recall (NOT accuracy)
-   └─ 4. Try: XGBoost (handles imbalance well)
++--- Balanced (40-60% split)
+|  +--- No special handling needed
+|
++--- Moderate (20-40% or 60-80%)
+|  +--- Random Forest: class_weight='balanced'
+|  +--- XGBoost: scale_pos_weight
+|
++--- Severe (<20% or >80%)
+   +--- 1. Resample (SMOTE, RandomOverSampler)
+   +--- 2. Use class weights
+   +--- 3. Use F1/precision/recall (NOT accuracy)
+   +--- 4. Try: XGBoost (handles imbalance well)
 ```
 
 ### Step 5: Other Considerations
@@ -206,24 +206,24 @@ Is your dataset imbalanced?
 ```
 Special requirements?
 
-├─ Need interpretability?
-│  ├─ Best: Logistic Regression or Decision Tree
-│  ├─ OK: Random Forest (feature importance)
-│  └─ Avoid: XGBoost, Neural Nets (black box)
-│
-├─ Need fast inference (<1ms)?
-│  ├─ Best: Logistic Regression
-│  ├─ OK: Small Decision Tree
-│  └─ Avoid: Large ensemble (100+ trees)
-│
-├─ Need fast training?
-│  ├─ Best: Logistic Regression
-│  ├─ OK: Random Forest
-│  └─ Avoid: XGBoost (needs tuning)
-│
-└─ Limited compute (no GPU)?
-   ├─ Best: LightGBM or Random Forest
-   └─ Avoid: Deep learning
++--- Need interpretability?
+|  +--- Best: Logistic Regression or Decision Tree
+|  +--- OK: Random Forest (feature importance)
+|  +--- Avoid: XGBoost, Neural Nets (black box)
+|
++--- Need fast inference (<1ms)?
+|  +--- Best: Logistic Regression
+|  +--- OK: Small Decision Tree
+|  +--- Avoid: Large ensemble (100+ trees)
+|
++--- Need fast training?
+|  +--- Best: Logistic Regression
+|  +--- OK: Random Forest
+|  +--- Avoid: XGBoost (needs tuning)
+|
++--- Limited compute (no GPU)?
+   +--- Best: LightGBM or Random Forest
+   +--- Avoid: Deep learning
 ```
 
 ---
@@ -235,10 +235,10 @@ Special requirements?
 ```
 Is relationship linear?
 
-├─ Check with scatter plots
-├─ Calculate correlation
-└─ If mostly linear → Use linear model
-   If non-linear → Use tree-based or neural net
++--- Check with scatter plots
++--- Calculate correlation
++--- If mostly linear --> Use linear model
+   If non-linear --> Use tree-based or neural net
 ```
 
 ### Step 2: Regression Model Selection
@@ -246,34 +246,34 @@ Is relationship linear?
 ```
 Based on data characteristics:
 
-├─ LINEAR RELATIONSHIP
-│  ├─ < 100 features:
-│  │  └─ Linear Regression (OLS)
-│  │
-│  ├─ 100-1000 features or some noise:
-│  │  ├─ Ridge Regression (L2) - default choice
-│  │  └─ Lasso (L1) - if need feature selection
-│  │
-│  └─ 1000+ features:
-│     └─ ElasticNet (L1 + L2)
-│
-├─ NON-LINEAR RELATIONSHIP
-│  ├─ < 10K samples:
-│  │  └─ Random Forest Regressor
-│  │
-│  ├─ 10K - 100K samples:
-│  │  └─ XGBoost / LightGBM (best choice)
-│  │
-│  └─ 100K+ samples + complex:
-│     ├─ LightGBM (fastest)
-│     └─ Neural Network (if very complex)
-│
-├─ TIME SERIES
-│  └─ See Section 12.8
-│
-└─ NEED EXTRAPOLATION (predict beyond training range)
-   ├─ Linear models (can extrapolate)
-   └─ Avoid: Trees (cannot extrapolate)
++--- LINEAR RELATIONSHIP
+|  +--- < 100 features:
+|  |  +--- Linear Regression (OLS)
+|  |
+|  +--- 100-1000 features or some noise:
+|  |  +--- Ridge Regression (L2) - default choice
+|  |  +--- Lasso (L1) - if need feature selection
+|  |
+|  +--- 1000+ features:
+|     +--- ElasticNet (L1 + L2)
+|
++--- NON-LINEAR RELATIONSHIP
+|  +--- < 10K samples:
+|  |  +--- Random Forest Regressor
+|  |
+|  +--- 10K - 100K samples:
+|  |  +--- XGBoost / LightGBM (best choice)
+|  |
+|  +--- 100K+ samples + complex:
+|     +--- LightGBM (fastest)
+|     +--- Neural Network (if very complex)
+|
++--- TIME SERIES
+|  +--- See Section 12.8
+|
++--- NEED EXTRAPOLATION (predict beyond training range)
+   +--- Linear models (can extrapolate)
+   +--- Avoid: Trees (cannot extrapolate)
 ```
 
 ### Step 3: Regression Metrics
@@ -281,20 +281,20 @@ Based on data characteristics:
 ```
 Choose evaluation metric:
 
-├─ MAE (Mean Absolute Error)
-│  └─ Use when: Outliers should not dominate
-│
-├─ MSE (Mean Squared Error)
-│  └─ Use when: Large errors are very bad
-│
-├─ RMSE (Root Mean Squared Error)
-│  └─ Use when: Same units as target
-│
-├─ R² (R-squared)
-│  └─ Use when: Need % variance explained
-│
-└─ MAPE (Mean Absolute Percentage Error)
-   └─ Use when: Relative errors matter
++--- MAE (Mean Absolute Error)
+|  +--- Use when: Outliers should not dominate
+|
++--- MSE (Mean Squared Error)
+|  +--- Use when: Large errors are very bad
+|
++--- RMSE (Root Mean Squared Error)
+|  +--- Use when: Same units as target
+|
++--- R^2 (R-squared)
+|  +--- Use when: Need % variance explained
+|
++--- MAPE (Mean Absolute Percentage Error)
+   +--- Use when: Relative errors matter
 ```
 
 ---
@@ -306,14 +306,14 @@ Choose evaluation metric:
 ```
 How many samples?
 
-├─ < 10K samples
-│  ├─ K-Means (default, fast)
-│  ├─ DBSCAN (if arbitrary shapes)
-│  └─ Hierarchical (if need dendrogram)
-│
-└─ 10K+ samples
-   ├─ K-Means or Mini-Batch K-Means
-   └─ HDBSCAN (better than DBSCAN)
++--- < 10K samples
+|  +--- K-Means (default, fast)
+|  +--- DBSCAN (if arbitrary shapes)
+|  +--- Hierarchical (if need dendrogram)
+|
++--- 10K+ samples
+   +--- K-Means or Mini-Batch K-Means
+   +--- HDBSCAN (better than DBSCAN)
 ```
 
 ### Dimensionality Reduction
@@ -321,16 +321,16 @@ How many samples?
 ```
 What's your goal?
 
-├─ Visualization (2D/3D)
-│  ├─ t-SNE (best for visualization)
-│  └─ UMAP (faster, preserves global structure)
-│
-├─ Feature reduction for model
-│  ├─ PCA (linear)
-│  └─ Feature selection (see Phase 3)
-│
-└─ Manifold learning
-   └─ UMAP or Autoencoder
++--- Visualization (2D/3D)
+|  +--- t-SNE (best for visualization)
+|  +--- UMAP (faster, preserves global structure)
+|
++--- Feature reduction for model
+|  +--- PCA (linear)
+|  +--- Feature selection (see Phase 3)
+|
++--- Manifold learning
+   +--- UMAP or Autoencoder
 ```
 
 ### Anomaly Detection
@@ -338,16 +338,16 @@ What's your goal?
 ```
 What type of anomalies?
 
-├─ Point anomalies (single outliers)
-│  ├─ Isolation Forest (default choice)
-│  ├─ One-Class SVM
-│  └─ LOF (Local Outlier Factor)
-│
-├─ Contextual anomalies
-│  └─ Autoencoder or VAE
-│
-└─ Time series anomalies
-   └─ See Section 12.8
++--- Point anomalies (single outliers)
+|  +--- Isolation Forest (default choice)
+|  +--- One-Class SVM
+|  +--- LOF (Local Outlier Factor)
+|
++--- Contextual anomalies
+|  +--- Autoencoder or VAE
+|
++--- Time series anomalies
+   +--- See Section 12.8
 ```
 
 ---
@@ -359,24 +359,24 @@ What type of anomalies?
 ```
 What do you want to generate?
 
-├─ Text-to-image (2025 BEST)
-│  ├─ Stable Diffusion (open-source)
-│  ├─ DALL-E 3 (highest quality, API)
-│  └─ Midjourney (artistic)
-│
-├─ Image-to-image
-│  ├─ Need quality: Stable Diffusion
-│  └─ Need speed: CycleGAN / Pix2Pix
-│
-├─ Face generation
-│  └─ StyleGAN3
-│
-├─ Super-resolution (upscaling)
-│  └─ ESRGAN or Diffusion upscaler
-│
-└─ Data augmentation
-   ├─ Simple transforms (rotation, flip) - START HERE
-   └─ GAN (only if need realism)
++--- Text-to-image (2025 BEST)
+|  +--- Stable Diffusion (open-source)
+|  +--- DALL-E 3 (highest quality, API)
+|  +--- Midjourney (artistic)
+|
++--- Image-to-image
+|  +--- Need quality: Stable Diffusion
+|  +--- Need speed: CycleGAN / Pix2Pix
+|
++--- Face generation
+|  +--- StyleGAN3
+|
++--- Super-resolution (upscaling)
+|  +--- ESRGAN or Diffusion upscaler
+|
++--- Data augmentation
+   +--- Simple transforms (rotation, flip) - START HERE
+   +--- GAN (only if need realism)
 ```
 
 ### Text Generation
@@ -384,16 +384,16 @@ What do you want to generate?
 ```
 What type of text?
 
-├─ Creative writing, chat
-│  ├─ GPT-4 / GPT-3.5 (API)
-│  ├─ Claude (API)
-│  └─ Llama / Mistral (open-source)
-│
-├─ Code generation
-│  └─ CodeLlama or GPT-4
-│
-└─ Domain-specific
-   └─ Fine-tune LLM on domain data
++--- Creative writing, chat
+|  +--- GPT-4 / GPT-3.5 (API)
+|  +--- Claude (API)
+|  +--- Llama / Mistral (open-source)
+|
++--- Code generation
+|  +--- CodeLlama or GPT-4
+|
++--- Domain-specific
+   +--- Fine-tune LLM on domain data
 ```
 
 ### Feature Learning / Anomaly Detection
@@ -401,15 +401,15 @@ What type of text?
 ```
 What's your goal?
 
-├─ Learn features for downstream task
-│  └─ VAE (interpretable latent space)
-│
-├─ Anomaly detection
-│  ├─ Autoencoder (simple)
-│  └─ VAE (probabilistic)
-│
-└─ Data compression
-   └─ Autoencoder
++--- Learn features for downstream task
+|  +--- VAE (interpretable latent space)
+|
++--- Anomaly detection
+|  +--- Autoencoder (simple)
+|  +--- VAE (probabilistic)
+|
++--- Data compression
+   +--- Autoencoder
 ```
 
 ---
@@ -421,42 +421,42 @@ What's your goal?
 ```
 What's your NLP task?
 
-├─ CLASSIFICATION (sentiment, topic, etc.)
-│  ├─ < 1K samples:
-│  │  ├─ TF-IDF + Logistic Regression (baseline)
-│  │  └─ Few-shot GPT-4 (if budget allows)
-│  │
-│  ├─ 1K - 10K samples:
-│  │  └─ Fine-tune DistilBERT or RoBERTa
-│  │
-│  └─ 10K+ samples:
-│     └─ Fine-tune RoBERTa-large or DeBERTa
-│
-├─ GENERATION (stories, articles, etc.)
-│  ├─ Best quality: GPT-4
-│  ├─ Cost-effective: GPT-3.5
-│  └─ Self-hosted: Llama 3, Mistral
-│
-├─ NAMED ENTITY RECOGNITION (NER)
-│  └─ Fine-tune BERT or RoBERTa
-│
-├─ QUESTION ANSWERING
-│  ├─ Extractive (answer in passage):
-│  │  └─ Fine-tune BERT
-│  │
-│  └─ Generative (create answer):
-│     └─ T5, Flan-T5, or GPT
-│
-├─ SUMMARIZATION
-│  ├─ BART or T5 (open-source)
-│  └─ GPT-4 (best quality)
-│
-├─ TRANSLATION
-│  ├─ MarianMT (fast, specific pairs)
-│  └─ T5 or GPT-4 (multi-language)
-│
-└─ SEMANTIC SIMILARITY
-   └─ Sentence-BERT (SBERT)
++--- CLASSIFICATION (sentiment, topic, etc.)
+|  +--- < 1K samples:
+|  |  +--- TF-IDF + Logistic Regression (baseline)
+|  |  +--- Few-shot GPT-4 (if budget allows)
+|  |
+|  +--- 1K - 10K samples:
+|  |  +--- Fine-tune DistilBERT or RoBERTa
+|  |
+|  +--- 10K+ samples:
+|     +--- Fine-tune RoBERTa-large or DeBERTa
+|
++--- GENERATION (stories, articles, etc.)
+|  +--- Best quality: GPT-4
+|  +--- Cost-effective: GPT-3.5
+|  +--- Self-hosted: Llama 3, Mistral
+|
++--- NAMED ENTITY RECOGNITION (NER)
+|  +--- Fine-tune BERT or RoBERTa
+|
++--- QUESTION ANSWERING
+|  +--- Extractive (answer in passage):
+|  |  +--- Fine-tune BERT
+|  |
+|  +--- Generative (create answer):
+|     +--- T5, Flan-T5, or GPT
+|
++--- SUMMARIZATION
+|  +--- BART or T5 (open-source)
+|  +--- GPT-4 (best quality)
+|
++--- TRANSLATION
+|  +--- MarianMT (fast, specific pairs)
+|  +--- T5 or GPT-4 (multi-language)
+|
++--- SEMANTIC SIMILARITY
+   +--- Sentence-BERT (SBERT)
 ```
 
 ---
@@ -468,25 +468,25 @@ What's your NLP task?
 ```
 What type of time series?
 
-├─ UNIVARIATE (single variable)
-│  ├─ Short-term (<100 points):
-│  │  └─ ARIMA or Exponential Smoothing
-│  │
-│  ├─ Medium-term (100-10K points):
-│  │  ├─ Prophet (Facebook - easy to use)
-│  │  └─ SARIMA (seasonal)
-│  │
-│  └─ Long-term (10K+ points):
-│     ├─ LSTM (deep learning)
-│     └─ XGBoost (with lag features)
-│
-├─ MULTIVARIATE (many variables)
-│  ├─ VAR (Vector AutoRegression)
-│  ├─ LSTM (deep learning)
-│  └─ XGBoost (with feature engineering)
-│
-└─ HIGH FREQUENCY (tick data)
-   └─ Statistical models + feature engineering
++--- UNIVARIATE (single variable)
+|  +--- Short-term (<100 points):
+|  |  +--- ARIMA or Exponential Smoothing
+|  |
+|  +--- Medium-term (100-10K points):
+|  |  +--- Prophet (Facebook - easy to use)
+|  |  +--- SARIMA (seasonal)
+|  |
+|  +--- Long-term (10K+ points):
+|     +--- LSTM (deep learning)
+|     +--- XGBoost (with lag features)
+|
++--- MULTIVARIATE (many variables)
+|  +--- VAR (Vector AutoRegression)
+|  +--- LSTM (deep learning)
+|  +--- XGBoost (with feature engineering)
+|
++--- HIGH FREQUENCY (tick data)
+   +--- Statistical models + feature engineering
 ```
 
 ### Time Series Anomaly Detection
@@ -494,15 +494,15 @@ What type of time series?
 ```
 What kind of anomalies?
 
-├─ Point anomalies (spikes)
-│  └─ Statistical methods (Z-score, IQR)
-│
-├─ Pattern anomalies (unusual sequences)
-│  ├─ LSTM Autoencoder
-│  └─ Isolation Forest (with lag features)
-│
-└─ Change point detection
-   └─ Bayesian methods or Prophet
++--- Point anomalies (spikes)
+|  +--- Statistical methods (Z-score, IQR)
+|
++--- Pattern anomalies (unusual sequences)
+|  +--- LSTM Autoencoder
+|  +--- Isolation Forest (with lag features)
+|
++--- Change point detection
+   +--- Bayesian methods or Prophet
 ```
 
 ---
@@ -514,48 +514,48 @@ What kind of anomalies?
 ```
 What model are you using?
 
-├─ TREE-BASED (Random Forest, XGBoost, LightGBM)
-│  │
-│  ├─ Cardinality < 50?
-│  │  └─ Use: Label Encoding (default)
-│  │
-│  └─ Cardinality ≥ 50 (high cardinality)?
-│     ├─ Use: Target Encoding (with CV to prevent leakage)
-│     └─ Alternative: Frequency Encoding
-│  │
-│  └─ ❌ AVOID: One-Hot Encoding (hurts performance!)
-│
-├─ LINEAR MODELS (Logistic, Linear, SVM)
-│  │
-│  ├─ Cardinality < 10?
-│  │  └─ Use: One-Hot Encoding
-│  │
-│  ├─ Cardinality 10-50?
-│  │  ├─ Use: One-Hot with dimensionality reduction
-│  │  └─ OR: Target Encoding + Linear model
-│  │
-│  └─ Cardinality > 50?
-│     ├─ Use: Target Encoding OR
-│     └─ Feature selection on one-hot
-│
-└─ DEEP LEARNING (Neural Networks)
-   │
-   ├─ Low cardinality (<100)?
-   │  └─ Use: Embedding layer
-   │
-   └─ High cardinality (≥100)?
-      └─ Use: Embedding layer with dropout
++--- TREE-BASED (Random Forest, XGBoost, LightGBM)
+|  |
+|  +--- Cardinality < 50?
+|  |  +--- Use: Label Encoding (default)
+|  |
+|  +--- Cardinality >= 50 (high cardinality)?
+|     +--- Use: Target Encoding (with CV to prevent leakage)
+|     +--- Alternative: Frequency Encoding
+|  |
+|  +---  AVOID: One-Hot Encoding (hurts performance!)
+|
++--- LINEAR MODELS (Logistic, Linear, SVM)
+|  |
+|  +--- Cardinality < 10?
+|  |  +--- Use: One-Hot Encoding
+|  |
+|  +--- Cardinality 10-50?
+|  |  +--- Use: One-Hot with dimensionality reduction
+|  |  +--- OR: Target Encoding + Linear model
+|  |
+|  +--- Cardinality > 50?
+|     +--- Use: Target Encoding OR
+|     +--- Feature selection on one-hot
+|
++--- DEEP LEARNING (Neural Networks)
+   |
+   +--- Low cardinality (<100)?
+   |  +--- Use: Embedding layer
+   |
+   +--- High cardinality (>=100)?
+      +--- Use: Embedding layer with dropout
 ```
 
 ### Encoding Summary Table
 
 | Encoding | Random Forest | XGBoost | Linear Models | Neural Nets |
 |----------|--------------|---------|---------------|-------------|
-| **Label** | ✅ Excellent | ✅ Excellent | ❌ Bad (false ordering) | ⚠️ OK (use embedding better) |
-| **One-Hot** | ❌ Bad (slow, worse) | ❌ Bad (slow, worse) | ✅ Excellent | ⚠️ OK (high-dim) |
-| **Target** | ✅✅ Best | ✅✅ Best | ✅ Good | ✅ Good |
-| **Frequency** | ✅ Good | ✅ Good | ✅ Good | ✅ Good |
-| **Embedding** | N/A | N/A | N/A | ✅✅ Best |
+| **Label** |  Excellent |  Excellent |  Bad (false ordering) | [WARNING] OK (use embedding better) |
+| **One-Hot** |  Bad (slow, worse) |  Bad (slow, worse) |  Excellent | [WARNING] OK (high-dim) |
+| **Target** |  Best |  Best |  Good |  Good |
+| **Frequency** |  Good |  Good |  Good |  Good |
+| **Embedding** | N/A | N/A | N/A |  Best |
 
 ---
 
@@ -564,32 +564,32 @@ What model are you using?
 ```
 What model are you using?
 
-├─ TREE-BASED (Random Forest, XGBoost, Decision Tree)
-│  └─ ✅ NO SCALING NEEDED
-│     Trees split on thresholds, scale doesn't matter
-│
-├─ LINEAR MODELS (Linear/Logistic Regression, SVM)
-│  └─ ⚠️ SCALING REQUIRED
-│     ├─ StandardScaler (default choice)
-│     │  └─ Features → mean=0, std=1
-│     │
-│     ├─ MinMaxScaler (if need [0,1] range)
-│     │  └─ For neural nets with sigmoid
-│     │
-│     └─ RobustScaler (if many outliers)
-│        └─ Uses median, IQR (robust to outliers)
-│
-├─ NEURAL NETWORKS
-│  └─ ⚠️ SCALING REQUIRED
-│     ├─ StandardScaler (most common)
-│     └─ MinMaxScaler ([0,1] for images/sigmoid)
-│
-├─ K-MEANS, KNN, SVM
-│  └─ ⚠️ SCALING CRITICAL
-│     Distance-based algorithms very sensitive to scale
-│
-└─ NAIVE BAYES
-   └─ ✅ NO SCALING NEEDED
++--- TREE-BASED (Random Forest, XGBoost, Decision Tree)
+|  +---  NO SCALING NEEDED
+|     Trees split on thresholds, scale doesn't matter
+|
++--- LINEAR MODELS (Linear/Logistic Regression, SVM)
+|  +--- [WARNING] SCALING REQUIRED
+|     +--- StandardScaler (default choice)
+|     |  +--- Features --> mean=0, std=1
+|     |
+|     +--- MinMaxScaler (if need [0,1] range)
+|     |  +--- For neural nets with sigmoid
+|     |
+|     +--- RobustScaler (if many outliers)
+|        +--- Uses median, IQR (robust to outliers)
+|
++--- NEURAL NETWORKS
+|  +--- [WARNING] SCALING REQUIRED
+|     +--- StandardScaler (most common)
+|     +--- MinMaxScaler ([0,1] for images/sigmoid)
+|
++--- K-MEANS, KNN, SVM
+|  +--- [WARNING] SCALING CRITICAL
+|     Distance-based algorithms very sensitive to scale
+|
++--- NAIVE BAYES
+   +---  NO SCALING NEEDED
 ```
 
 ---
@@ -600,15 +600,15 @@ What model are you using?
 
 | Model | Accuracy | Training Time | Inference Time | Interpretability | Tuning Needed |
 |-------|----------|--------------|----------------|------------------|---------------|
-| **Logistic Regression** | ⭐⭐⭐ | ⚡⚡⚡ Fast | ⚡⚡⚡ Fast | ✅✅✅ High | ⚙️ Minimal |
-| **Decision Tree** | ⭐⭐ | ⚡⚡⚡ Fast | ⚡⚡⚡ Fast | ✅✅✅ High | ⚙️ Minimal |
-| **Random Forest** | ⭐⭐⭐⭐ | ⚡⚡ Medium | ⚡⚡ Medium | ✅✅ Medium | ⚙️ Minimal |
-| **XGBoost** | ⭐⭐⭐⭐⭐ | ⚡⚡ Medium | ⚡⚡ Medium | ✅ Low | ⚙️⚙️⚙️ High |
-| **LightGBM** | ⭐⭐⭐⭐⭐ | ⚡⚡⚡ Fast | ⚡⚡⚡ Fast | ✅ Low | ⚙️⚙️⚙️ High |
-| **SVM** | ⭐⭐⭐ | ⚡ Slow | ⚡⚡ Medium | ✅ Low | ⚙️⚙️ Medium |
-| **Neural Network** | ⭐⭐⭐⭐ | ⚡ Slow | ⚡⚡⚡ Fast | ❌ Very Low | ⚙️⚙️⚙️ High |
-| **BERT (NLP)** | ⭐⭐⭐⭐⭐ | ⚡ Slow | ⚡⚡ Medium | ❌ Very Low | ⚙️⚙️ Medium |
-| **Diffusion (images)** | ⭐⭐⭐⭐⭐ | ⚡ Slow | ⚡ Very Slow | ❌ Very Low | ⚙️⚙️ Medium |
+| **Logistic Regression** |  |  Fast |  Fast |  High |  Minimal |
+| **Decision Tree** |  |  Fast |  Fast |  High |  Minimal |
+| **Random Forest** |  |  Medium |  Medium |  Medium |  Minimal |
+| **XGBoost** |  |  Medium |  Medium |  Low |  High |
+| **LightGBM** |  |  Fast |  Fast |  Low |  High |
+| **SVM** |  |  Slow |  Medium |  Low |  Medium |
+| **Neural Network** |  |  Slow |  Fast |  Very Low |  High |
+| **BERT (NLP)** |  |  Slow |  Medium |  Very Low |  Medium |
+| **Diffusion (images)** |  |  Slow |  Very Slow |  Very Low |  Medium |
 
 ---
 
@@ -730,9 +730,9 @@ What model are you using?
 **Solution:**
 ```
 1. Understand missingness:
-   - MCAR (Missing Completely At Random) → OK to drop/impute
-   - MAR (Missing At Random) → Impute carefully
-   - MNAR (Missing Not At Random) → Model missingness
+   - MCAR (Missing Completely At Random) --> OK to drop/impute
+   - MAR (Missing At Random) --> Impute carefully
+   - MNAR (Missing Not At Random) --> Model missingness
 
 2. Imputation strategies:
    - Mean/Median (numerical)
@@ -756,15 +756,15 @@ What model are you using?
 **Solution:**
 ```
 1. Use models that extrapolate:
-   - Linear Regression ✅
-   - Polynomial Regression ✅
-   - ARIMA (time series) ✅
+   - Linear Regression 
+   - Polynomial Regression 
+   - ARIMA (time series) 
 
 2. AVOID models that DON'T extrapolate:
-   - Random Forest ❌
-   - XGBoost ❌
-   - K-NN ❌
-   - Neural Nets ❌
+   - Random Forest 
+   - XGBoost 
+   - K-NN 
+   - Neural Nets 
 
 3. Alternative:
    - Domain knowledge (physics-based models)
@@ -801,23 +801,23 @@ What model are you using?
 ## 12.13 Model Selection Flowchart (Printable)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    START: CHOOSE YOUR MODEL                  │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
++-----------------------------------------------------------------+
+|                    START: CHOOSE YOUR MODEL                  |
++--------------------------------+--------------------------------+
+                               |
                      What's your data type?
-                               │
-        ┌──────────────────────┼──────────────────────┐
-        │                      │                      │
+                               |
+        +------------------------+------------------------+
+        |                      |                      |
     TABULAR                  TEXT                 IMAGES
-        │                      │                      │
-        │                      │                      │
+        |                      |                      |
+        |                      |                      |
    How many samples?    How many samples?       How many samples?
-        │                      │                      │
-   ┌────┴────┐           ┌────┴────┐            ┌────┴────┐
-   │         │           │         │            │         │
+        |                      |                      |
+   +------+------+           +------+------+            +------+------+
+   |         |           |         |            |         |
  <1K     1K-10K       <1K      1K-10K         <10K     10K+
-   │         │           │         │            │         │
+   |         |           |         |            |         |
 LogReg   XGBoost     TF-IDF    BERT      Pretrained  Fine-tune
   OR        OR         OR       OR        CNN        CNN
   RF       LightGBM  GPT-4  RoBERTa    (Transfer)  (ResNet)
@@ -826,40 +826,40 @@ LogReg   XGBoost     TF-IDF    BERT      Pretrained  Fine-tune
 TABULAR DETAIL:
 
 <1K samples:
-  → Logistic Regression (baseline)
-  → Random Forest (usually best)
+  --> Logistic Regression (baseline)
+  --> Random Forest (usually best)
 
 1K-10K samples:
-  → Random Forest (good defaults)
-  → XGBoost (best with tuning)
+  --> Random Forest (good defaults)
+  --> XGBoost (best with tuning)
 
 10K-100K samples:
-  → XGBoost or LightGBM (winner 90%)
-  → Neural Net (if complex)
+  --> XGBoost or LightGBM (winner 90%)
+  --> Neural Net (if complex)
 
 100K+ samples:
-  → LightGBM (fastest)
-  → XGBoost
-  → Deep Learning (if justified)
+  --> LightGBM (fastest)
+  --> XGBoost
+  --> Deep Learning (if justified)
 
 
 SPECIAL CONSIDERATIONS:
 
 Need interpretability?
-  → Logistic Regression or Decision Tree
+  --> Logistic Regression or Decision Tree
 
 Need fast inference?
-  → Logistic Regression or small model
+  --> Logistic Regression or small model
 
 High-dimensional (1000+ features)?
-  → L1 Logistic Regression or XGBoost with feature selection
+  --> L1 Logistic Regression or XGBoost with feature selection
 
 Imbalanced classes?
-  → XGBoost with scale_pos_weight
-  → Random Forest with class_weight='balanced'
+  --> XGBoost with scale_pos_weight
+  --> Random Forest with class_weight='balanced'
 
 Many categorical features?
-  → XGBoost with Target Encoding (NOT one-hot)
+  --> XGBoost with Target Encoding (NOT one-hot)
 ```
 
 ---
@@ -873,7 +873,7 @@ Many categorical features?
 | **Accuracy** | Balanced classes only | (TP + TN) / Total |
 | **Precision** | False positives are costly | TP / (TP + FP) |
 | **Recall** | False negatives are costly | TP / (TP + FN) |
-| **F1-Score** | Imbalanced classes, balance P & R | 2 × (P × R) / (P + R) |
+| **F1-Score** | Imbalanced classes, balance P & R | 2 x (P x R) / (P + R) |
 | **ROC-AUC** | Binary classification, threshold-agnostic | Area under ROC curve |
 | **PR-AUC** | Imbalanced classes (better than ROC-AUC) | Area under precision-recall curve |
 | **Log Loss** | Probabilistic predictions | Penalizes wrong confidence |
@@ -884,8 +884,8 @@ Many categorical features?
 |--------|-------------|---------------|
 | **MAE** | Outliers should not dominate | Mean Absolute Error |
 | **MSE** | Large errors very bad | Mean Squared Error |
-| **RMSE** | Same units as target | √MSE |
-| **R²** | % variance explained | 1 - (SS_res / SS_tot) |
+| **RMSE** | Same units as target | sqrtMSE |
+| **R^2** | % variance explained | 1 - (SS_res / SS_tot) |
 | **MAPE** | Relative errors matter | Mean Absolute % Error |
 
 ### Which Metric for Which Problem?
@@ -893,35 +893,35 @@ Many categorical features?
 ```
 Classification:
 
-├─ Balanced classes?
-│  └─ Use: Accuracy
++--- Balanced classes?
+|  +--- Use: Accuracy
 
-├─ Imbalanced classes?
-│  └─ Use: F1-Score or PR-AUC
++--- Imbalanced classes?
+|  +--- Use: F1-Score or PR-AUC
 
-├─ False positives very bad? (e.g., spam filter)
-│  └─ Use: Precision
++--- False positives very bad? (e.g., spam filter)
+|  +--- Use: Precision
 
-├─ False negatives very bad? (e.g., fraud detection)
-│  └─ Use: Recall
++--- False negatives very bad? (e.g., fraud detection)
+|  +--- Use: Recall
 
-└─ Need probability calibration?
-   └─ Use: Log Loss or Brier Score
++--- Need probability calibration?
+   +--- Use: Log Loss or Brier Score
 
 
 Regression:
 
-├─ Outliers present?
-│  └─ Use: MAE (robust)
++--- Outliers present?
+|  +--- Use: MAE (robust)
 
-├─ Large errors critical?
-│  └─ Use: MSE or RMSE
++--- Large errors critical?
+|  +--- Use: MSE or RMSE
 
-├─ Need interpretability?
-│  └─ Use: R²
++--- Need interpretability?
+|  +--- Use: R^2
 
-└─ Relative errors matter?
-   └─ Use: MAPE
++--- Relative errors matter?
+   +--- Use: MAPE
 ```
 
 ---
@@ -933,38 +933,38 @@ Regression:
 ```
 Scenario 1: Comparing Two Models
 
-├─ Use: Paired t-test or McNemar's test
-│
-├─ Steps:
-│  1. Get predictions from both models on same test set
-│  2. Calculate metric for each fold (cross-validation)
-│  3. Run paired t-test
-│  4. If p < 0.05 → significant difference
-│
-└─ Example:
++--- Use: Paired t-test or McNemar's test
+|
++--- Steps:
+|  1. Get predictions from both models on same test set
+|  2. Calculate metric for each fold (cross-validation)
+|  3. Run paired t-test
+|  4. If p < 0.05 --> significant difference
+|
++--- Example:
    Model A: [0.85, 0.87, 0.86, 0.84, 0.88] (5-fold CV)
    Model B: [0.82, 0.84, 0.83, 0.81, 0.85]
-   → Run paired t-test → Is difference significant?
+   --> Run paired t-test --> Is difference significant?
 
 
 Scenario 2: A/B Testing Model in Production
 
-├─ Use: Two-sample test (see Phase 4)
-│
-├─ Steps:
-│  1. Deploy Model A to 50% users, Model B to 50%
-│  2. Collect metrics (conversion rate, accuracy, etc.)
-│  3. Run two-sample t-test
-│  4. Calculate required sample size (power analysis)
-│
-└─ See: Phase 4 - Statistical Tests for details
++--- Use: Two-sample test (see Phase 4)
+|
++--- Steps:
+|  1. Deploy Model A to 50% users, Model B to 50%
+|  2. Collect metrics (conversion rate, accuracy, etc.)
+|  3. Run two-sample t-test
+|  4. Calculate required sample size (power analysis)
+|
++--- See: Phase 4 - Statistical Tests for details
 
 
 Scenario 3: Feature Selection
 
-├─ Use: Chi-square test (categorical) or correlation (numerical)
-│
-└─ Steps:
++--- Use: Chi-square test (categorical) or correlation (numerical)
+|
++--- Steps:
    1. Calculate feature-target relationship
    2. Test significance
    3. Remove features with p > 0.05 (not significant)
@@ -1054,7 +1054,7 @@ Scenario 3: Feature Selection
 
 ---
 
-## 12.18 Quick Reference: Problem → Solution
+## 12.18 Quick Reference: Problem --> Solution
 
 | Problem | Model | Encoding | Scaling | Metric |
 |---------|-------|----------|---------|--------|
@@ -1074,7 +1074,7 @@ Scenario 3: Feature Selection
 ## 12.19 Resources for Further Learning
 
 ### Books
-- "Hands-On Machine Learning" (Aurélien Géron) - Practical ML
+- "Hands-On Machine Learning" (Aurelien Geron) - Practical ML
 - "The Elements of Statistical Learning" - Theory
 - "Interpretable Machine Learning" (Christoph Molnar) - Explainability
 
@@ -1102,7 +1102,7 @@ Scenario 3: Feature Selection
 
 1. **Start Simple:** Baseline with logistic regression or simple model
 2. **Understand Your Data:** Explore before modeling (EDA is critical)
-3. **Right Encoding:** Tree models → Label/Target, Linear → One-hot
+3. **Right Encoding:** Tree models --> Label/Target, Linear --> One-hot
 4. **Right Metric:** F1 for imbalanced, RMSE for regression, etc.
 5. **Cross-Validate:** Always use CV, never just train/test
 6. **XGBoost Usually Wins:** For tabular data (90% of cases)
@@ -1118,13 +1118,13 @@ Scenario 3: Feature Selection
 **Last Updated:** 2025-10-12
 
 **This completes the ML Encyclopedia! You now have:**
-- Phase 1: Tree-Based Models ✅
-- Phase 2: Linear Models & SVMs ✅
-- Phase 3: Feature Engineering & Encoding ✅
-- Phase 4: Statistical Tests ✅
-- Phase 5: Deep Learning Fundamentals ✅
-- Phase 6: NLP & Transformers ✅
-- Phase 7: GANs & Generative Models ✅
-- Phase 8: Master Model Selection (this document) ✅
+- Phase 1: Tree-Based Models 
+- Phase 2: Linear Models & SVMs 
+- Phase 3: Feature Engineering & Encoding 
+- Phase 4: Statistical Tests 
+- Phase 5: Deep Learning Fundamentals 
+- Phase 6: NLP & Transformers 
+- Phase 7: GANs & Generative Models 
+- Phase 8: Master Model Selection (this document) 
 
 **Print this guide and keep it as a reference for all your ML projects!**

@@ -26,10 +26,10 @@ Dimensionality reduction transforms high-dimensional data into lower dimensions 
 
 ```
 Volume of unit hypersphere in d dimensions:
-V_d ∝ r^d / d!
+V_d proportional to r^d / d!
 
 For r=1:
-- d=2: π ≈ 3.14
+- d=2: pi ~= 3.14
 - d=10: 2.55
 - d=100: 10^-40  (essentially zero!)
 ```
@@ -45,7 +45,7 @@ For r=1:
 **Key Insight**: Real-world high-dimensional data often lies on lower-dimensional manifold
 
 **Example**: Images of faces
-- Raw pixels: 100×100 = 10,000 dimensions
+- Raw pixels: 100x100 = 10,000 dimensions
 - Intrinsic dimensions: ~50-100 (pose, lighting, expression, identity)
 
 ### Types of Dimensionality Reduction
@@ -68,39 +68,39 @@ For r=1:
 
 **Formulation**:
 ```
-Given data matrix X (n × d), center columns:
-X̃ = X - mean(X)
+Given data matrix X (n x d), center columns:
+X_tilde = X - mean(X)
 
 Covariance matrix:
-C = (1/n) X̃ᵀ X̃
+C = (1/n) X_tilde^T X_tilde
 
-Find eigenvectors v and eigenvalues λ:
-C v = λ v
+Find eigenvectors v and eigenvalues lambda:
+C v = lambda v
 
 Principal components: eigenvectors sorted by eigenvalues
-PC₁ has largest λ (most variance), PC₂ second largest, etc.
+PC_1 has largest lambda (most variance), PC_2 second largest, etc.
 ```
 
 ### Algorithm
 
 ```
-1. Standardize data: X̃ = (X - μ) / σ
+1. Standardize data: X_tilde = (X - mu) / sigma
 
 2. Compute covariance matrix:
-   C = X̃ᵀ X̃ / (n-1)
+   C = X_tilde^T X_tilde / (n-1)
 
 3. Eigendecomposition:
-   C = V Λ Vᵀ
-   Where V = eigenvectors, Λ = diagonal(eigenvalues)
+   C = V Lambda V^T
+   Where V = eigenvectors, Lambda = diagonal(eigenvalues)
 
 4. Select k principal components:
-   W = [v₁, v₂, ..., vₖ]  (top k eigenvectors)
+   W = [v_1, v_2, ..., v_k]  (top k eigenvectors)
 
 5. Transform data:
-   Z = X̃ W  (n × k)
+   Z = X_tilde W  (n x k)
 
 6. Reconstruction (optional):
-   X̂ = Z Wᵀ + μ
+   X_hat = Z W^T + mu
 ```
 
 ### Variance Explained
@@ -108,9 +108,9 @@ PC₁ has largest λ (most variance), PC₂ second largest, etc.
 **How much information retained?**
 
 ```
-Variance explained by PC_i = λᵢ / Σⱼ λⱼ
+Variance explained by PC_i = lambda_i / sum_j lambda_j
 
-Cumulative variance = Σᵢ₌₁ᵏ λᵢ / Σⱼ λⱼ
+Cumulative variance = sum_i=_1^k lambda_i / sum_j lambda_j
 ```
 
 **Rule of thumb**: Keep components explaining 95% of variance
@@ -126,7 +126,7 @@ from sklearn.datasets import load_digits
 
 # Load high-dimensional data
 digits = load_digits()
-X = digits.data  # 1797 samples × 64 features (8×8 images)
+X = digits.data  # 1797 samples x 64 features (8x8 images)
 y = digits.target
 
 print(f"Original shape: {X.shape}")
@@ -237,7 +237,7 @@ plt.show()
 
 ```
 Whitening transformation:
-Z = X̃ V Λ^(-1/2)
+Z = X_tilde V Lambda^(-1/2)
 
 Result:
 - Mean = 0
@@ -372,19 +372,19 @@ plt.show()
 
 **High-dimensional similarities** (Gaussian):
 ```
-p_{j|i} = exp(-||xᵢ - xⱼ||² / 2σᵢ²) / Σₖ exp(-||xᵢ - xₖ||² / 2σᵢ²)
+p_{j|i} = exp(-||x_i - x_j||^2 / 2sigma_i^2) / sum_k exp(-||x_i - x_k||^2 / 2sigma_i^2)
 
 p_{ij} = (p_{j|i} + p_{i|j}) / 2n  (symmetrized)
 ```
 
 **Low-dimensional similarities** (t-distribution with df=1):
 ```
-q_{ij} = (1 + ||yᵢ - yⱼ||²)⁻¹ / Σₖₗ (1 + ||yₖ - yₗ||²)⁻¹
+q_{ij} = (1 + ||y_i - y_j||^2)^-^1 / sum_k_l (1 + ||y_k - y_l||^2)^-^1
 ```
 
 **Objective** (KL divergence):
 ```
-C = KL(P||Q) = Σᵢⱼ pᵢⱼ log(pᵢⱼ / qᵢⱼ)
+C = KL(P||Q) = sum_i_j p_i_j log(p_i_j / q_i_j)
 
 Minimize using gradient descent
 ```
@@ -394,9 +394,9 @@ Minimize using gradient descent
 **Perplexity**: Effective number of neighbors to consider
 
 ```
-Perplexity = 2^H(Pᵢ)
+Perplexity = 2^H(P_i)
 
-Where H(Pᵢ) = -Σⱼ pⱼ|ᵢ log₂(pⱼ|ᵢ)  (Shannon entropy)
+Where H(P_i) = -sum_j p_j|_i log_2(p_j|_i)  (Shannon entropy)
 ```
 
 **Guidelines**:
@@ -420,7 +420,7 @@ y = digits.target
 pca_pre = PCA(n_components=50)
 X_pca = pca_pre.fit_transform(StandardScaler().fit_transform(X))
 
-print(f"Pre-PCA: {X.shape} → {X_pca.shape}")
+print(f"Pre-PCA: {X.shape} --> {X_pca.shape}")
 
 # t-SNE with different perplexities
 perplexities = [5, 30, 50]
@@ -480,7 +480,7 @@ def tsne_analysis(X, y, perplexities=[5, 30, 50], n_iter=1000):
     if X.shape[1] > 50:
         pca = PCA(n_components=50)
         X_prep = pca.fit_transform(X_scaled)
-        print(f"PCA preprocessing: {X.shape} → {X_prep.shape}")
+        print(f"PCA preprocessing: {X.shape} --> {X_prep.shape}")
         print(f"Variance retained: {pca.explained_variance_ratio_.sum():.4f}")
     else:
         X_prep = X_scaled
@@ -710,15 +710,15 @@ plt.show()
 
 ```
 Within-class scatter matrix:
-S_W = Σₖ Σᵢ∈Cₖ (xᵢ - μₖ)(xᵢ - μₖ)ᵀ
+S_W = sum_k sum_iinC_k (x_i - mu_k)(x_i - mu_k)^T
 
 Between-class scatter matrix:
-S_B = Σₖ nₖ(μₖ - μ)(μₖ - μ)ᵀ
+S_B = sum_k n_k(mu_k - mu)(mu_k - mu)^T
 
 Objective:
-Maximize J(w) = (wᵀ S_B w) / (wᵀ S_W w)
+Maximize J(w) = (w^T S_B w) / (w^T S_W w)
 
-Solution: Eigenvectors of S_W⁻¹ S_B
+Solution: Eigenvectors of S_W^-^1 S_B
 ```
 
 **Maximum components**: min(n_classes - 1, n_features)
@@ -784,10 +784,10 @@ print("Use LDA when: Have labels, want to discriminate classes")
 
 ### Neural Network-Based Dimensionality Reduction
 
-**Architecture**: Encoder → Bottleneck → Decoder
+**Architecture**: Encoder --> Bottleneck --> Decoder
 
 ```
-Input (high-D) → Encoder → Code (low-D) → Decoder → Reconstruction
+Input (high-D) --> Encoder --> Code (low-D) --> Decoder --> Reconstruction
 ```
 
 **Training**: Minimize reconstruction error
@@ -896,7 +896,7 @@ plt.figure(figsize=(10, 8))
 scatter = plt.scatter(X_vis[:, 0], X_vis[:, 1], c=y, cmap='tab10', alpha=0.7)
 plt.xlabel('Autoencoder Dim 1')
 plt.ylabel('Autoencoder Dim 2')
-plt.title(f'Autoencoder ({encoding_dim}D → 2D visualization)')
+plt.title(f'Autoencoder ({encoding_dim}D --> 2D visualization)')
 plt.colorbar(scatter, label='Digit')
 plt.show()
 ```
@@ -997,7 +997,7 @@ def compare_methods(X, y, methods_dict):
             'Time': fit_time
         })
 
-        print(f"  Accuracy: {scores.mean():.4f} ± {scores.std():.4f}")
+        print(f"  Accuracy: {scores.mean():.4f} +/- {scores.std():.4f}")
         print(f"  Time: {fit_time:.2f}s")
 
     return pd.DataFrame(results)
@@ -1062,7 +1062,7 @@ def recommend_method(n_samples, n_features, has_labels=False, purpose='ml'):
 
     print("Dimensionality Reduction Recommendation:")
     print("=" * 60)
-    print(f"Dataset: {n_samples} samples × {n_features} features")
+    print(f"Dataset: {n_samples} samples x {n_features} features")
     print(f"Labels available: {has_labels}")
     print(f"Purpose: {purpose}")
     print()
@@ -1082,7 +1082,7 @@ def recommend_method(n_samples, n_features, has_labels=False, purpose='ml'):
             recommendations.append("LDA - best for classification")
         recommendations.append("PCA (keep 95% variance)")
         if n_features > 100:
-            recommendations.append("PCA → UMAP pipeline")
+            recommendations.append("PCA --> UMAP pipeline")
         if n_samples > 100000:
             recommendations.append("Incremental PCA")
 
@@ -1140,7 +1140,7 @@ from sklearn.datasets import fetch_olivetti_faces
 
 # Load face images
 faces = fetch_olivetti_faces(shuffle=True, random_state=42)
-X_faces = faces.data  # 400 images × 4096 pixels (64×64)
+X_faces = faces.data  # 400 images x 4096 pixels (64x64)
 
 print(f"Original: {X_faces.shape}")
 print(f"Memory: {X_faces.nbytes / 1024:.2f} KB")

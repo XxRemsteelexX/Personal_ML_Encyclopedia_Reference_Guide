@@ -25,7 +25,7 @@ historical_data = {
     'male_engineers': 0.90,
     'female_engineers': 0.10
 }
-# ⚠️ Model will replicate historical discrimination
+# [WARNING] Model will replicate historical discrimination
 ```
 
 **Representation Bias** - Some groups underrepresented
@@ -41,7 +41,7 @@ def detect_representation_bias(df, protected_attribute, min_representation=0.1):
     underrepresented = distribution[distribution < min_representation]
 
     if len(underrepresented) > 0:
-        print(f"⚠️ Representation Bias Detected in {protected_attribute}:")
+        print(f"[WARNING] Representation Bias Detected in {protected_attribute}:")
         for group, pct in underrepresented.items():
             print(f"  - {group}: {pct:.1%} (below {min_representation:.0%} threshold)")
 
@@ -56,7 +56,7 @@ bias_check = detect_representation_bias(df, 'race', min_representation=0.05)
 # Example: ZIP code highly correlated with race
 correlation_matrix = df[['zip_code', 'race_encoded']].corr()
 if abs(correlation_matrix.iloc[0, 1]) > 0.7:
-    print("⚠️ Measurement Bias: ZIP code is proxy for race")
+    print("[WARNING] Measurement Bias: ZIP code is proxy for race")
 ```
 
 **Aggregation Bias** - One model doesn't fit all subgroups
@@ -83,7 +83,7 @@ def detect_aggregation_bias(model, X, y, group_col):
     min_mse = min(results.values())
 
     if (max_mse - min_mse) / min_mse > 0.2:
-        print(f"⚠️ Aggregation Bias: Performance varies {((max_mse - min_mse) / min_mse):.0%} across {group_col}")
+        print(f"[WARNING] Aggregation Bias: Performance varies {((max_mse - min_mse) / min_mse):.0%} across {group_col}")
 
     return results
 ```
@@ -94,10 +94,10 @@ def detect_aggregation_bias(model, X, y, group_col):
 ```python
 from sklearn.model_selection import train_test_split
 
-# ❌ WRONG - Random split might create bias
+#  WRONG - Random split might create bias
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-# ✅ CORRECT - Stratify by protected attribute
+#  CORRECT - Stratify by protected attribute
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2,
     stratify=df['protected_attribute']
@@ -209,7 +209,7 @@ def measure_individual_fairness(X, predictions, k=10):
 
 #### 1. Statistical Parity (Demographic Parity)
 
-**Definition:** P(Ŷ=1 | A=0) = P(Ŷ=1 | A=1)
+**Definition:** P(Y_hat=1 | A=0) = P(Y_hat=1 | A=1)
 
 "Positive prediction rate should be same across groups"
 
@@ -350,7 +350,7 @@ def equalized_odds(y_true, y_pred, protected_attribute):
 
 #### 4. Calibration
 
-**Definition:** P(Y=1 | Ŷ=p, A=0) = P(Y=1 | Ŷ=p, A=1)
+**Definition:** P(Y=1 | Y_hat=p, A=0) = P(Y=1 | Y_hat=p, A=1)
 
 "Predicted probabilities should match actual outcomes across groups"
 
@@ -487,7 +487,7 @@ class FairnessAuditor:
             report += "-"*60 + "\n"
 
             for metric_name, metric_result in metrics.items():
-                fair_status = "✓ FAIR" if metric_result.get('fair', False) else "✗ BIASED"
+                fair_status = "[x] FAIR" if metric_result.get('fair', False) else "[ ] BIASED"
                 report += f"{metric_name:25} {fair_status}\n"
 
                 # Add key metric value
@@ -750,7 +750,7 @@ class FairnessMonitor:
         self.alerts.append(alert)
 
         # In production: send to monitoring system
-        print(f"⚠️ FAIRNESS ALERT: {metric} violation for {attribute}")
+        print(f"[WARNING] FAIRNESS ALERT: {metric} violation for {attribute}")
         print(f"   Severity: {alert['severity']}")
         print(f"   Details: {result}")
 

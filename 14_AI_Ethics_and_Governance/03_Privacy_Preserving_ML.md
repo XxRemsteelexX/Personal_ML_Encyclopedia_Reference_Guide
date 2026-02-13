@@ -16,13 +16,13 @@
 
 ### Formal Definition
 
-**ε-Differential Privacy:** Algorithm M is ε-differentially private if for all datasets D1 and D2 differing by one record:
+**epsilon-Differential Privacy:** Algorithm M is epsilon-differentially private if for all datasets D1 and D2 differing by one record:
 
 ```
-P[M(D1) ∈ S] ≤ e^ε × P[M(D2) ∈ S]
+P[M(D1) in S] <= e^epsilon x P[M(D2) in S]
 ```
 
-**Lower ε = stronger privacy** (ε=0.1 is strong, ε=10 is weak)
+**Lower epsilon = stronger privacy** (epsilon=0.1 is strong, epsilon=10 is weak)
 
 ### Laplace Mechanism
 
@@ -77,12 +77,12 @@ private_avg_age = dp.private_mean(ages, data_range=100)
 private_count_positive = dp.private_count(labels, lambda x: x == 1)
 ```
 
-### Gaussian Mechanism (for (ε, δ)-DP)
+### Gaussian Mechanism (for (epsilon, delta)-DP)
 
 ```python
 class GaussianDP:
     """
-    (ε, δ)-differential privacy using Gaussian mechanism
+    (epsilon, delta)-differential privacy using Gaussian mechanism
     """
 
     def __init__(self, epsilon=1.0, delta=1e-5):
@@ -91,7 +91,7 @@ class GaussianDP:
 
     def compute_sigma(self, sensitivity):
         """
-        Compute noise scale for (ε, δ)-DP
+        Compute noise scale for (epsilon, delta)-DP
         """
         return sensitivity * np.sqrt(2 * np.log(1.25 / self.delta)) / self.epsilon
 
@@ -154,7 +154,7 @@ def train_with_dp(model, train_data, epsilon=1.0, delta=1e-5):
         delta=delta
     )
 
-    print(f"Privacy spent: ε={privacy_spent[0]:.2f}, δ={delta}")
+    print(f"Privacy spent: epsilon={privacy_spent[0]:.2f}, delta={delta}")
 
     return model
 ```
@@ -162,7 +162,7 @@ def train_with_dp(model, train_data, epsilon=1.0, delta=1e-5):
 **Key Parameters:**
 - **l2_norm_clip:** Clip gradients to bound sensitivity
 - **noise_multiplier:** Controls noise scale (higher = more privacy, less accuracy)
-- **Privacy budget (ε):** Lower is better (ε<1 is strong privacy)
+- **Privacy budget (epsilon):** Lower is better (epsilon<1 is strong privacy)
 
 ---
 
@@ -331,12 +331,12 @@ for round in range(50):
     # Aggregate with DP
     global_model = dp_fl.dp_federated_averaging(client_models, clip_norm=1.0)
 
-print("DP-FL training complete: ε=1.9, δ=1e-5")
+print("DP-FL training complete: epsilon=1.9, delta=1e-5")
 print("96.1% accuracy with strong privacy guarantee (2024 research)")
 ```
 
 **Performance (2024 Research):**
-- **96.1% accuracy** with ε=1.9
+- **96.1% accuracy** with epsilon=1.9
 - **4.22% improvement** over standard FL (hybrid DP method)
 - **Strong privacy guarantee** for medical data
 
@@ -536,10 +536,10 @@ tradeoff_results = evaluate_privacy_utility_tradeoff(
 
 """
 Expected results:
-ε = 0.1: 75% accuracy (very strong privacy)
-ε = 1.0: 88% accuracy (strong privacy) ← Sweet spot
-ε = 5.0: 93% accuracy (moderate privacy)
-ε = 10.0: 95% accuracy (weak privacy)
+epsilon = 0.1: 75% accuracy (very strong privacy)
+epsilon = 1.0: 88% accuracy (strong privacy) <-- Sweet spot
+epsilon = 5.0: 93% accuracy (moderate privacy)
+epsilon = 10.0: 95% accuracy (weak privacy)
 No DP: 96% accuracy (no privacy)
 """
 ```
@@ -548,17 +548,17 @@ No DP: 96% accuracy (no privacy)
 
 ## Best Practices
 
-1. **Choose appropriate ε**
-   - Medical data: ε < 1
-   - Financial data: ε < 3
-   - General data: ε < 10
+1. **Choose appropriate epsilon**
+   - Medical data: epsilon < 1
+   - Financial data: epsilon < 3
+   - General data: epsilon < 10
 
 2. **Combine techniques**
    - FL + DP = strong privacy without centralization
    - HE + DP = encryption + mathematical guarantee
 
 3. **Monitor privacy budget**
-   - Track cumulative ε across queries
+   - Track cumulative epsilon across queries
    - Stop when budget exhausted
 
 4. **Validate privacy claims**
@@ -569,6 +569,6 @@ No DP: 96% accuracy (no privacy)
    - GDPR Article 30: Record privacy measures
    - EU AI Act Article 11: Technical documentation
 
-**Key Takeaway:** Privacy and utility are a trade-off. With 2025 techniques (ALDP-FL, hybrid DP), you can achieve **96%+ accuracy with ε=1.9** (strong privacy).
+**Key Takeaway:** Privacy and utility are a trade-off. With 2025 techniques (ALDP-FL, hybrid DP), you can achieve **96%+ accuracy with epsilon=1.9** (strong privacy).
 
 **Next:** `04_Model_Explainability.md` - SHAP, LIME, and interpretability techniques

@@ -13,8 +13,8 @@ Attention mechanisms allow neural networks to focus on specific parts of the inp
 ### Seq2Seq Without Attention
 
 ```
-Encoder: x_1, x_2, ..., x_n → single context vector (c)
-Decoder: c → y_1, y_2, ..., y_m
+Encoder: x_1, x_2, ..., x_n --> single context vector (c)
+Decoder: c --> y_1, y_2, ..., y_m
 ```
 
 **Problem:**
@@ -48,10 +48,10 @@ The context vector struggles to remember "cat", "sat", and "mat" simultaneously.
 e_tj = score(s_{t-1}, h_j)  # How well decoder state s_{t-1} matches encoder state h_j
 
 # 2. Normalize scores to get attention weights
-α_tj = exp(e_tj) / Σ_k exp(e_tk)
+alpha_tj = exp(e_tj) / sum_k exp(e_tk)
 
 # 3. Compute context vector as weighted sum
-c_t = Σ_j α_tj * h_j
+c_t = sum_j alpha_tj * h_j
 
 # 4. Use context vector in decoder
 s_t = f(s_{t-1}, y_{t-1}, c_t)
@@ -209,8 +209,8 @@ For each position i in sequence:
 
 ```python
 # For position i:
-attention_weights = softmax(Q_i · K / √d_k)
-output_i = Σ_j attention_weights_j * V_j
+attention_weights = softmax(Q_i * K / sqrtd_k)
+output_i = sum_j attention_weights_j * V_j
 ```
 
 ### Implementation
@@ -243,7 +243,7 @@ class SelfAttention(nn.Module):
         keys = self.keys(keys)
         queries = self.queries(queries)
 
-        # Attention: Q·K^T / √d_k
+        # Attention: Q*K^T / sqrtd_k
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
         # energy shape: (N, heads, query_len, key_len)
 
@@ -271,15 +271,15 @@ class SelfAttention(nn.Module):
 ### Formula
 
 ```
-Attention(Q, K, V) = softmax(QK^T / √d_k) V
+Attention(Q, K, V) = softmax(QK^T / sqrtd_k) V
 ```
 
 Where:
-- Q = Queries matrix (n × d_k)
-- K = Keys matrix (m × d_k)
-- V = Values matrix (m × d_v)
+- Q = Queries matrix (n x d_k)
+- K = Keys matrix (m x d_k)
+- V = Values matrix (m x d_v)
 - d_k = dimension of keys
-- √d_k = scaling factor (prevents softmax saturation)
+- sqrtd_k = scaling factor (prevents softmax saturation)
 
 ### Why Scaling?
 
@@ -291,12 +291,12 @@ Without scaling, for large d_k:
 **Example:**
 ```python
 # Without scaling
-Q·K^T = [100, 95, 5, 3]  # One value dominates
-softmax([100, 95, 5, 3]) ≈ [0.88, 0.12, 0, 0]  # Gradient ≈ 0 for small values
+Q*K^T = [100, 95, 5, 3]  # One value dominates
+softmax([100, 95, 5, 3]) ~= [0.88, 0.12, 0, 0]  # Gradient ~= 0 for small values
 
 # With scaling (d_k = 64)
-Q·K^T / √64 = [12.5, 11.9, 0.63, 0.38]
-softmax(...) ≈ [0.55, 0.40, 0.02, 0.01]  # Better gradient flow
+Q*K^T / sqrt64 = [12.5, 11.9, 0.63, 0.38]
+softmax(...) ~= [0.55, 0.40, 0.02, 0.01]  # Better gradient flow
 ```
 
 ### Implementation
@@ -345,11 +345,11 @@ Single attention head focuses on one aspect. Multiple heads can attend to:
 ### Architecture
 
 ```
-Input → Linear projections (Q, K, V) × h heads
-      → Scaled dot-product attention × h heads
-      → Concatenate heads
-      → Linear projection
-      → Output
+Input --> Linear projections (Q, K, V) x h heads
+      --> Scaled dot-product attention x h heads
+      --> Concatenate heads
+      --> Linear projection
+      --> Output
 ```
 
 ### Formula
@@ -458,7 +458,7 @@ def create_causal_mask(seq_len):
 #  [1, 1, 1, 1]]
 ```
 
-Position i can only attend to positions ≤ i.
+Position i can only attend to positions <= i.
 
 ### 3. Cross-Attention (Encoder-Decoder)
 
@@ -470,9 +470,9 @@ Purpose: Decoder attends to source sentence
 
 **Example (Translation):**
 ```
-Encoder output: "The cat sat" → [h1, h2, h3]
-Decoder generating: "Le" → attends to [h1, h2, h3]
-Next: "chat" → attends to [h1, h2, h3] (focuses on "cat")
+Encoder output: "The cat sat" --> [h1, h2, h3]
+Decoder generating: "Le" --> attends to [h1, h2, h3]
+Next: "chat" --> attends to [h1, h2, h3] (focuses on "cat")
 ```
 
 ---
@@ -514,7 +514,7 @@ plot_attention(attention_weights, input_tokens, output_tokens)
 
 **Strong attention (high weight):**
 - Model finds input position relevant for current output
-- Often aligns related concepts (e.g., "chat" → "cat")
+- Often aligns related concepts (e.g., "chat" --> "cat")
 
 **Weak attention (low weight):**
 - Input position not relevant for current output
@@ -530,7 +530,7 @@ plot_attention(attention_weights, input_tokens, output_tokens)
 
 ### 1. Local Attention
 
-**Problem:** Full attention is O(n²) in sequence length.
+**Problem:** Full attention is O(n^2) in sequence length.
 
 **Solution:** Only attend to local window.
 
@@ -562,7 +562,7 @@ def local_attention(Q, K, V, window_size=5):
 - Learned patterns (learn which positions to attend to)
 
 **Benefits:**
-- O(n√n) or O(n log n) complexity
+- O(nsqrtn) or O(n log n) complexity
 - Can handle longer sequences
 
 ### 3. Linear Attention
@@ -570,14 +570,14 @@ def local_attention(Q, K, V, window_size=5):
 **Reformulate attention to avoid explicit softmax:**
 
 ```python
-# Standard: O(n²)
+# Standard: O(n^2)
 Attention(Q, K, V) = softmax(QK^T) V
 
 # Linear: O(n)
-Attention(Q, K, V) = φ(Q) (φ(K)^T V)
+Attention(Q, K, V) = phi(Q) (phi(K)^T V)
 ```
 
-Where φ is a feature map (e.g., ELU + 1).
+Where phi is a feature map (e.g., ELU + 1).
 
 ---
 
@@ -619,7 +619,7 @@ Where φ is a feature map (e.g., ELU + 1).
 - Solution: May be expected behavior, or mask special tokens
 
 **3. Memory Issues**
-- Attention is O(n²) in memory
+- Attention is O(n^2) in memory
 - Solution: Gradient checkpointing, local/sparse attention
 
 ---
@@ -678,11 +678,11 @@ output = block(x)  # (32, 100, 512)
 ## Summary
 
 **Evolution:**
-1. No attention → Information bottleneck
-2. Bahdanau/Luong → Attend to encoder states
-3. Self-attention → Relate positions within sequence
-4. Multi-head → Multiple attention patterns
-5. Transformers → Attention is all you need
+1. No attention --> Information bottleneck
+2. Bahdanau/Luong --> Attend to encoder states
+3. Self-attention --> Relate positions within sequence
+4. Multi-head --> Multiple attention patterns
+5. Transformers --> Attention is all you need
 
 **Key Concepts:**
 - Query, Key, Value paradigm

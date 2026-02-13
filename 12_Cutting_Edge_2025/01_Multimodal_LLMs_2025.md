@@ -16,7 +16,7 @@
 
 ## Introduction
 
-**Multimodal Large Language Models (MLLMs)** represent one of the most significant developments in AI in 2025. Unlike traditional LLMs that process only text, multimodal models can understand and generate content across multiple modalities—text, images, audio, and video—within a unified architecture.
+**Multimodal Large Language Models (MLLMs)** represent one of the most significant developments in AI in 2025. Unlike traditional LLMs that process only text, multimodal models can understand and generate content across multiple modalities--text, images, audio, and video--within a unified architecture.
 
 ### Definition
 
@@ -84,7 +84,7 @@ Recent advances made multimodal models practical:
 
 ### GPT-4o (OpenAI)
 
-**Overview**: "o" stands for "omni"—the model processes text, images, and audio in a single unified model.
+**Overview**: "o" stands for "omni"--the model processes text, images, and audio in a single unified model.
 
 **Key Features**:
 - **Real-time multimodal**: <500ms latency for most queries
@@ -95,15 +95,15 @@ Recent advances made multimodal models practical:
 **Architecture**:
 ```
 Input (text/image/audio)
-    ↓
+    v
 Modal-specific encoders (Vision Transformer, Audio Spectrogram Transformer)
-    ↓
+    v
 Unified token embedding
-    ↓
+    v
 GPT-4 Transformer backbone (175B+ parameters)
-    ↓
+    v
 Modal-specific decoders
-    ↓
+    v
 Output (text/image/audio)
 ```
 
@@ -162,7 +162,7 @@ print(response.choices[0].message.content)
 
 ### Gemini 2.0 (Google)
 
-**Overview**: Google's flagship multimodal model with two variants—Flash (speed) and Ultra (depth).
+**Overview**: Google's flagship multimodal model with two variants--Flash (speed) and Ultra (depth).
 
 **Key Features**:
 - **Gemini Flash 2.0**: Optimized for low latency (<200ms)
@@ -304,13 +304,13 @@ print(message.content[0].text)
 **Architecture**:
 ```
 Image Input
-    ↓
+    v
 Vision Encoder (ViT-H/14)
-    ↓
+    v
 Adapter Layer
-    ↓
+    v
 Llama 3.2 Transformer
-    ↓
+    v
 Text Output
 ```
 
@@ -996,15 +996,15 @@ print(json.dumps(invoice_data, indent=2))
 **Architecture Overview**:
 ```
 User Input (Image + Text)
-    ↓
-CLIP Image Encoder → Image Embeddings
-    ↓
+    v
+CLIP Image Encoder --> Image Embeddings
+    v
 Projection to GPT Token Space
-    ↓
+    v
 Concatenate with Text Tokens
-    ↓
+    v
 GPT-2/3 Backbone
-    ↓
+    v
 Generated Text Output
 ```
 
@@ -1027,7 +1027,7 @@ class CLIPGPTMultimodal(nn.Module):
         self.tokenizer = GPT2Tokenizer.from_pretrained(gpt_model_name)
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
-        # Projection layer: CLIP embeddings → GPT token space
+        # Projection layer: CLIP embeddings --> GPT token space
         clip_dim = self.clip.config.hidden_size  # 768 for base
         gpt_dim = self.gpt.config.n_embd  # 768 for GPT-2
         self.projection = nn.Linear(clip_dim, gpt_dim)

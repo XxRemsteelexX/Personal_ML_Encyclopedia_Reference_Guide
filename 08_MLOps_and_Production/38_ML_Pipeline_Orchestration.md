@@ -184,11 +184,11 @@ class SimplePipeline:
                 results[task_name] = result
 
                 task.status = TaskStatus.SUCCESS
-                self.logger.info(f"✅ Task {task_name} completed")
+                self.logger.info(f" Task {task_name} completed")
 
             except Exception as e:
                 task.status = TaskStatus.FAILED
-                self.logger.error(f"❌ Task {task_name} failed: {e}")
+                self.logger.error(f" Task {task_name} failed: {e}")
                 results[task_name] = None
 
         # Pipeline summary
@@ -331,7 +331,7 @@ def extract_data(**context):
     # Push path to XCom
     context['task_instance'].xcom_push(key='data_path', value=local_path)
 
-    print(f"✅ Downloaded data: {file_key}")
+    print(f" Downloaded data: {file_key}")
 
 def preprocess_data(**context):
     """Preprocess data."""
@@ -355,7 +355,7 @@ def preprocess_data(**context):
 
     ti.xcom_push(key='processed_data_path', value=processed_path)
 
-    print(f"✅ Preprocessed {len(df)} records")
+    print(f" Preprocessed {len(df)} records")
 
 def train_model(**context):
     """Train ML model."""
@@ -389,7 +389,7 @@ def train_model(**context):
     accuracy = accuracy_score(y_test, y_pred)
     auc = roc_auc_score(y_test, y_prob)
 
-    print(f"✅ Model trained - Accuracy: {accuracy:.3f}, AUC: {auc:.3f}")
+    print(f" Model trained - Accuracy: {accuracy:.3f}, AUC: {auc:.3f}")
 
     # Save model
     execution_date = context['execution_date']
@@ -418,7 +418,7 @@ def validate_model(**context):
             f"AUC={auc:.3f} (min={min_auc})"
         )
 
-    print(f"✅ Model validation passed")
+    print(f" Model validation passed")
 
 def deploy_model(**context):
     """Deploy model to S3."""
@@ -437,7 +437,7 @@ def deploy_model(**context):
         replace=True
     )
 
-    print(f"✅ Model deployed: {s3_key}")
+    print(f" Model deployed: {s3_key}")
 
 # Define tasks
 task_extract = PythonOperator(
@@ -532,7 +532,7 @@ def dynamic_ml_pipeline():
         """Deploy the best model."""
         print(f"Deploying {best_model['model_name']}...")
         # Deployment logic
-        print(f"✅ Deployed {best_model['model_name']}")
+        print(f" Deployed {best_model['model_name']}")
 
     # Pipeline flow
     models = get_models()
@@ -824,7 +824,7 @@ def train(data_path, learning_rate, n_estimators, max_depth):
         # Log model
         mlflow.sklearn.log_model(model, "model")
 
-        print(f"✅ Training complete - Accuracy: {accuracy:.3f}, AUC: {auc:.3f}")
+        print(f" Training complete - Accuracy: {accuracy:.3f}, AUC: {auc:.3f}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -906,7 +906,7 @@ def train_model(df: pd.DataFrame, model_type: str = 'rf') -> dict:
 def deploy_model(model_result: dict):
     """Deploy model."""
     if model_result['accuracy'] > 0.85:
-        print(f"✅ Deploying model with accuracy {model_result['accuracy']:.3f}")
+        print(f" Deploying model with accuracy {model_result['accuracy']:.3f}")
     else:
         raise ValueError(f"Model accuracy {model_result['accuracy']:.3f} below threshold")
 
@@ -1280,7 +1280,7 @@ class MLPipeline:
             archive_existing_versions=True
         )
 
-        print(f"✅ Model v{latest_version} promoted to Production")
+        print(f" Model v{latest_version} promoted to Production")
 
 # Airflow DAG
 default_args = {

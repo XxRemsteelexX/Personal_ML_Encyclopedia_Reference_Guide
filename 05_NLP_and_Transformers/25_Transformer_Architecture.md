@@ -14,9 +14,9 @@ The Transformer, introduced in "Attention Is All You Need" (Vaswani et al., 2017
 
 ```
 Input Sequence
-    ↓
-[Encoder Stack] → [Decoder Stack]
-                      ↓
+    v
+[Encoder Stack] --> [Decoder Stack]
+                      v
                 Output Sequence
 ```
 
@@ -46,7 +46,7 @@ class TokenEmbedding(nn.Module):
         self.d_model = d_model
 
     def forward(self, x):
-        # Scale embeddings by √d_model (from paper)
+        # Scale embeddings by sqrtd_model (from paper)
         return self.embedding(x) * math.sqrt(self.d_model)
 ```
 
@@ -119,15 +119,15 @@ Each encoder layer contains:
 
 ```
 Input
-  ↓
+  v
 Multi-Head Attention
-  ↓
+  v
 Add & Norm (Residual + LayerNorm)
-  ↓
+  v
 Feed-Forward Network
-  ↓
+  v
 Add & Norm
-  ↓
+  v
 Output
 ```
 
@@ -204,19 +204,19 @@ Each decoder layer contains:
 
 ```
 Target Input
-  ↓
+  v
 Masked Multi-Head Attention (self)
-  ↓
+  v
 Add & Norm
-  ↓
+  v
 Cross-Attention (to encoder)
-  ↓
+  v
 Add & Norm
-  ↓
+  v
 Feed-Forward Network
-  ↓
+  v
 Add & Norm
-  ↓
+  v
 Output
 ```
 
@@ -381,7 +381,7 @@ class LabelSmoothingLoss(nn.Module):
 **Learning Rate Schedule from paper:**
 
 ```
-lr = d_model^(-0.5) × min(step^(-0.5), step × warmup_steps^(-1.5))
+lr = d_model^(-0.5) x min(step^(-0.5), step x warmup_steps^(-1.5))
 ```
 
 **Implementation:**
@@ -561,10 +561,10 @@ d_ff = 4096
 ### Modern LLMs (e.g., GPT-3)
 
 ```python
-d_model = 12288        # 96 × 128
+d_model = 12288        # 96 x 128
 num_heads = 96
 num_layers = 96
-d_ff = 49152           # 4 × d_model
+d_ff = 49152           # 4 x d_model
 ```
 
 ---
@@ -594,7 +594,7 @@ x = x + Sublayer(LayerNorm(x))
 
 **Solution (Transformer-XL):**
 ```
-Attention(Q, K, V) = softmax((QK^T + Q R^T) / √d_k) V
+Attention(Q, K, V) = softmax((QK^T + Q R^T) / sqrtd_k) V
 ```
 
 Where R encodes relative positions.
@@ -623,7 +623,7 @@ def apply_rotary_pos_emb(x, cos, sin):
 
 **Memory-efficient attention (2022-2025):**
 - Fused attention kernel
-- O(N) memory instead of O(N²)
+- O(N) memory instead of O(N^2)
 - 2-4x faster training
 - Standard in 2025 implementations
 
@@ -676,19 +676,19 @@ Use: Translation, summarization, any task as text-to-text
 
 ### Attention Complexity
 
-**Self-Attention:** O(n² × d)
+**Self-Attention:** O(n^2 x d)
 - n = sequence length
 - d = model dimension
 
-**Feed-Forward:** O(n × d²)
+**Feed-Forward:** O(n x d^2)
 
-**Total per layer:** O(n² × d + n × d²)
+**Total per layer:** O(n^2 x d + n x d^2)
 
 ### Scaling Bottleneck
 
 For long sequences (n large):
-- Attention dominates: O(n²)
-- Memory: O(n²) for attention matrix
+- Attention dominates: O(n^2)
+- Memory: O(n^2) for attention matrix
 
 **Solutions:**
 - Sparse attention patterns

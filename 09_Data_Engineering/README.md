@@ -206,22 +206,22 @@ from ray.train import ScalingConfig
 
 ### 1. Standard Preprocessing Pipeline
 ```
-Raw Data → Validation → Missing Value Handling → Outlier Detection →
-Feature Scaling → Encoding → Feature Engineering → Train/Val/Test Split → Model Training
+Raw Data --> Validation --> Missing Value Handling --> Outlier Detection -->
+Feature Scaling --> Encoding --> Feature Engineering --> Train/Val/Test Split --> Model Training
 ```
 
 ### 2. Imbalanced Classification Workflow
 ```
-Load Data → EDA (check class distribution) → Choose resampling strategy (SMOTE/ADASYN) →
-Apply resampling → Train model with class weights → Evaluate with precision/recall/F1 →
-Tune threshold → Production deployment
+Load Data --> EDA (check class distribution) --> Choose resampling strategy (SMOTE/ADASYN) -->
+Apply resampling --> Train model with class weights --> Evaluate with precision/recall/F1 -->
+Tune threshold --> Production deployment
 ```
 
 ### 3. Big Data ML Pipeline
 ```
-Data in HDFS/S3 → Load with Dask/Spark → Distributed preprocessing →
-Feature engineering at scale → Train on subset or full data →
-Distributed hyperparameter tuning → Model deployment to Kubernetes
+Data in HDFS/S3 --> Load with Dask/Spark --> Distributed preprocessing -->
+Feature engineering at scale --> Train on subset or full data -->
+Distributed hyperparameter tuning --> Model deployment to Kubernetes
 ```
 
 ---
@@ -288,21 +288,21 @@ Distributed hyperparameter tuning → Model deployment to Kubernetes
 
 ### When to Resample for Imbalanced Data?
 ```
-Class imbalance ratio < 3:1 → No resampling needed, use class weights
-Class imbalance ratio 3:1 to 10:1 → Try class weights first, then SMOTE
-Class imbalance ratio > 10:1 → Use ADASYN or SMOTE-TOMEK
-Deep learning model → Use Focal Loss
-Extremely imbalanced (>100:1) → Anomaly detection approach (Isolation Forest)
+Class imbalance ratio < 3:1 --> No resampling needed, use class weights
+Class imbalance ratio 3:1 to 10:1 --> Try class weights first, then SMOTE
+Class imbalance ratio > 10:1 --> Use ADASYN or SMOTE-TOMEK
+Deep learning model --> Use Focal Loss
+Extremely imbalanced (>100:1) --> Anomaly detection approach (Isolation Forest)
 ```
 
 ### When to Use Big Data Technologies?
 ```
-Data size < 10GB → pandas (single machine)
-Data size 10-100GB → Dask (if Python-centric) or Spark
-Data size 100GB-1TB → Spark or Dask with distributed cluster
-Data size > 1TB → Cloud-native (BigQuery, Snowflake) or Spark
-Real-time streaming → Spark Structured Streaming or Flink
-Deep learning distributed training → Horovod (multi-GPU) or Ray
+Data size < 10GB --> pandas (single machine)
+Data size 10-100GB --> Dask (if Python-centric) or Spark
+Data size 100GB-1TB --> Spark or Dask with distributed cluster
+Data size > 1TB --> Cloud-native (BigQuery, Snowflake) or Spark
+Real-time streaming --> Spark Structured Streaming or Flink
+Deep learning distributed training --> Horovod (multi-GPU) or Ray
 ```
 
 ---
@@ -310,43 +310,43 @@ Deep learning distributed training → Horovod (multi-GPU) or Ray
 ## Common Pitfalls to Avoid
 
 ### Data Preprocessing
-❌ Fitting scalers on entire dataset (data leakage)
-✅ Fit only on training set, transform val/test
+ Fitting scalers on entire dataset (data leakage)
+ Fit only on training set, transform val/test
 
-❌ Not handling missing values systematically
-✅ Use imputation strategies appropriate for data type
+ Not handling missing values systematically
+ Use imputation strategies appropriate for data type
 
-❌ One-hot encoding high-cardinality features
-✅ Use target encoding or embeddings
+ One-hot encoding high-cardinality features
+ Use target encoding or embeddings
 
-❌ Not validating data in production
-✅ Continuous validation with Great Expectations
+ Not validating data in production
+ Continuous validation with Great Expectations
 
 ### Imbalanced Data
-❌ Using accuracy as primary metric
-✅ Use precision, recall, F1, AUC-ROC, AUC-PR
+ Using accuracy as primary metric
+ Use precision, recall, F1, AUC-ROC, AUC-PR
 
-❌ Only oversampling minority class
-✅ Consider hybrid (SMOTE-TOMEK) or just class weights
+ Only oversampling minority class
+ Consider hybrid (SMOTE-TOMEK) or just class weights
 
-❌ Applying SMOTE before cross-validation
-✅ Apply SMOTE inside each CV fold
+ Applying SMOTE before cross-validation
+ Apply SMOTE inside each CV fold
 
-❌ Not stratifying train/test splits
-✅ Always use stratified splits
+ Not stratifying train/test splits
+ Always use stratified splits
 
 ### Big Data
-❌ Using big data tools for small data
-✅ Prototype locally, scale when necessary
+ Using big data tools for small data
+ Prototype locally, scale when necessary
 
-❌ Loading entire dataset into memory
-✅ Use lazy evaluation (Dask, Spark)
+ Loading entire dataset into memory
+ Use lazy evaluation (Dask, Spark)
 
-❌ Not partitioning data properly
-✅ Partition by relevant keys (date, region)
+ Not partitioning data properly
+ Partition by relevant keys (date, region)
 
-❌ Using CSV for large datasets
-✅ Use Parquet or ORC (10x smaller, 100x faster)
+ Using CSV for large datasets
+ Use Parquet or ORC (10x smaller, 100x faster)
 
 ---
 

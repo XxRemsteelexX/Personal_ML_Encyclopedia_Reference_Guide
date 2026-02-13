@@ -21,7 +21,7 @@ Comprehensive guide to AI ethics, regulations, and compliance. **Legally require
 - US regulations (AI Bill of Rights, state laws)
 - China regulations (Algorithm Recommendation, Deep Synthesis, Generative AI)
 - Compliance checklists for high-risk AI
-- Maximum fines: €35M or 7% global turnover
+- Maximum fines: EUR35M or 7% global turnover
 
 ### 2. **02_Bias_Detection_and_Fairness_Metrics.md**
 - Types of bias (historical, representation, measurement, aggregation, label, deployment)
@@ -37,10 +37,10 @@ Comprehensive guide to AI ethics, regulations, and compliance. **Legally require
 - Production monitoring
 
 ### 3. **03_Privacy_Preserving_ML.md**
-- Differential Privacy (ε-DP, Laplace/Gaussian mechanisms)
+- Differential Privacy (epsilon-DP, Laplace/Gaussian mechanisms)
 - DP-SGD for neural networks
 - Federated Learning (FedAvg, secure aggregation)
-- DP-FL (96.1% accuracy with ε=1.9 - 2024 research)
+- DP-FL (96.1% accuracy with epsilon=1.9 - 2024 research)
 - Adaptive Local DP (ALDP-FL - 2025 SOTA)
 - Homomorphic Encryption for encrypted inference
 - Privacy-utility trade-off analysis
@@ -150,8 +150,8 @@ report = transparency_report.generate_user_explanation(instance, prediction)
 - CE marking and registration
 
 **Fines:**
-- Prohibited AI: €35M or 7% turnover
-- Non-compliance: €15M or 3% turnover
+- Prohibited AI: EUR35M or 7% turnover
+- Non-compliance: EUR15M or 3% turnover
 
 ---
 
@@ -183,14 +183,14 @@ report = transparency_report.generate_user_explanation(instance, prediction)
 
 ## Privacy-Utility Trade-off
 
-| Privacy Level | Epsilon (ε) | Typical Accuracy | Use Case |
+| Privacy Level | Epsilon (epsilon) | Typical Accuracy | Use Case |
 |---------------|-------------|------------------|----------|
-| Very Strong | ε < 0.5 | ~75-80% | Medical records |
-| Strong | ε = 1.0 | ~88-92% | **Recommended** |
-| Moderate | ε = 3-5 | ~93-95% | Financial data |
-| Weak | ε > 10 | ~95-96% | Low sensitivity |
+| Very Strong | epsilon < 0.5 | ~75-80% | Medical records |
+| Strong | epsilon = 1.0 | ~88-92% | **Recommended** |
+| Moderate | epsilon = 3-5 | ~93-95% | Financial data |
+| Weak | epsilon > 10 | ~95-96% | Low sensitivity |
 
-**2025 SOTA:** ALDP-FL achieves **96.1% accuracy with ε=1.9** (strong privacy)
+**2025 SOTA:** ALDP-FL achieves **96.1% accuracy with epsilon=1.9** (strong privacy)
 
 ---
 
@@ -243,7 +243,7 @@ report = transparency_report.generate_user_explanation(instance, prediction)
 
 ### Privacy
 - [ ] Privacy technique selected (DP/FL/HE)
-- [ ] Privacy budget set (ε, δ)
+- [ ] Privacy budget set (epsilon, delta)
 - [ ] Privacy-utility trade-off evaluated
 - [ ] Privacy monitoring implemented
 
@@ -269,7 +269,7 @@ report = transparency_report.generate_user_explanation(instance, prediction)
 
 **Papers (2024-2025):**
 - ALDP-FL: Adaptive Local Differential Privacy
-- Hybrid DP-FL: 96.1% accuracy with ε=1.9
+- Hybrid DP-FL: 96.1% accuracy with epsilon=1.9
 - EU AI Act Technical Report (2024)
 
 ---
@@ -279,7 +279,7 @@ report = transparency_report.generate_user_explanation(instance, prediction)
 1. **Compliance is mandatory** - EU AI Act + GDPR are enforceable law
 2. **High-risk AI has strict requirements** - Documentation, oversight, fairness
 3. **Multiple fairness metrics needed** - No single metric captures all aspects
-4. **Privacy-utility trade-off exists** - ε=1.0 is sweet spot (strong privacy, good accuracy)
+4. **Privacy-utility trade-off exists** - epsilon=1.0 is sweet spot (strong privacy, good accuracy)
 5. **Explainability is legally required** - GDPR Article 15, EU AI Act Article 13
 6. **Continuous monitoring essential** - Fairness and privacy degrade over time
 7. **Documentation is critical** - Prove compliance with detailed records

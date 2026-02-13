@@ -64,15 +64,15 @@
 **Process:**
 ```
 Input Task
-    ↓
+    v
 Generate Multiple Perspectives
-    ↓
+    v
 LLM Reasons Across Perspectives
-    ↓
+    v
 Generate Candidate Programs
-    ↓
+    v
 Execute and Verify
-    ↓
+    v
 Select Best Output
 ```
 
@@ -271,7 +271,7 @@ def find_objects(grid):
 **Why multiple perspectives help:**
 - Grid view: Good for spatial transformations (rotation, flip)
 - Object view: Good for object manipulation (move, recolor, delete)
-- Combining perspectives → better understanding
+- Combining perspectives --> better understanding
 
 ---
 

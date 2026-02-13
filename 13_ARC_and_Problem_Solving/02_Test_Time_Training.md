@@ -6,7 +6,7 @@
 
 **Key Insight:** Instead of using a single pre-trained model for all tasks, adapt the model to each specific task using its training examples.
 
-**Popularized by:** Jack Cole & Mohamed Osman (2023), Akyürek et al. (2024)
+**Popularized by:** Jack Cole & Mohamed Osman (2023), Akyurek et al. (2024)
 
 ---
 
@@ -198,7 +198,7 @@ def remap_colors(example, color_map):
 
 ### Multi-Task Training
 
-**Insight:** Don't just train on "input → output". Train on multiple ARC-related tasks!
+**Insight:** Don't just train on "input --> output". Train on multiple ARC-related tasks!
 
 **Task 1: Output Generation (Primary)**
 ```python
@@ -350,7 +350,7 @@ def format_output_generation_single(example):
 
 **Computational Cost:**
 - ~30 seconds per task on A6000
-- 400 test tasks × 30 sec = ~3.3 hours total inference time
+- 400 test tasks x 30 sec = ~3.3 hours total inference time
 
 ---
 
@@ -418,7 +418,7 @@ def test_time_finetune_with_augmentation(base_model, task, n_steps=300):
     ...
 ```
 
-**⚠️ Warning:** Only augment if transformations preserve the rule!
+**[WARNING] Warning:** Only augment if transformations preserve the rule!
 - Rotation works if rule is rotation-invariant
 - Color swap works if rule is color-independent
 - Must check task properties first
@@ -525,7 +525,7 @@ def tuple_to_grid(tup):
 - Model is uncertain about exact output
 - Correct answer tends to be more "stable"
 - Incorrect answers are more random/diverse
-- Mode of distribution ≈ most likely correct answer
+- Mode of distribution ~= most likely correct answer
 
 ---
 
@@ -709,7 +709,7 @@ def select_training_examples(task, n_train):
 **Breakdown by Grid Size:**
 | Grid Size | Without TTT | With TTT | Improvement |
 |-----------|-------------|----------|-------------|
-| ≤ 8x8     | 35%         | 55%      | +57%        |
+| <= 8x8     | 35%         | 55%      | +57%        |
 | 8x8 - 15x15 | 22%       | 38%      | +73%        |
 | > 15x15   | 12%         | 22%      | +83%        |
 
@@ -722,7 +722,7 @@ def select_training_examples(task, n_train):
 ### 1. Task-Specific Specialization
 - Base model must remember 400+ transformation rules
 - TTT model only needs to learn 1 rule
-- Focused learning → better performance
+- Focused learning --> better performance
 
 ### 2. Overcomes Data Scarcity
 - Pre-training sees thousands of examples
@@ -743,8 +743,8 @@ def select_training_examples(task, n_train):
 ## Limitations and Challenges
 
 ### 1. Computational Cost
-- **400 tasks × 300 steps × 30 sec = 3.3 hours** inference time
-- Compare to: standard model = 400 tasks × 0.1 sec = 40 seconds
+- **400 tasks x 300 steps x 30 sec = 3.3 hours** inference time
+- Compare to: standard model = 400 tasks x 0.1 sec = 40 seconds
 - **100x slower!**
 
 **Mitigation:**
@@ -753,7 +753,7 @@ def select_training_examples(task, n_train):
 - Optimize implementation (vLLM, TensorRT)
 
 ### 2. Overfitting Risk
-- Only 3-5 examples → very easy to overfit
+- Only 3-5 examples --> very easy to overfit
 - Model might memorize training examples exactly
 - Fails to generalize to test input if it's different
 
@@ -948,7 +948,7 @@ print(f"Top 3 predictions: {predictions}")
 2. **Small models work** better than large models (500M vs 7B)
 3. **Augmentation is critical** during pre-training
 4. **300 steps is optimal** for TTT fine-tuning
-5. **Voting dramatically helps**: 96 predictions → mode
+5. **Voting dramatically helps**: 96 predictions --> mode
 6. **Multi-task training** improves base model quality
 7. **Computational cost** is the main limitation (100x slower)
 

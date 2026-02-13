@@ -19,15 +19,15 @@ Generative models create new data samples similar to training data. This guide c
 
 ```
 2006: Autoencoders
-  ↓
+  v
 2013: Variational Autoencoders (VAEs)
-  ↓
+  v
 2014: GANs (Generative Adversarial Networks)
-  ↓
+  v
 2015-2020: GAN variants (StyleGAN, CycleGAN, Pix2Pix)
-  ↓
+  v
 2020: Diffusion Models emerge
-  ↓
+  v
 2022-2025: Diffusion dominates (Stable Diffusion, DALL-E, Midjourney)
 ```
 
@@ -46,36 +46,36 @@ Generative models create new data samples similar to training data. This guide c
 ```
 What do you want to generate?
 
-├─ Images (high quality, text-to-image)?
-│  └─ Use: Diffusion Models (Stable Diffusion, DALL-E)
-│     Status: Best quality, industry standard (2025)
-│
-├─ Images (real-time, fast inference)?
-│  └─ Use: GANs (StyleGAN, conditional GAN)
-│     Status: Faster than diffusion
-│
-├─ Need diversity > quality?
-│  └─ Use: VAE
-│     Status: Broader coverage, less sharp
-│
-├─ Feature learning / anomaly detection?
-│  └─ Use: VAE or Autoencoder
-│     Status: Good for representation learning
-│
-├─ Style transfer / image-to-image?
-│  └─ Use: CycleGAN or Diffusion
-│     Status: Both work well
-│
-├─ Data augmentation (small dataset)?
-│  └─ Use: GAN or simple augmentations
-│     Status: GAN if need realism
-│
-├─ Video generation?
-│  └─ Use: Diffusion-based (Runway, Sora)
-│     Status: Rapidly evolving
-│
-└─ Text/audio generation?
-   └─ Use: Transformers (GPT) or Diffusion
++--- Images (high quality, text-to-image)?
+|  +--- Use: Diffusion Models (Stable Diffusion, DALL-E)
+|     Status: Best quality, industry standard (2025)
+|
++--- Images (real-time, fast inference)?
+|  +--- Use: GANs (StyleGAN, conditional GAN)
+|     Status: Faster than diffusion
+|
++--- Need diversity > quality?
+|  +--- Use: VAE
+|     Status: Broader coverage, less sharp
+|
++--- Feature learning / anomaly detection?
+|  +--- Use: VAE or Autoencoder
+|     Status: Good for representation learning
+|
++--- Style transfer / image-to-image?
+|  +--- Use: CycleGAN or Diffusion
+|     Status: Both work well
+|
++--- Data augmentation (small dataset)?
+|  +--- Use: GAN or simple augmentations
+|     Status: GAN if need realism
+|
++--- Video generation?
+|  +--- Use: Diffusion-based (Runway, Sora)
+|     Status: Rapidly evolving
+|
++--- Text/audio generation?
+   +--- Use: Transformers (GPT) or Diffusion
       Status: Transformers dominant for text
 ```
 
@@ -85,10 +85,10 @@ What do you want to generate?
 
 | Model | Fidelity | Diversity | Training Difficulty | Speed | 2025 Status |
 |-------|----------|-----------|---------------------|-------|-------------|
-| **GAN** | ⭐⭐⭐⭐⭐ High | ⭐⭐⭐ Medium (mode collapse) | ⚠️⚠️⚠️ Very Hard | ⚡⚡⚡ Fast | Niche uses |
-| **VAE** | ⭐⭐⭐ Medium (blurry) | ⭐⭐⭐⭐⭐ High | ✅✅✅ Easy | ⚡⚡⚡ Fast | Feature learning |
-| **Diffusion** | ⭐⭐⭐⭐⭐ High | ⭐⭐⭐⭐⭐ High | ✅✅ Moderate | ⚡ Slow | **Standard** |
-| **Autoencoder** | ⭐⭐⭐ Medium | N/A (reconstruction) | ✅✅✅ Easy | ⚡⚡⚡ Fast | Compression only |
+| **GAN** |  High |  Medium (mode collapse) | [WARNING][WARNING][WARNING] Very Hard |  Fast | Niche uses |
+| **VAE** |  Medium (blurry) |  High |  Easy |  Fast | Feature learning |
+| **Diffusion** |  High |  High |  Moderate |  Slow | **Standard** |
+| **Autoencoder** |  Medium | N/A (reconstruction) |  Easy |  Fast | Compression only |
 
 ---
 
@@ -105,11 +105,11 @@ They compete: Generator tries to fool discriminator, discriminator tries to catc
 ### How They Work
 
 ```
-Real Data ──┐
-            ├──→ Discriminator ──→ Real or Fake?
-Noise ──→ Generator ──→ Fake Data ──┘
-            ↑
-            └── Feedback to improve
+Real Data ----+
+            +------> Discriminator ----> Real or Fake?
+Noise ----> Generator ----> Fake Data ----+
+            ^
+            +---- Feedback to improve
 ```
 
 **Training Loop:**
@@ -119,7 +119,7 @@ Noise ──→ Generator ──→ Fake Data ──┘
 4. Generator loss: Did it fool discriminator?
 5. Both networks improve through backpropagation
 
-### ✅ When to Use GANs
+###  When to Use GANs
 
 1. **Need highest quality images**
    - GANs produce sharp, realistic images
@@ -131,8 +131,8 @@ Noise ──→ Generator ──→ Fake Data ──┘
    - **Use case:** Real-time applications
 
 3. **Image-to-image translation**
-   - Pix2Pix: Sketch → photo
-   - CycleGAN: Horse → zebra (unpaired)
+   - Pix2Pix: Sketch --> photo
+   - CycleGAN: Horse --> zebra (unpaired)
    - Super-resolution (upscaling)
 
 4. **Style transfer**
@@ -150,7 +150,7 @@ Noise ──→ Generator ──→ Fake Data ──┘
    - Video game textures
    - Art and creative applications
 
-### ❌ When NOT to Use GANs
+###  When NOT to Use GANs
 
 1. **No experience with GANs**
    - Training is notoriously difficult
@@ -188,8 +188,8 @@ Noise ──→ Generator ──→ Fake Data ──┘
 |----------|----------|-------------|---------|
 | **DCGAN** | Basic image generation | Learning GANs, simple tasks | Face generation |
 | **StyleGAN** | High-quality faces | Face generation, editing | thispersondoesnotexist.com |
-| **CycleGAN** | Unpaired image-to-image | Style transfer, domain adaptation | Horse ↔ Zebra |
-| **Pix2Pix** | Paired image-to-image | Sketch to photo, colorization | Edges → Photo |
+| **CycleGAN** | Unpaired image-to-image | Style transfer, domain adaptation | Horse <--> Zebra |
+| **Pix2Pix** | Paired image-to-image | Sketch to photo, colorization | Edges --> Photo |
 | **ProGAN** | High-resolution images | Need 1024x1024+ images | Large-scale image generation |
 | **StyleGAN2** | State-of-art faces | Best quality faces | Portrait generation |
 | **BigGAN** | ImageNet-scale generation | Large diverse datasets | Multi-class generation |
@@ -200,23 +200,23 @@ Noise ──→ Generator ──→ Fake Data ──┘
 ```
 What's your GAN task?
 
-├─ Generate realistic faces?
-│  └─ Use: StyleGAN2 or StyleGAN3
-│
-├─ Image-to-image (have paired data)?
-│  └─ Use: Pix2Pix
-│
-├─ Image-to-image (NO paired data)?
-│  └─ Use: CycleGAN
-│
-├─ Upscale low-res images?
-│  └─ Use: SRGAN or ESRGAN
-│
-├─ Learning GANs / simple task?
-│  └─ Use: DCGAN (vanilla)
-│
-└─ Multi-class image generation?
-   └─ Use: BigGAN or conditional GAN
++--- Generate realistic faces?
+|  +--- Use: StyleGAN2 or StyleGAN3
+|
++--- Image-to-image (have paired data)?
+|  +--- Use: Pix2Pix
+|
++--- Image-to-image (NO paired data)?
+|  +--- Use: CycleGAN
+|
++--- Upscale low-res images?
+|  +--- Use: SRGAN or ESRGAN
+|
++--- Learning GANs / simple task?
+|  +--- Use: DCGAN (vanilla)
+|
++--- Multi-class image generation?
+   +--- Use: BigGAN or conditional GAN
 ```
 
 ---
@@ -267,7 +267,7 @@ class Generator(nn.Module):
 
 **Solutions:**
 ```python
-# 1. Use batch size ≤ 64
+# 1. Use batch size <= 64
 batch_size = 32  # Recommended
 
 # 2. Label smoothing
@@ -334,10 +334,10 @@ self.activation = nn.LeakyReLU(0.2)  # Prevents dead neurons
 - [ ] Use transposed convolutions (generator) and strided convs (discriminator)
 
 **Training:**
-- [ ] Batch size ≤ 64
+- [ ] Batch size <= 64
 - [ ] Label smoothing (0.9-1.0 for real)
 - [ ] Add noise to inputs (0.1 std)
-- [ ] Use Adam optimizer (β1=0.5, β2=0.999)
+- [ ] Use Adam optimizer (beta1=0.5, beta2=0.999)
 - [ ] Learning rate: 0.0002 (or TTUR: D=4x G)
 - [ ] Train discriminator 1-5 times per generator update
 
@@ -362,14 +362,14 @@ VAEs learn a probabilistic latent space representation of data. They encode data
 
 **Architecture:**
 ```
-Input → Encoder → μ (mean), σ (std) → Sample z ~ N(μ, σ) → Decoder → Output
+Input --> Encoder --> mu (mean), sigma (std) --> Sample z ~ N(mu, sigma) --> Decoder --> Output
 ```
 
 **Key difference from regular autoencoder:**
-- Autoencoder: Input → Code (fixed point) → Output
-- VAE: Input → Distribution → Sample → Output
+- Autoencoder: Input --> Code (fixed point) --> Output
+- VAE: Input --> Distribution --> Sample --> Output
 
-### ✅ When to Use VAEs
+###  When to Use VAEs
 
 1. **Need high diversity**
    - VAE generates more diverse samples than GAN
@@ -403,7 +403,7 @@ Input → Encoder → μ (mean), σ (std) → Sample z ~ N(μ, σ) → Decoder �
    - Works better than GANs for tabular data
    - Less mode collapse issues
 
-### ❌ When NOT to Use VAEs
+###  When NOT to Use VAEs
 
 1. **Need sharp, high-fidelity images**
    - VAE outputs are blurry
@@ -437,30 +437,30 @@ Input → Encoder → μ (mean), σ (std) → Sample z ~ N(μ, σ) → Decoder �
 | **Training** | Easy | Easy | Very Hard |
 | **Latent Space** | Discrete | Continuous, probabilistic | Continuous |
 | **Loss** | Reconstruction (MSE) | Reconstruction + KL divergence | Adversarial |
-| **Inference Speed** | ⚡⚡⚡ Fast | ⚡⚡⚡ Fast | ⚡⚡⚡ Fast |
+| **Inference Speed** |  Fast |  Fast |  Fast |
 
 ### When to Use Each
 
 ```
 What's your goal?
 
-├─ Just reconstruct/compress data?
-│  └─ Use: Autoencoder
-│
-├─ Generate diverse samples (OK if blurry)?
-│  └─ Use: VAE
-│
-├─ Generate high-quality images (OK if difficult)?
-│  └─ Use: GAN (or better: Diffusion)
-│
-├─ Anomaly detection?
-│  └─ Use: Autoencoder or VAE
-│
-├─ Learn features for downstream task?
-│  └─ Use: VAE or Autoencoder
-│
-└─ Need interpretable latent space?
-   └─ Use: VAE
++--- Just reconstruct/compress data?
+|  +--- Use: Autoencoder
+|
++--- Generate diverse samples (OK if blurry)?
+|  +--- Use: VAE
+|
++--- Generate high-quality images (OK if difficult)?
+|  +--- Use: GAN (or better: Diffusion)
+|
++--- Anomaly detection?
+|  +--- Use: Autoencoder or VAE
+|
++--- Learn features for downstream task?
+|  +--- Use: VAE or Autoencoder
+|
++--- Need interpretable latent space?
+   +--- Use: VAE
 ```
 
 ---
@@ -475,23 +475,23 @@ Diffusion models learn to reverse a noise process:
 
 **Example:**
 ```
-Clear Image → Add noise → Noisy → More noise → Pure noise
-              ← Denoise  ← Denoise ← Denoise   ← Start here
+Clear Image --> Add noise --> Noisy --> More noise --> Pure noise
+              <-- Denoise  <-- Denoise <-- Denoise   <-- Start here
 ```
 
 ### Why Diffusion Won (2025)
 
 **Advantages over GANs:**
-- ✅ More stable training (no adversarial game)
-- ✅ Higher diversity (no mode collapse)
-- ✅ Better quality (DALL-E, Midjourney, Stable Diffusion)
-- ✅ Easier to condition on text
+-  More stable training (no adversarial game)
+-  Higher diversity (no mode collapse)
+-  Better quality (DALL-E, Midjourney, Stable Diffusion)
+-  Easier to condition on text
 
 **Disadvantages:**
-- ❌ Slower inference (50-1000 denoising steps)
-- ❌ More compute during generation
+-  Slower inference (50-1000 denoising steps)
+-  More compute during generation
 
-### ✅ When to Use Diffusion Models
+###  When to Use Diffusion Models
 
 1. **Text-to-image generation (BEST CHOICE)**
    - State-of-the-art: Stable Diffusion, DALL-E, Midjourney
@@ -515,7 +515,7 @@ Clear Image → Add noise → Noisy → More noise → Pure noise
    - Design prototyping
    - Concept art
 
-### ❌ When NOT to Use Diffusion Models
+###  When NOT to Use Diffusion Models
 
 1. **Need real-time generation**
    - 50+ denoising steps = slow (~5-10s)
@@ -684,10 +684,10 @@ result = pipe(
 
 **Architecture:**
 ```
-Input → VAE Encoder → Latent → VAE Decoder → Output
-                                      ↓
+Input --> VAE Encoder --> Latent --> VAE Decoder --> Output
+                                      v
                                GAN Discriminator
-                                      ↓
+                                      v
                             Adversarial loss
 ```
 
@@ -703,8 +703,8 @@ Input → VAE Encoder → Latent → VAE Decoder → Output
 **Example:** DALL-E 3 = GPT-4 (text understanding) + Diffusion (image generation)
 
 **How it works:**
-1. User prompt → GPT-4 refines prompt
-2. Refined prompt → Diffusion model
+1. User prompt --> GPT-4 refines prompt
+2. Refined prompt --> Diffusion model
 3. Generate image
 
 **Why it's powerful:**
@@ -719,45 +719,45 @@ Input → VAE Encoder → Latent → VAE Decoder → Output
 ```
 Start: What are you generating?
 
-├─ IMAGES
-│  ├─ Text-to-image?
-│  │  └─ Use: Stable Diffusion / DALL-E (Diffusion models)
-│  │
-│  ├─ Real-time generation (<1s)?
-│  │  └─ Use: GAN (StyleGAN, conditional GAN)
-│  │
-│  ├─ Need diversity > quality?
-│  │  └─ Use: VAE
-│  │
-│  ├─ Style transfer / image-to-image?
-│  │  ├─ Have time: Diffusion
-│  │  └─ Need speed: CycleGAN or Pix2Pix
-│  │
-│  └─ Upscaling?
-│     └─ Use: SRGAN or Diffusion upscaler
-│
-├─ FEATURES / COMPRESSION
-│  ├─ Just compress/reconstruct?
-│  │  └─ Use: Autoencoder
-│  │
-│  ├─ Anomaly detection?
-│  │  └─ Use: VAE or Autoencoder
-│  │
-│  └─ Learn features for downstream task?
-│     └─ Use: VAE
-│
-├─ TEXT
-│  └─ Use: Transformer (GPT, Claude, etc.) - NOT covered here
-│
-├─ AUDIO
-│  ├─ Music generation?
-│  │  └─ Use: Diffusion (Riffusion) or Transformer (MusicLM)
-│  │
-│  └─ Speech synthesis?
-│     └─ Use: Diffusion (WaveGrad) or GAN (WaveGAN)
-│
-└─ VIDEO
-   └─ Use: Diffusion (Runway, Sora) - Rapidly evolving
++--- IMAGES
+|  +--- Text-to-image?
+|  |  +--- Use: Stable Diffusion / DALL-E (Diffusion models)
+|  |
+|  +--- Real-time generation (<1s)?
+|  |  +--- Use: GAN (StyleGAN, conditional GAN)
+|  |
+|  +--- Need diversity > quality?
+|  |  +--- Use: VAE
+|  |
+|  +--- Style transfer / image-to-image?
+|  |  +--- Have time: Diffusion
+|  |  +--- Need speed: CycleGAN or Pix2Pix
+|  |
+|  +--- Upscaling?
+|     +--- Use: SRGAN or Diffusion upscaler
+|
++--- FEATURES / COMPRESSION
+|  +--- Just compress/reconstruct?
+|  |  +--- Use: Autoencoder
+|  |
+|  +--- Anomaly detection?
+|  |  +--- Use: VAE or Autoencoder
+|  |
+|  +--- Learn features for downstream task?
+|     +--- Use: VAE
+|
++--- TEXT
+|  +--- Use: Transformer (GPT, Claude, etc.) - NOT covered here
+|
++--- AUDIO
+|  +--- Music generation?
+|  |  +--- Use: Diffusion (Riffusion) or Transformer (MusicLM)
+|  |
+|  +--- Speech synthesis?
+|     +--- Use: Diffusion (WaveGrad) or GAN (WaveGAN)
+|
++--- VIDEO
+   +--- Use: Diffusion (Runway, Sora) - Rapidly evolving
 ```
 
 ---
@@ -766,17 +766,17 @@ Start: What are you generating?
 
 ### Pitfall 1: Training GANs Like Regular NNs
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Same hyperparameters as regular NN
 optimizer = Adam(lr=0.001)  # Too high!
 batch_size = 128            # Too large!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # GAN-specific hyperparameters
-optimizer_G = Adam(lr=0.0002, betas=(0.5, 0.999))  # Low LR, β1=0.5
+optimizer_G = Adam(lr=0.0002, betas=(0.5, 0.999))  # Low LR, beta1=0.5
 optimizer_D = Adam(lr=0.0002, betas=(0.5, 0.999))
 batch_size = 32  # Small batch
 
@@ -806,13 +806,13 @@ variance = samples_np.std()  # Low variance = mode collapse
 
 ### Pitfall 3: Using Wrong Loss for VAE
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Only reconstruction loss
 loss = F.mse_loss(output, input)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Reconstruction + KL divergence
 reconstruction_loss = F.mse_loss(output, input)
@@ -827,13 +827,13 @@ total_loss = reconstruction_loss + beta * kl_divergence
 
 ### Pitfall 4: Not Using Negative Prompts (Diffusion)
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 image = pipe(prompt="A beautiful landscape")
 # May get low-quality, blurry results
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 image = pipe(
     prompt="A beautiful landscape",
@@ -846,20 +846,20 @@ image = pipe(
 
 ### Pitfall 5: Forgetting to Normalize Inputs
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # Images in [0, 255]
 images = load_images()  # [0-255]
 discriminator(images)   # Wrong range!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Normalize to [-1, 1] for GANs
-images = (images / 255.0) * 2 - 1  # [0, 255] → [-1, 1]
+images = (images / 255.0) * 2 - 1  # [0, 255] --> [-1, 1]
 
 # Or [0, 1] for VAEs
-images = images / 255.0  # [0, 255] → [0, 1]
+images = images / 255.0  # [0, 255] --> [0, 1]
 ```
 
 ---
@@ -874,7 +874,7 @@ images = images / 255.0  # [0, 255] → [0, 1]
 
 ### Before Training GANs:
 - [ ] Understand mode collapse
-- [ ] Use small batch size (≤64)
+- [ ] Use small batch size (<=64)
 - [ ] Use label smoothing
 - [ ] Use LeakyReLU in discriminator
 - [ ] Use spectral normalization
@@ -895,7 +895,7 @@ images = images / 255.0  # [0, 255] → [0, 1]
 
 ### Evaluation:
 - [ ] Visual inspection (diversity, quality)
-- [ ] FID score (Fréchet Inception Distance) for GANs
+- [ ] FID score (Frechet Inception Distance) for GANs
 - [ ] Reconstruction error for VAEs
 - [ ] User studies for subjective quality
 
@@ -905,14 +905,14 @@ images = images / 255.0  # [0, 255] → [0, 1]
 
 | Task | Model | Alternative | Quality | Speed |
 |------|-------|-------------|---------|-------|
-| Text-to-image | Stable Diffusion | DALL-E 3 | ⭐⭐⭐⭐⭐ | ⚡⚡ |
-| Face generation | StyleGAN3 | Diffusion | ⭐⭐⭐⭐⭐ | ⚡⚡⚡ |
-| Style transfer | Diffusion | CycleGAN | ⭐⭐⭐⭐ | ⚡⚡ |
-| Image upscaling | ESRGAN | Diffusion upscaler | ⭐⭐⭐⭐ | ⚡⚡ |
-| Inpainting | Diffusion | GAN | ⭐⭐⭐⭐⭐ | ⚡⚡ |
-| Data augmentation | Simple transforms | GAN | ⭐⭐⭐ | ⚡⚡⚡ |
-| Anomaly detection | VAE | Autoencoder | ⭐⭐⭐⭐ | ⚡⚡⚡ |
-| Feature learning | VAE | Autoencoder | ⭐⭐⭐⭐ | ⚡⚡⚡ |
+| Text-to-image | Stable Diffusion | DALL-E 3 |  |  |
+| Face generation | StyleGAN3 | Diffusion |  |  |
+| Style transfer | Diffusion | CycleGAN |  |  |
+| Image upscaling | ESRGAN | Diffusion upscaler |  |  |
+| Inpainting | Diffusion | GAN |  |  |
+| Data augmentation | Simple transforms | GAN |  |  |
+| Anomaly detection | VAE | Autoencoder |  |  |
+| Feature learning | VAE | Autoencoder |  |  |
 
 ---
 

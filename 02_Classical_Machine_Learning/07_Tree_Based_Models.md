@@ -17,7 +17,7 @@ Tree-based models are among the most powerful and widely used algorithms in mach
 ### What They Are
 Decision trees split data recursively based on feature values to create rules for prediction. They're the building blocks of ensemble methods.
 
-### ✅ When to Use Decision Trees
+###  When to Use Decision Trees
 
 1. **Need interpretability**
    - Easy to visualize and explain to non-technical stakeholders
@@ -35,7 +35,7 @@ Decision trees split data recursively based on feature values to create rules fo
    - Fast to train
    - Good starting point before ensemble methods
 
-### ❌ When NOT to Use Decision Trees
+###  When NOT to Use Decision Trees
 
 1. **Need high accuracy**
    - Single trees overfit easily
@@ -65,7 +65,7 @@ Decision trees split data recursively based on feature values to create rules fo
 ### What It Is
 An ensemble of decision trees trained on random subsets of data and features. Predictions are averaged (regression) or voted (classification).
 
-### ✅ When to Use Random Forest
+###  When to Use Random Forest
 
 1. **Tabular data with moderate feature count**
    - Sweet spot: 10-1000 features
@@ -95,7 +95,7 @@ An ensemble of decision trees trained on random subsets of data and features. Pr
    - Works well out-of-the-box with minimal tuning
    - Robust default hyperparameters
 
-### ❌ When NOT to Use Random Forest
+###  When NOT to Use Random Forest
 
 1. **High-cardinality categorical features**
    - Struggles with 100+ categories
@@ -136,7 +136,7 @@ An ensemble of decision trees trained on random subsets of data and features. Pr
 ### What They Are
 Gradient boosting builds trees sequentially, each correcting errors of previous trees. XGBoost and LightGBM are optimized implementations.
 
-### ✅ When to Use XGBoost/LightGBM
+###  When to Use XGBoost/LightGBM
 
 1. **Kaggle competitions / maximum performance**
    - Often wins competitions on structured data
@@ -166,7 +166,7 @@ Gradient boosting builds trees sequentially, each correcting errors of previous 
    - Many hyperparameters to optimize
    - Tuning yields significant gains
 
-### ❌ When NOT to Use XGBoost
+###  When NOT to Use XGBoost
 
 1. **Limited training time**
    - Requires careful hyperparameter tuning
@@ -205,11 +205,11 @@ Gradient boosting builds trees sequentially, each correcting errors of previous 
 
 | Encoding Type | Random Forest | XGBoost | When to Use | Pros | Cons |
 |--------------|---------------|---------|-------------|------|------|
-| **Label Encoding** | ✅ Good | ✅ Good | Low-med cardinality (<50) | Fast, low memory, no dimensionality increase | Creates spurious ordering |
-| **One-Hot Encoding** | ⚠️ Avoid | ⚠️ Avoid | Very low cardinality (<10) | No false ordering | Explodes dimensions, slower training, splits become inefficient |
-| **Target Encoding** | ✅ Excellent | ✅ Excellent | High cardinality (50+) | Captures target relationship, single feature | Risk of leakage, needs CV |
-| **Frequency Encoding** | ✅ Good | ✅ Good | Any cardinality | Simple, no leakage | Less informative |
-| **Native Categorical** | ❌ Not available | ✅ XGBoost 1.7+ | XGBoost only | Optimal splits | Still experimental |
+| **Label Encoding** |  Good |  Good | Low-med cardinality (<50) | Fast, low memory, no dimensionality increase | Creates spurious ordering |
+| **One-Hot Encoding** | [WARNING] Avoid | [WARNING] Avoid | Very low cardinality (<10) | No false ordering | Explodes dimensions, slower training, splits become inefficient |
+| **Target Encoding** |  Excellent |  Excellent | High cardinality (50+) | Captures target relationship, single feature | Risk of leakage, needs CV |
+| **Frequency Encoding** |  Good |  Good | Any cardinality | Simple, no leakage | Less informative |
+| **Native Categorical** |  Not available |  XGBoost 1.7+ | XGBoost only | Optimal splits | Still experimental |
 
 ---
 
@@ -258,7 +258,7 @@ X_test_encoded = encoder.transform(X_test)
 - Example: ZIP codes, user IDs, product IDs
 
 **Pros:**
-- Captures category → target relationship
+- Captures category --> target relationship
 - Single numeric feature (no dimension explosion)
 - Often improves performance significantly
 
@@ -289,12 +289,12 @@ df['category_freq'] = df['category'].map(freq_map)
 - Frequency correlates with target
 - Example: Rare products might be niche/expensive
 
-#### 4. ❌ Avoid One-Hot Encoding for Trees
+#### 4.  Avoid One-Hot Encoding for Trees
 
 **Why it hurts performance:**
 
 1. **Dimensionality explosion**
-   - 100 categories → 100 features
+   - 100 categories --> 100 features
    - Slows training significantly
    - Increases memory usage
 
@@ -317,14 +317,14 @@ df['category_freq'] = df['category'].map(freq_map)
 
 ```
 Is cardinality < 10?
-├─ Yes → Label Encoding (safe default)
-│
-└─ No → Is cardinality < 50?
-    ├─ Yes → Label Encoding or Target Encoding
-    │
-    └─ No (50+ categories) → Target Encoding (with CV)
-        ├─ Alternative: Frequency Encoding (safer, simpler)
-        └─ XGBoost only: Try native categorical support
++--- Yes --> Label Encoding (safe default)
+|
++--- No --> Is cardinality < 50?
+    +--- Yes --> Label Encoding or Target Encoding
+    |
+    +--- No (50+ categories) --> Target Encoding (with CV)
+        +--- Alternative: Frequency Encoding (safer, simpler)
+        +--- XGBoost only: Try native categorical support
 ```
 
 ---
@@ -337,10 +337,10 @@ Is cardinality < 10?
 from sklearn.ensemble import RandomForestClassifier
 
 rf = RandomForestClassifier(
-    n_estimators=100,        # ↑ = better but slower (100-500 typical)
-    max_depth=None,          # ↓ = prevent overfitting (try 10-50)
-    min_samples_split=2,     # ↑ = prevent overfitting (try 5-20)
-    min_samples_leaf=1,      # ↑ = prevent overfitting (try 2-10)
+    n_estimators=100,        # ^ = better but slower (100-500 typical)
+    max_depth=None,          # v = prevent overfitting (try 10-50)
+    min_samples_split=2,     # ^ = prevent overfitting (try 5-20)
+    min_samples_leaf=1,      # ^ = prevent overfitting (try 2-10)
     max_features='sqrt',     # sqrt for classification, 1/3 for regression
     bootstrap=True,          # Always True for RF
     class_weight='balanced', # For imbalanced data
@@ -362,12 +362,12 @@ import xgboost as xgb
 
 xgb_model = xgb.XGBClassifier(
     n_estimators=1000,           # High value, use early stopping
-    learning_rate=0.01,          # ↓ = better but needs more trees (0.01-0.3)
-    max_depth=6,                 # ↓ = prevent overfitting (3-10)
-    min_child_weight=1,          # ↑ = prevent overfitting (1-10)
+    learning_rate=0.01,          # v = better but needs more trees (0.01-0.3)
+    max_depth=6,                 # v = prevent overfitting (3-10)
+    min_child_weight=1,          # ^ = prevent overfitting (1-10)
     subsample=0.8,               # Row sampling (0.5-1.0)
     colsample_bytree=0.8,        # Column sampling (0.5-1.0)
-    gamma=0,                     # ↑ = prevent overfitting (0-5)
+    gamma=0,                     # ^ = prevent overfitting (0-5)
     reg_alpha=0,                 # L1 regularization (0-10)
     reg_lambda=1,                # L2 regularization (0-10)
     scale_pos_weight=1,          # For imbalanced: sum(negative)/sum(positive)
@@ -395,7 +395,7 @@ xgb_model = xgb.XGBClassifier(
 
 ### Pitfall 1: Data Leakage in Target Encoding
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 # This causes leakage!
 encoder = TargetEncoder()
@@ -405,7 +405,7 @@ df['encoded'] = encoder.fit_transform(df[['category']], df['target'])
 X_train, X_test = train_test_split(df)
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Split FIRST
 X_train, X_test, y_train, y_test = train_test_split(X, y)
@@ -418,13 +418,13 @@ X_test_encoded = encoder.transform(X_test)  # No fit!
 
 ### Pitfall 2: Not Using Early Stopping (XGBoost)
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 model = xgb.XGBClassifier(n_estimators=1000)
 model.fit(X_train, y_train)  # Might overfit!
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 model = xgb.XGBClassifier(
     n_estimators=10000,  # Set high
@@ -440,14 +440,14 @@ model.fit(
 
 ### Pitfall 3: Using One-Hot for High Cardinality
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
-# 100 categories → 100 features!
+# 100 categories --> 100 features!
 df_encoded = pd.get_dummies(df, columns=['high_card_feature'])
 rf.fit(df_encoded, y)  # Slow, worse performance
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Use label or target encoding
 le = LabelEncoder()
@@ -457,7 +457,7 @@ rf.fit(df[['encoded']], y)  # Fast, better performance
 
 ### Pitfall 4: Not Scaling for Tree Models
 
-✅ **Good news:** Tree models don't need feature scaling!
+ **Good news:** Tree models don't need feature scaling!
 
 ```python
 # NO NEED for StandardScaler or MinMaxScaler
@@ -467,12 +467,12 @@ rf.fit(X, y)  # Works fine with mixed scales
 
 ### Pitfall 5: Ignoring Class Imbalance
 
-❌ **Wrong:**
+ **Wrong:**
 ```python
 rf = RandomForestClassifier()  # Biased toward majority class
 ```
 
-✅ **Correct:**
+ **Correct:**
 ```python
 # Random Forest
 rf = RandomForestClassifier(class_weight='balanced')
@@ -489,23 +489,23 @@ xgb_model = xgb.XGBClassifier(scale_pos_weight=scale_pos_weight)
 ```
 Start here: What's your goal?
 
-├─ Need interpretability?
-│  └─ Use: Decision Tree (single)
-│
-├─ Need quick baseline?
-│  └─ Use: Random Forest (good defaults)
-│
-├─ Want maximum accuracy (have time to tune)?
-│  └─ Use: XGBoost or LightGBM
-│
-├─ Large dataset (1M+ rows)?
-│  └─ Use: LightGBM (fastest)
-│
-├─ High-cardinality categoricals?
-│  └─ Use: XGBoost with target encoding
-│
-└─ Linear relationship obvious?
-   └─ DON'T use trees! Use linear model
++--- Need interpretability?
+|  +--- Use: Decision Tree (single)
+|
++--- Need quick baseline?
+|  +--- Use: Random Forest (good defaults)
+|
++--- Want maximum accuracy (have time to tune)?
+|  +--- Use: XGBoost or LightGBM
+|
++--- Large dataset (1M+ rows)?
+|  +--- Use: LightGBM (fastest)
+|
++--- High-cardinality categoricals?
+|  +--- Use: XGBoost with target encoding
+|
++--- Linear relationship obvious?
+   +--- DON'T use trees! Use linear model
 ```
 
 ---
@@ -519,10 +519,10 @@ Start here: What's your goal?
 - [ ] Split data BEFORE encoding (prevent leakage)
 
 ### Model Choice:
-- [ ] Quick baseline → Random Forest
-- [ ] Maximum performance → XGBoost
-- [ ] Need interpretability → Single Decision Tree
-- [ ] Large data → LightGBM
+- [ ] Quick baseline --> Random Forest
+- [ ] Maximum performance --> XGBoost
+- [ ] Need interpretability --> Single Decision Tree
+- [ ] Large data --> LightGBM
 
 ### During Training:
 - [ ] Use cross-validation

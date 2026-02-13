@@ -27,7 +27,7 @@ Fairness in machine learning ensures that models make decisions equitably across
 **EU AI Act (2024):**
 - High-risk AI systems must undergo conformity assessment
 - Mandatory bias monitoring and documentation
-- Fines up to €35M or 7% of global turnover
+- Fines up to EUR35M or 7% of global turnover
 
 **GDPR Article 22:**
 - Right to non-discrimination in automated decisions
@@ -147,7 +147,7 @@ def demonstrate_historical_bias():
     print("\nAverage qualification score of hired candidates:")
     print(df[df['hired'] == 1].groupby('gender')['qualification_score'].mean())
 
-    print("\n⚠️  Women need higher qualifications to be hired (historical bias)")
+    print("\n[WARNING]  Women need higher qualifications to be hired (historical bias)")
 
     return df
 
@@ -207,7 +207,7 @@ def demonstrate_representation_bias():
     print(f"  Group A: {acc_a:.4f}")
     print(f"  Group B: {acc_b:.4f}")
     print(f"  Difference: {abs(acc_a - acc_b):.4f}")
-    print("\n⚠️  Underrepresented group has lower accuracy")
+    print("\n[WARNING]  Underrepresented group has lower accuracy")
 
 demonstrate_representation_bias()
 ```
@@ -232,8 +232,8 @@ def demonstrate_measurement_bias():
     print("  Group B: Alternative data scores (noisy)")
     print("\nResult: Even with same creditworthiness,")
     print("        Group B scores have higher variance")
-    print("        → More false negatives for Group B")
-    print("\n⚠️  Different measurement quality creates unfairness")
+    print("        --> More false negatives for Group B")
+    print("\n[WARNING]  Different measurement quality creates unfairness")
 
 demonstrate_measurement_bias()
 ```
@@ -291,7 +291,7 @@ def demonstrate_aggregation_bias():
     print(f"  Group A: {mse_a_specific:.4f}")
     print(f"  Group B: {mse_b_specific:.4f}")
 
-    print("\n⚠️  Single model underperforms for both groups")
+    print("\n[WARNING]  Single model underperforms for both groups")
     print("    Consider group-specific models or interactions")
 
 demonstrate_aggregation_bias()
@@ -342,9 +342,9 @@ def demographic_parity_difference(y_pred, sensitive_feature):
     print(f"Demographic Parity Difference: {dpd:.4f}")
 
     if abs(dpd) < 0.05:
-        print("✓ Acceptable parity (|DPD| < 0.05)")
+        print("[x] Acceptable parity (|DPD| < 0.05)")
     else:
-        print("✗ Concerning disparity (|DPD| >= 0.05)")
+        print("[ ] Concerning disparity (|DPD| >= 0.05)")
 
     return dpd
 
@@ -403,9 +403,9 @@ def equal_opportunity_difference(y_true, y_pred, sensitive_feature):
     print(f"Equal Opportunity Difference: {eod:.4f}")
 
     if abs(eod) < 0.05:
-        print("✓ Acceptable equal opportunity (|EOD| < 0.05)")
+        print("[x] Acceptable equal opportunity (|EOD| < 0.05)")
     else:
-        print("✗ Concerning disparity (|EOD| >= 0.05)")
+        print("[ ] Concerning disparity (|EOD| >= 0.05)")
 
     return eod
 
@@ -460,9 +460,9 @@ def equalized_odds_difference(y_true, y_pred, sensitive_feature):
     print(f"Equalized Odds Difference (max): {eq_odds_diff:.4f}")
 
     if eq_odds_diff < 0.05:
-        print("✓ Acceptable equalized odds")
+        print("[x] Acceptable equalized odds")
     else:
-        print("✗ Concerning disparity")
+        print("[ ] Concerning disparity")
 
     return eq_odds_diff
 
@@ -503,10 +503,10 @@ def disparate_impact_ratio(y_pred, sensitive_feature, unprivileged_group=1):
 
     # 80% rule (US employment law)
     if di_ratio >= 0.8:
-        print("✓ Passes 80% rule (DI >= 0.8)")
+        print("[x] Passes 80% rule (DI >= 0.8)")
     else:
-        print("✗ Fails 80% rule (DI < 0.8)")
-        print("  ⚠️  May indicate adverse impact")
+        print("[ ] Fails 80% rule (DI < 0.8)")
+        print("  [WARNING]  May indicate adverse impact")
 
     return di_ratio
 
@@ -657,7 +657,7 @@ def comprehensive_fairness_audit(model, X, y, sensitive_feature, feature_names):
     for i, idx in enumerate(top_idx, 1):
         print(f"{i:2d}. {feature_names[idx]:<25} {importances[idx]:.4f}")
 
-    print("\n⚠️  Review top features for potential proxies of protected attributes")
+    print("\n[WARNING]  Review top features for potential proxies of protected attributes")
 
     # Summary
     print("\n" + "=" * 70)
@@ -675,12 +675,12 @@ def comprehensive_fairness_audit(model, X, y, sensitive_feature, feature_names):
         issues.append("Disparate impact (80% rule)")
 
     if issues:
-        print("\n⚠️  FAIRNESS ISSUES DETECTED:")
+        print("\n[WARNING]  FAIRNESS ISSUES DETECTED:")
         for issue in issues:
             print(f"  - {issue}")
         print("\nRECOMMENDATION: Apply bias mitigation techniques")
     else:
-        print("\n✓ No major fairness issues detected")
+        print("\n[x] No major fairness issues detected")
         print("  Continue monitoring in production")
 
     return {
@@ -869,7 +869,7 @@ def train_with_fairness_constraint(X_train, y_train, sensitive_train, constraint
 
     fair_model.fit(X_train, y_train, sensitive_features=sensitive_train)
 
-    print("✓ Training complete")
+    print("[x] Training complete")
 
     return fair_model
 
@@ -1100,11 +1100,11 @@ def assess_ai_act_risk_level(use_case):
     print("\nUse case:", use_case)
 
     if use_case in prohibited:
-        print("\n🚫 PROHIBITED SYSTEM")
+        print("\n PROHIBITED SYSTEM")
         print("   This AI system is banned under EU AI Act")
 
     elif use_case in high_risk_areas:
-        print("\n⚠️  HIGH-RISK AI SYSTEM")
+        print("\n[WARNING]  HIGH-RISK AI SYSTEM")
         print("   Requirements:")
         print("   - Conformity assessment")
         print("   - Risk management system")
@@ -1117,7 +1117,7 @@ def assess_ai_act_risk_level(use_case):
         print("   - Quality management system")
 
     else:
-        print("\n✓ LIMITED/MINIMAL RISK")
+        print("\n[x] LIMITED/MINIMAL RISK")
         print("   Basic transparency obligations")
 
 assess_ai_act_risk_level('Access to essential private/public services (credit, insurance)')
@@ -1175,9 +1175,9 @@ def generate_eu_ai_act_fairness_report(model, X_test, y_test, sensitive_test, fe
     compliant = dpd < 0.05 and eod < 0.05 and di >= 0.8
 
     if compliant:
-        report.append("✓ COMPLIANT: All fairness thresholds met")
+        report.append("[x] COMPLIANT: All fairness thresholds met")
     else:
-        report.append("✗ NON-COMPLIANT: Fairness thresholds exceeded")
+        report.append("[ ] NON-COMPLIANT: Fairness thresholds exceeded")
         report.append("\nIdentified Issues:")
         if dpd >= 0.05:
             report.append(f"  - Demographic parity violation (diff={dpd:.4f})")
@@ -1359,9 +1359,9 @@ def credit_scoring_fairness_case_study():
 
     print("\n5. CONCLUSION")
     print("-" * 70)
-    print("✓ Bias successfully mitigated")
-    print("✓ Minimal performance impact")
-    print("✓ Compliant with fairness requirements")
+    print("[x] Bias successfully mitigated")
+    print("[x] Minimal performance impact")
+    print("[x] Compliant with fairness requirements")
 
 credit_scoring_fairness_case_study()
 ```
@@ -1377,7 +1377,7 @@ credit_scoring_fairness_case_study()
 | **Demographic Parity** | Equal positive rates | When equal treatment is goal | |diff| < 0.05 |
 | **Equal Opportunity** | Equal TPR | When FN more costly | |diff| < 0.05 |
 | **Equalized Odds** | Equal TPR & FPR | Balanced consideration | max_diff < 0.05 |
-| **Disparate Impact** | Ratio of positive rates | US employment law | ratio ≥ 0.80 |
+| **Disparate Impact** | Ratio of positive rates | US employment law | ratio >= 0.80 |
 | **Calibration** | Predicted = actual | Probability quality | Low calibration error |
 
 ### Mitigation Strategy Selection
@@ -1391,14 +1391,14 @@ credit_scoring_fairness_case_study()
 
 ### Key Takeaways (2025)
 
-1. ✅ **Fairness is mandatory** - EU AI Act, GDPR, US regulations
-2. ✅ **Multiple metrics** - No single metric captures all aspects
-3. ✅ **Trade-offs exist** - Fairness vs. accuracy, different fairness definitions
-4. ✅ **Document everything** - Required for compliance
-5. ✅ **Continuous monitoring** - Bias can emerge post-deployment
-6. ✅ **Human oversight** - Required for high-risk systems
-7. ✅ **Use established tools** - Fairlearn, AIF360
-8. ✅ **Domain expertise** - Involve subject matter experts
+1.  **Fairness is mandatory** - EU AI Act, GDPR, US regulations
+2.  **Multiple metrics** - No single metric captures all aspects
+3.  **Trade-offs exist** - Fairness vs. accuracy, different fairness definitions
+4.  **Document everything** - Required for compliance
+5.  **Continuous monitoring** - Bias can emerge post-deployment
+6.  **Human oversight** - Required for high-risk systems
+7.  **Use established tools** - Fairlearn, AIF360
+8.  **Domain expertise** - Involve subject matter experts
 
 ---
 
